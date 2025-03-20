@@ -1,27 +1,38 @@
 {
   "compilerOptions": {
-    "target": "ES2017",
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "noEmit": true,
-    "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "jsx": "preserve",
-    "incremental": true,
+    "target": "ES2022", // Target latest ECMAScript for better modern features
+    "lib": ["dom", "dom.iterable", "esnext"], // Includes DOM and latest ES libraries
+    "module": "esnext", // Use modern ES module system
+    "moduleResolution": "node", // Use Node-style module resolution
+    "jsx": "preserve", // Preserve JSX for Next.js's handling
+    "strict": true, // Enable strict type checking
+    "allowJs": true, // Allow JavaScript files
+    "resolveJsonModule": true, // Enable importing JSON files as modules
+    "esModuleInterop": true, // Interoperability between ES modules and CommonJS
+    "skipLibCheck": true, // Skip library type checking for faster compilation
+    "isolatedModules": true, // Required for Next.js
+    "noEmit": true, // Prevent emitting output files
+    "incremental": true, // Improve performance with incremental builds
     "plugins": [
       {
-        "name": "next"
+        "name": "next" // Next.js-specific TypeScript plugin
       }
     ],
+    "baseUrl": ".", // Set the base directory for module resolution
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"] // Define alias for project root
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": [
+    "next-env.d.ts", // Next.js environment type definitions
+    "**/*.ts", // Include all TypeScript files
+    "**/*.tsx", // Include all TypeScript React files
+    ".next/types/**/*.ts" // Include Next.js generated types
+  ],
+  "exclude": [
+    "node_modules", // Exclude node_modules directory
+    ".next", // Exclude Next.js build directory
+    "out", // Exclude custom output directory if exists
+    "dist" // Exclude dist directory if using it for builds
+  ]
 }

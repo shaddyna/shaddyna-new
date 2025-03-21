@@ -14,7 +14,7 @@ interface MainContentProps {
     twoFactorEnabled,
     setTwoFactorEnabled
   }: MainContentProps) => (
-    <div className="container mx-auto py-12 px-4">
+    <div className="container mx-auto py-12 px-0">
       {/* Navigation Tabs */}
       <div className="flex overflow-x-auto mb-8 border-b border-gray-200">
         {['overview', 'financial', 'activity', 'security'].map(tab => (

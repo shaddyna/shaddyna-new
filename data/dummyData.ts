@@ -12,32 +12,40 @@ export const dummyUser: User = {
 };
 export const dummyOrders: Order[] = [
   {
-    id: 1,
+    id: "1",
     product: "Wireless Headphones Pro",
     status: "delivered",
     amount: 299.99,
-    date: "2024-03-10"
+    date: "2024-03-10",
+    customer: '',
+    total: 0
   },
   {
-    id: 2,
+    id: "2",
     product: "Leather Laptop Bag",
     status: "pending",
     amount: 149.50,
-    date: "2024-03-12"
+    date: "2024-03-12",
+    customer: '',
+    total: 0
   },
   {
-    id: 3,
+    id: "3",
     product: "Smart Watch Series 5",
     status: "cancelled",
     amount: 199.99,
-    date: "2024-03-15"
+    date: "2024-03-15",
+    customer: '',
+    total: 0
   },
   {
-    id: 4,
+    id: "4",
     product: "Noise Cancelling Earbuds",
     status: "shipped",
     amount: 179.95,
-    date: "2024-03-18"
+    date: "2024-03-18",
+    customer: '',
+    total: 0
   }
 ];
 

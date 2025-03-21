@@ -4,15 +4,151 @@ import { useRouter } from "next/navigation";
 import { ProfileHeader } from '@/components/ProfileHeader';
 import { MainContent } from '@/components/MainContent';
 import { User } from '@/types/profile';
-import { dummyUser, dummyOrders, dummyProducts, dummyUsers } from '@/data/dummyData';
+import { dummyUser, dummyOrders, dummyUsers, dummyProducts } from '@/data/dummyData';
 import { EditProfileModal } from '@/components/EditProfileModal';
-import { FiEdit, FiPlus, FiTrash } from 'react-icons/fi';
-import Button from '@/components/ui/Button';
+import axios from 'axios';
+import { ProfileNavbar } from '@/components/ProfileNavBar';
+import { AdminDashboard } from '@/components/AdminDashboard';
+import UserDashboard from '@/components/UserDashboard';
+import { ProductModal } from '@/components/vendorComponents/ProductModal';
+import { WithdrawalModal } from '@/components/vendorComponents/WithdrawalModal';
+import { WithdrawalRequests } from '@/components/vendorComponents/WithdrawalRequest';
+import { ProductManagement } from '@/components/vendorComponents/ProductManagement';
+import { ShopSection } from '@/components/vendorComponents/ShopSection';
+import { SalesDashboard } from '@/components/vendorComponents/SalesDashboard';
+import { Order } from '@/types/profile'; 
+import { CustomerOrders } from '@/components/vendorComponents/CustomerOrder';
+import { EditShopModal } from '@/components/vendorComponents/EditShopModal';
+import { Shop } from '@/types/profile';
+
+interface Withdrawal {
+  id: string;
+  amount: number;
+  status: "Completed" | "Pending"; }
+
+// types/profile.ts
+export interface Product {
+  id: number;
+  name: string;
+  stock: number;
+  price: number;
+}
+
+
+const productCategories = {
+  Car: {
+    label: "Car",
+    attributes: {
+      Model: ["Toyota", "Ford", "Tesla"],
+      Mileage: ["0-10K", "10K-50K", "50K+"],
+      FuelType: ["Petrol", "Diesel", "Electric"],
+      Transmission: ["Manual", "Automatic"],
+      Year: ["2020", "2021", "2022"],
+    },
+  },
+  Phone: {
+    label: "Phone",
+    attributes: {
+      Brand: ["Apple", "Samsung", "OnePlus"],
+      Storage: ["64GB", "128GB", "256GB"],
+      CameraPixel: ["12MP", "48MP", "108MP"],
+      BatteryLife: ["3000mAh", "4000mAh", "5000mAh"],
+    },
+  },
+  Clothes: {
+    label: "Clothes",
+    attributes: {
+      Brand: ["Nike", "Adidas", "Puma", "Kings"],
+      Size: ["S", "M", "L", "XL"],
+      Color: ["Red", "Blue", "Black", "White"],
+      Material: ["Cotton", "Polyester", "Denim"],
+    },
+  },
+};
+
+
+
+const API_URL = "https://shaddyna-backend.onrender.com/api/products"; // Adjust based on backend URL
+
 
 
 export default function ProfilePage() {
-
+  const [withdrawalAmount, setWithdrawalAmount] = useState<number>(0);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedValues, setSelectedValues] = useState<Record<string, string>>({});
+  const [currentStep, setCurrentStep] = useState(0);
+  const [productName, setProductName] = useState("");
+  const [productStock, setProductStock] = useState("");
+  const [productPrice, setProductPrice] = useState("");
+  const [images, setImages] = useState<File[]>([]);
   const router = useRouter();
+  //const categoryAttributes = selectedCategory ? productCategories[selectedCategory as keyof typeof productCategories].attributes : null;
+  const categoryAttributes = selectedCategory 
+  ? productCategories[selectedCategory as keyof typeof productCategories].attributes 
+  : null;
+
+
+  const attributeKeys = categoryAttributes ? Object.keys(categoryAttributes) : [];
+
+  const handleCategoryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedCategory(event.target.value);
+    setSelectedValues({});
+    setCurrentStep(0);
+  };
+
+  const handleAttributeChange = (attribute: string, value: string) => {
+    setSelectedValues((prev) => ({ ...prev, [attribute]: value }));
+  };
+
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      setImages([...images, ...Array.from(event.target.files)]);
+    }
+  };
+  
+  const nextStep = () => {
+    if (currentStep < attributeKeys.length - 1) {
+      setCurrentStep(currentStep + 1);
+    }
+  };
+
+  const prevStep = () => {
+    if (currentStep > 0) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
+  const removeImage = (index: number) => {
+    setImages(images.filter((_, i) => i !== index));
+  };
+
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+  
+    const formData = new FormData();
+    formData.append("name", productName);
+    formData.append("stock", productStock);
+    formData.append("price", productPrice);
+    formData.append("category", selectedCategory!);
+    formData.append("attributes", JSON.stringify(selectedValues));
+    images.forEach((image) => formData.append("images", image));
+  
+    try {
+      const response = await axios.post(API_URL, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+  
+      alert("Product Created Successfully!");
+      setProductName("");
+      setProductStock("");
+      setProductPrice("");
+      setSelectedCategory(null);
+      setSelectedValues({});
+      setImages([]);
+    } catch (error) {
+      console.error("Error adding product:", error);
+    }
+  };
   const [currentUser, setCurrentUser] = useState<User>(dummyUser);
   const [activeTab, setActiveTab] = useState('overview');
   const [showEditModal, setShowEditModal] = useState(false);
@@ -29,28 +165,38 @@ export default function ProfilePage() {
     }
   });
 
-  const [products, setProducts] = useState([
-    { id: 1, name: "Denim Jacket", stock: 10, price: 4500 },
-    { id: 2, name: "Classic Sneakers", stock: 5, price: 3200 },
+// In your profile page
+const [products, setProducts] = useState<Product[]>(dummyProducts); // Initialize here
+const [isProductModalOpen, setIsProductModalOpen] = useState(false);
+const [editedProduct, setEditedProduct] = useState<Product>({ id: 0, name: "", stock: 0, price: 0 });
+const [orders, setOrders] = useState<Order[]>([
+  {
+    id: "101", customer: "John Doe", total: 12000, status: "Pending",
+    product: '',
+    amount: 0,
+    date: ''
+  },
+  {
+    id: "102", customer: "Jane Smith", total: 8000, status: "Completed",
+    product: '',
+    amount: 0,
+    date: ''
+  },
+]);
+
+  const [withdrawals, setWithdrawals] = useState<Withdrawal[]>([
+    { id: "201", amount: 5000, status: "Pending" },
+    { id: "202", amount: 12000, status: "Completed" },
   ]);
 
-  const [orders, setOrders] = useState([
-    { id: 101, customer: "John Doe", total: 12000, status: "Pending" },
-    { id: 102, customer: "Jane Smith", total: 8000, status: "Completed" },
-  ]);
 
-  const [withdrawals, setWithdrawals] = useState([
-    { id: 201, amount: 5000, status: "Processing" },
-    { id: 202, amount: 12000, status: "Completed" },
-  ]);
-
-  // Modal states
-  const [isShopEditModalOpen, setIsShopEditModalOpen] = useState(false);
-  const [isProductModalOpen, setIsProductModalOpen] = useState(false);
+ 
   const [isWithdrawalModalOpen, setIsWithdrawalModalOpen] = useState(false);
-  const [editedProduct, setEditedProduct] = useState(null);
-  const [withdrawalAmount, setWithdrawalAmount] = useState("");
-  const [editedShop, setEditedShop] = useState({ ...shop });
+
+
+  
+const [editedShop, setEditedShop] = useState<Shop>({ ...shop });
+const [isShopEditModalOpen, setIsShopEditModalOpen] = useState(false);
 
   // Shop Management
   const handleSaveShop = () => {
@@ -64,360 +210,123 @@ export default function ProfilePage() {
     .reduce((sum, order) => sum + order.total, 0);
 
     const renderRoleContent = () => {
-      interface Product {
-        id?: number;
-        name: string;
-        stock: number;
-        price: number;
-      }
-      const [editedProduct, setEditedProduct] = useState<Product | null>(null);
-      // In the component
-      //const [editedProduct, setEditedProduct] = useState<Product | null>(null);
+
+      const [editedProduct, setEditedProduct] = useState<Product>({ 
+        id: 0, 
+        name: "", 
+        stock: 0, 
+        price: 0 
+      });
       switch(currentUser.role) {
         case 'user':
           return (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-white p-6 rounded-xl shadow-sm">
-                <h3 className="text-xl font-semibold text-[#0f1c47] mb-4">My Orders</h3>
-                {dummyOrders.map(order => (
-                  <div key={order.id} className="flex justify-between items-center p-4 hover:bg-gray-50 rounded-lg">
-                    <div>
-                      <p className="text-[#0f1c47] font-medium">{order.product}</p>
-                      <p className="text-sm text-gray-500">{order.date}</p>
-                    </div>
-                    <span className={`px-3 py-1 rounded-full text-sm ${
-                      order.status === 'delivered' ? 'bg-green-100 text-green-800' : 'bg-[#bf2c7e]/10 text-[#bf2c7e]'
-                    }`}>
-                      {order.status}
-                    </span>
-                  </div>
-                ))}
-              </div>
-    
-              <div className="bg-white p-6 rounded-xl shadow-sm">
-                <h3 className="text-xl font-semibold text-[#0f1c47] mb-4">My Shelves</h3>
-                {/* Shelf membership content */}
-              </div>
-    
-              <div className="bg-white p-6 rounded-xl shadow-sm">
-                <h3 className="text-xl font-semibold text-[#0f1c47] mb-4">Hub Contributions</h3>
-                {/* Skills/services posted */}
-              </div>
-    
-              <div className="bg-white p-6 rounded-xl shadow-sm">
-                <h3 className="text-xl font-semibold text-[#0f1c47] mb-4">Investment Portfolio</h3>
-                {/* Investment content */}
-              </div>
-    
-              <div className="md:col-span-2 bg-white p-6 rounded-xl shadow-sm">
-                <h3 className="text-xl font-semibold text-[#0f1c47] mb-4">Saved Shops & Products</h3>
-                {/* Wishlist content */}
-              </div>
-            </div>
+            <UserDashboard dummyOrders={dummyOrders} />
           );
           
         case 'vendor':
-          return (
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-6">
-              {/* My Shop Section */}
-              <div className="lg:col-span-3 bg-white p-6 rounded-xl shadow-md">
-                <div className="flex justify-between items-start mb-4">
-                  <h3 className="text-xl font-semibold text-[#0f1c47]">My Shop</h3>
-                  <Button onClick={() => setIsShopEditModalOpen(true)}>
-                    <FiEdit className="mr-2" /> Edit Shop
-                  </Button>
-                </div>
-                <div className="flex items-center gap-4">
-                  <img src={shop.logo} alt="Shop Logo" className="w-16 h-16 rounded-full" />
-                  <div className="space-y-1">
-                    <p className="text-lg font-medium">{shop.name}</p>
-                    <p className="text-sm text-gray-500">{shop.description}</p>
-                    <div className="flex gap-2 mt-2">
-                      {shop.categories.map(category => (
-                        <span key={category} className="px-2 py-1 bg-gray-100 rounded-full text-sm">
-                          {category}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-        
-              {/* Product Management */}
-              <div className="lg:col-span-2 bg-white p-6 rounded-xl shadow-md">
-                <div className="flex justify-between items-start mb-4">
-                  <h3 className="text-xl font-semibold text-[#0f1c47]">Product Management</h3>
-               
-                  <Button onClick={() => {
-                    setIsProductModalOpen(true);
-                    setEditedProduct({ name: '', stock: 0, price: 0 });
-                  }}>
-                    <FiPlus className="mr-2" /> Add Product
-                  </Button>
-                </div>
-                <div className="space-y-4">
-                  {products.map(product => (
-                    <div key={product.id} className="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
-                      <div>
-                        <p className="text-[#0f1c47] font-medium">{product.name}</p>
-                        <p className="text-sm text-gray-500">Stock: {product.stock}</p>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <p className="text-[#bf2c7e] font-semibold">Ksh {product.price}</p>
-                        <FiEdit 
-                          className="text-blue-500 cursor-pointer" 
-                          onClick={() => { setEditedProduct(product); setIsProductModalOpen(true); }}
-                        />
-                        <FiTrash 
-                          className="text-red-500 cursor-pointer" 
-                          onClick={() => setProducts(products.filter(p => p.id !== product.id))} 
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-        
-              {/* Sales Dashboard */}
-              <div className="bg-white p-6 rounded-xl shadow-md">
-                <h3 className="text-xl font-semibold text-[#0f1c47] mb-4">Sales Dashboard</h3>
-                <div className="space-y-3">
-                  <p className="text-lg font-medium">Total Revenue: Ksh {totalRevenue.toLocaleString()}</p>
-                  <p className="text-sm text-gray-500">Pending Orders: {orders.filter(o => o.status === "Pending").length}</p>
-                </div>
-              </div>
-        
-              {/* Customer Orders */}
-              <div className="lg:col-span-2 bg-white p-6 rounded-xl shadow-md">
-                <h3 className="text-xl font-semibold text-[#0f1c47] mb-4">Customer Orders</h3>
-                <div className="space-y-3">
-                  {orders.map(order => (
-                    <div key={order.id} className="flex justify-between p-4 bg-gray-50 rounded-lg">
-                      <div>
-                        <p className="text-[#0f1c47] font-medium">{order.customer}</p>
-                        <p className="text-sm text-gray-500">Order #{order.id}</p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-[#0f1c47] font-medium">Ksh {order.total}</p>
-                        <span className={`px-2 py-1 rounded-full text-sm ${
-                          order.status === "Completed" ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800"
-                        }`}>
-                          {order.status}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-        
-              {/* Withdrawal Requests */}
-              <div className="bg-white p-6 rounded-xl shadow-md">
-                <div className="flex justify-between items-start mb-4">
-                  <h3 className="text-xl font-semibold text-[#0f1c47]">Withdrawal Requests</h3>
-                  <Button onClick={() => setIsWithdrawalModalOpen(true)}>
-                    <FiPlus className="mr-2" /> New Request
-                  </Button>
-                </div>
-                <div className="space-y-3">
-                  {withdrawals.map(withdrawal => (
-                    <div key={withdrawal.id} className="flex justify-between p-4 bg-gray-50 rounded-lg">
-                      <p className="text-[#0f1c47] font-medium">Ksh {withdrawal.amount.toLocaleString()}</p>
-                      <span className={`px-2 py-1 rounded-full text-sm ${
-                        withdrawal.status === "Completed" ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800"
-                      }`}>
-                        {withdrawal.status}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-        
-              {/* Edit Shop Modal */}
-              {isShopEditModalOpen && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                  <div className="bg-white p-6 rounded-xl w-full max-w-md">
-                    <h3 className="text-xl font-semibold mb-4">Edit Shop Details</h3>
-                    <div className="space-y-4">
-                      <input
-                        type="text"
-                        placeholder="Shop Name"
-                        className="w-full p-2 border rounded"
-                        value={editedShop.name}
-                        onChange={e => setEditedShop({...editedShop, name: e.target.value})}
-                      />
-                      <input
-                        type="text"
-                        placeholder="Logo URL"
-                        className="w-full p-2 border rounded"
-                        value={editedShop.logo}
-                        onChange={e => setEditedShop({...editedShop, logo: e.target.value})}
-                      />
-                      <textarea
-                        placeholder="Description"
-                        className="w-full p-2 border rounded"
-                        value={editedShop.description}
-                        onChange={e => setEditedShop({...editedShop, description: e.target.value})}
-                      />
-                      <div className="flex gap-2">
-                        <Button onClick={handleSaveShop}>Save Changes</Button>
-                        <Button  onClick={() => setIsShopEditModalOpen(false)}>
-                          Cancel
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-        
-              {/* Product Modal */}
-              {isProductModalOpen && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                  <div className="bg-white p-6 rounded-xl w-full max-w-md">
-                    <h3 className="text-xl font-semibold mb-4">
-                      {editedProduct ? "Edit Product" : "Add New Product"}
-                    </h3>
-                    <div className="space-y-4">
-                    <input
-                    type="text"
-                    placeholder="Product Name"
-                    className="w-full p-2 border rounded"
-                    value={editedProduct?.name || ""}
-                    onChange={e => setEditedProduct(prev => ({
-                      ...(prev || { name: '', stock: 0, price: 0 }),
-                      name: e.target.value
-                    }))}
-                  />
+          const handleWithdrawalRequest = () => {
+            if (withdrawalAmount <= 0) {
+              alert("Please enter a valid amount");
+              return;
+            }
+            const newWithdrawal: Withdrawal = {
+              id: (withdrawals.length + 1).toString(), // Convert number to string
+              amount: withdrawalAmount,
+              status: "Pending",
+            };
+            setWithdrawals([...withdrawals, newWithdrawal]);
+            setIsWithdrawalModalOpen(false);
+            setWithdrawalAmount(0);
+          };
+          
 
-                  <input
-                    type="number"
-                    placeholder="Price"
-                    className="w-full p-2 border rounded"
-                    value={editedProduct?.price || ""}
-                    onChange={e => setEditedProduct(prev => ({
-                      ...(prev || { name: '', stock: 0, price: 0 }),
-                      price: Number(e.target.value)
-                    }))}
-                  />
+        return (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-3">
+            <ShopSection 
+              shop={shop} 
+              setIsShopEditModalOpen={setIsShopEditModalOpen}
+            />
+            
+            <ProductManagement
+              products={products}
+              setProducts={setProducts}
+              setIsProductModalOpen={setIsProductModalOpen}
+              setEditedProduct={setEditedProduct}
+            />
+            
+            <SalesDashboard 
+              totalRevenue={totalRevenue} 
+              orders={orders} 
+            />
+            
+            <CustomerOrders orders={orders} />
+            
+            <WithdrawalRequests 
+              withdrawals={withdrawals}
+              setIsWithdrawalModalOpen={setIsWithdrawalModalOpen}
+            />
+      
+                 
+      <EditShopModal
+        isOpen={isShopEditModalOpen}
+        onClose={() => setIsShopEditModalOpen(false)}
+        editedShop={editedShop}
+        setEditedShop={setEditedShop}
+        handleSaveShop={handleSaveShop}
+      />
+       <ProductModal
+        isOpen={isProductModalOpen}
+        onClose={() => setIsProductModalOpen(false)}
+        productCategories={productCategories}
+        selectedCategory={selectedCategory}
+        handleCategoryChange={handleCategoryChange}
+        productName={editedProduct.name}
+        setProductName={(name) => setEditedProduct(prev => ({...prev, name}))}
+        productStock={editedProduct.stock.toString()}
+        setProductStock={(stock) => setEditedProduct(prev => ({...prev, stock: Number(stock)}))}
+        productPrice={editedProduct.price.toString()}
+        setProductPrice={(price) => setEditedProduct(prev => ({...prev, price: Number(price)}))}
+        attributeKeys={attributeKeys}
+        selectedValues={selectedValues}
+        handleAttributeChange={handleAttributeChange}
+        handleImageUpload={handleImageUpload}
+        images={images}
+        removeImage={removeImage}
+        handleSubmit={(e) => {
+          e.preventDefault();
+          if (editedProduct.id === 0) {
+            // Add new product
+            const newProduct = { ...editedProduct, id: products.length + 1 };
+            setProducts([...products, newProduct]);
+          } else {
+            // Update existing product
+            setProducts(products.map(p => p.id === editedProduct.id ? editedProduct : p));
+          }
+          setIsProductModalOpen(false);
+          setEditedProduct({ id: 0, name: "", stock: 0, price: 0 });
+        }}
+      />
 
-                  <input
-                    type="number"
-                    placeholder="Stock Quantity"
-                    className="w-full p-2 border rounded"
-                    value={editedProduct?.stock || ""}
-                    onChange={e => setEditedProduct(prev => ({
-                      ...(prev || { name: '', stock: 0, price: 0 }),
-                      stock: Number(e.target.value)
-                    }))}
-                  />
-                                        <div className="flex gap-2">
-                        {/*<Button onClick={() => handleSaveProduct(editedProduct)}>
-                          {editedProduct ? "Save Changes" : "Add Product"}
-                        </Button>*/}
-                        <Button  onClick={() => {
-                          setIsProductModalOpen(false);
-                          setEditedProduct(null);
-                        }}>
-                          Cancel
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-        
-              {/* Withdrawal Modal */}
-              {isWithdrawalModalOpen && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                  <div className="bg-white p-6 rounded-xl w-full max-w-md">
-                    <h3 className="text-xl font-semibold mb-4">New Withdrawal Request</h3>
-                    <div className="space-y-4">
-                      <input
-                        type="number"
-                        placeholder="Amount"
-                        className="w-full p-2 border rounded"
-                        value={withdrawalAmount}
-                        onChange={e => setWithdrawalAmount(e.target.value)}
-                      />
-                      <div className="flex gap-2">
-                        {/*<Button onClick={handleWithdrawalRequest}>Submit Request</Button>*/}
-                        <Button  onClick={() => setIsWithdrawalModalOpen(false)}>
-                          Cancel
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          );
-    
+            
+            <WithdrawalModal
+        isOpen={isWithdrawalModalOpen}
+        onClose={() => setIsWithdrawalModalOpen(false)}
+        withdrawalAmount={withdrawalAmount}
+        setWithdrawalAmount={setWithdrawalAmount}
+        handleWithdrawalRequest={handleWithdrawalRequest}
+      />
+          </div>
+        );
         case 'admin':
           return (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <div className="bg-white p-6 rounded-xl shadow-sm">
-                <h3 className="text-xl font-semibold text-[#0f1c47] mb-4">User Management</h3>
-                <div className="space-y-4">
-                  {dummyUsers.map(user => (
-                    <div key={user.id} className="flex justify-between items-center p-4 hover:bg-gray-50 rounded-lg">
-                      <div>
-                        <p className="text-[#0f1c47] font-medium">{user.name}</p>
-                        <p className="text-sm text-gray-500">{user.role}</p>
-                      </div>
-                      <span className={`px-3 py-1 rounded-full text-sm ${
-                        user.status === 'active' ? 'bg-green-100 text-green-800' : 
-                        user.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'
-                      }`}>
-                        {user.status}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-    
-              <div className="bg-white p-6 rounded-xl shadow-sm">
-                <h3 className="text-xl font-semibold text-[#0f1c47] mb-4">Shop Moderation</h3>
-                {/* Shop approval content */}
-              </div>
-    
-              <div className="bg-white p-6 rounded-xl shadow-sm">
-                <h3 className="text-xl font-semibold text-[#0f1c47] mb-4">Transaction Monitoring</h3>
-                {/* Transaction overview */}
-              </div>
-    
-              <div className="bg-white p-6 rounded-xl shadow-sm">
-                <h3 className="text-xl font-semibold text-[#0f1c47] mb-4">Investment Approvals</h3>
-                {/* Investment reviews */}
-              </div>
-    
-              <div className="md:col-span-2 lg:col-span-3 bg-white p-6 rounded-xl shadow-sm">
-                <h3 className="text-xl font-semibold text-[#0f1c47] mb-4">Platform Analytics</h3>
-                {/* Reports & charts */}
-              </div>
-            </div>
+            <AdminDashboard dummyUsers={dummyUsers} />
           );
       }
     };
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Navbar remains unchanged */}
-      <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-sm bg-white/10 lg:hidden">
-      <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-        <button
-          className="p-2 bg-white/50 hover:bg-white/10 rounded-full transition-colors"
-          onClick={() => router.back()}
-        >
-          <svg className="w-6 h-6 text-[#0f1c47]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-        </button>
-        <button className="p-2 bg-white/50 hover:bg-white/10 rounded-full transition-colors">
-          <svg className="w-6 h-6 text-[#0f1c47]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-          </svg>
-        </button>
-      </div>
-    </nav>
+     <ProfileNavbar onBack={() => router.back()} />
       <ProfileHeader 
         currentUser={currentUser} 
         setShowEditModal={setShowEditModal} 

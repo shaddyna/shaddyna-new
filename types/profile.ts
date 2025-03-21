@@ -10,11 +10,13 @@ export interface User {
   }
   
   export interface Order {
-    id: number;
+    id: string;
     product: string;
     status: string;
     amount: number;
     date: string;
+    customer: string;
+    total: number
   }
   
   export interface Product {
@@ -30,3 +32,15 @@ export interface User {
     role: 'user' | 'vendor' | 'admin';
     status: 'active' | 'pending' | 'banned';
   }
+
+  export type Shop = {
+    name: string;
+    logo: string;
+    description: string;
+    categories: string[];
+    contactEmail: string;
+    socialMedia: {
+      instagram: string;
+      facebook: string;
+    };
+  };

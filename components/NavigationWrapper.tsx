@@ -34,7 +34,7 @@ import DesktopNav from "@/components/DesktopNav";
 
 const pagesWithMobileNav = ["/", "/hub", "/shops", "/shelves", "/money",];
 const pagesWithTopMobileNav = ["/", "/money",];
-const pagesWithDesktopNav = ["/", "/hub", "/shops", "/shelves", "/money", "/profile"];
+const pagesWithDesktopNav = ["/", "/hub", "/shops", "/shelves", "/money", "/profile", "/events"];
 
 export default function NavigationWrapper() {
   const pathname = usePathname();

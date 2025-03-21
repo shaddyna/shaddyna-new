@@ -337,12 +337,13 @@ const dummyInvestments: Investment[] = [
 ];
 
 const quickActionsList = [
-  { icon: '🎟️', label: 'Pay for Events' },
-  { icon: '🛍️', label: 'Buy Goods' },
-  { icon: '💸', label: 'Withdraw Funds' },
-  { icon: '📈', label: 'Make Investment' },
-  { icon: '💰', label: 'Savings' }
+  { icon: '🎟️', label: 'Pay for Events', path: '/events' },
+  { icon: '🛍️', label: 'Buy Goods', path: '/products' },
+  { icon: '💸', label: 'Withdraw Funds', path: '/withdraw' },
+  { icon: '📈', label: 'Make Investment', path: '/invest' },
+  { icon: '💰', label: 'Savings', path: '/savings' }
 ]
+
 
 export default function MoneyPage() {
   const [balance] = useState(18450.75)

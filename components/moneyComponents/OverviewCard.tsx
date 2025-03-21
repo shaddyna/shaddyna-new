@@ -31,7 +31,7 @@ export const OverviewCard = ({
     </div>
     <Button
       onClick={onButtonClick}
-      className="mt-6 bg-white text-[#bf2c7e] px-6 py-2 rounded-full hover:bg-opacity-90 transition-opacity"
+      className="mt-6 bg-[#0f1c47] text-[#bf2c7e] px-6 py-2 rounded-full hover:bg-opacity-90 transition-opacity"
     >
       {buttonText}
     </Button>

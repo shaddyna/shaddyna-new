@@ -182,7 +182,7 @@ const ShopDetailsPage = () => {
           </div>
         </div>
 {/* Products Section */}
-<div className="mt-4 px-2 sm:px-0">
+<div className="mt-4 px-0 sm:px-0">
   <h2 className="text-xl sm:text-2xl font-bold text-[#0f1c47] mb-4 sm:mb-3">
     Products
   </h2>

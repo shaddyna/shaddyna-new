@@ -289,6 +289,97 @@ const ShopsPage: FC = () => {
       </section>
 
       {/* All Shops */}
+<section className="py-8 px-3 sm:py-10 sm:px-6 md:py-12 md:px-10 bg-white">
+  <div className="container mx-auto">
+    <h2 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-[#0f1c47]">All Shops</h2>
+    
+    <div className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6`}>
+      {shops
+        .filter((shop) => activeFilter === 'all' || shop.category === activeFilter)
+        .map((shop) => (
+          <div
+            key={shop.id}
+            className="bg-white p-4 sm:p-5 rounded-xl shadow-sm hover:shadow-md transition-shadow border border-[#0f1c47]/10 cursor-pointer"
+            onClick={() => handleShopClick(shop.id)}
+          >
+            {/* Shop Image */}
+            <div className="w-full h-40 sm:h-48 rounded-lg overflow-hidden mb-3 sm:mb-4">
+              <img
+                src={shop.image}
+                alt={shop.name}
+                className="w-full h-full object-cover"
+              />
+            </div>
+
+            {/* Shop Details */}
+            <div className="flex items-start justify-between mb-3 sm:mb-4">
+              <div>
+                <h3 className="text-lg sm:text-xl font-bold text-[#0f1c47] truncate">{shop.name}</h3>
+                <p className="text-gray-600 text-xs sm:text-sm">{shop.category}</p>
+              </div>
+              <span className="text-[#bf2c7e] bg-[#bf2c7e]/10 px-2 py-1 rounded-full text-xs sm:text-sm">
+                Sponsored
+              </span>
+            </div>
+
+            <p className="text-gray-600 text-sm sm:text-base mb-3 sm:mb-4 truncate">{shop.description}</p>
+
+            {/* Additional Shop Info */}
+            <div className="space-y-1 sm:space-y-2 mb-3 sm:mb-4 text-sm sm:text-base">
+              <div className="flex items-center gap-2 text-[#0f1c47]">
+                <span>📍 {shop.location}</span>
+              </div>
+              <div className="flex items-center gap-2 text-[#0f1c47]">
+                <span>📞 {shop.contact}</span>
+              </div>
+              <div className="flex items-center gap-2 text-[#0f1c47]">
+                <span>🕒 {shop.openingHours}</span>
+              </div>
+            </div>
+
+            {/* Rating and Follow Button */}
+            <div className="flex items-center justify-between mb-3 sm:mb-4">
+              <div>
+                <span className="text-[#bf2c7e] font-bold">★ {shop.rating}</span>
+                <span className="ml-2 text-gray-600 text-xs sm:text-sm">{shop.products} products</span>
+              </div>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsFollowing((prev) => ({ ...prev, [shop.id]: !prev[shop.id] }));
+                }}
+                className={`px-3 sm:px-4 py-1 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
+                  isFollowing[shop.id]
+                    ? 'bg-[#0f1c47] text-white'
+                    : 'bg-[#bf2c7e] text-white hover:bg-[#a02468]'
+                }`}
+              >
+                {isFollowing[shop.id] ? 'Following' : 'Follow'}
+              </button>
+            </div>
+
+            {/* Social Media Links */}
+            <div className="border-t border-[#0f1c47]/10 pt-3 sm:pt-4">
+              <p className="text-gray-600 text-xs sm:text-sm mb-2">Owner: {shop.owner}</p>
+              <div className="flex gap-2">
+                {shop.social.map((platform) => (
+                  <button
+                    key={platform}
+                    className="text-[#0f1c47] hover:text-[#bf2c7e] transition-colors text-sm sm:text-base"
+                  >
+                    {platform === 'twitter' ? '𝕏' : '📸'}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        ))}
+    </div>
+  </div>
+</section>
+
+
+      {/* All Shops *
       <section className="py-12 px-4 bg-white">
         <div className="container mx-auto">
           <h2 className="text-3xl font-bold mb-8 text-[#0f1c47]">All Shops</h2>
@@ -301,7 +392,7 @@ const ShopsPage: FC = () => {
                   className="bg-white p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow border border-[#0f1c47]/10 cursor-pointer"
                   onClick={() => handleShopClick(shop.id)} // Navigate to shop details on click
                 >
-                  {/* Shop Image */}
+                  {/* Shop Image *
                   <div className="w-full h-48 rounded-xl overflow-hidden mb-4">
                     <img
                       src={shop.image}
@@ -310,7 +401,7 @@ const ShopsPage: FC = () => {
                     />
                   </div>
 
-                  {/* Shop Details */}
+                  {/* Shop Details *
                   <div className="flex items-start justify-between mb-4">
                     <div>
                       <h3 className="text-xl font-bold text-[#0f1c47]">{shop.name}</h3>
@@ -323,7 +414,7 @@ const ShopsPage: FC = () => {
 
                   <p className="text-gray-600 mb-4">{shop.description}</p>
 
-                  {/* Additional Shop Info */}
+                  {/* Additional Shop Info *
                   <div className="space-y-2 mb-4">
                     <div className="flex items-center gap-2 text-sm text-[#0f1c47]">
                       <span>📍 {shop.location}</span>
@@ -336,7 +427,7 @@ const ShopsPage: FC = () => {
                     </div>
                   </div>
 
-                  {/* Rating and Follow Button */}
+                  {/* Rating and Follow Button *
                   <div className="flex items-center justify-between mb-4">
                     <div>
                       <span className="text-[#bf2c7e]">★ {shop.rating}</span>
@@ -357,7 +448,7 @@ const ShopsPage: FC = () => {
                     </button>
                   </div>
 
-                  {/* Social Media Links */}
+                  {/* Social Media Links *
                   <div className="border-t border-[#0f1c47]/10 pt-4">
                     <p className="text-gray-600 mb-2">Owner: {shop.owner}</p>
                     <div className="flex gap-2">
@@ -375,7 +466,7 @@ const ShopsPage: FC = () => {
               ))}
           </div>
         </div>
-      </section>
+      </section>*/}
 
     </div>
   );

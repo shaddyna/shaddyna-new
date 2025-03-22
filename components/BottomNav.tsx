@@ -44,7 +44,7 @@ export default function BottomNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed bottom-0 left-0 w-full bg-white border-t border-[#0f1c47]/10 flex justify-around p-2 shadow-lg lg:hidden">
+    <nav className="fixed bottom-0 left-0 w-full bg-white border-t border-[#0f1c47]/10 flex justify-around shadow-lg lg:hidden">
       {navItems.map(({ name, href, icon: Icon }) => (
         <Link
           key={name}

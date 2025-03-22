@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import TopNavModified from '@/components/TopNavModified';
 import { useState } from 'react';
 
@@ -32,7 +32,7 @@ const dummySkills: SkillPost[] = [
     likes: 45,
     comments: 12,
     type: 'freelancer',
-    portfolio: 'sarahdesigns.dribbble.com'
+    portfolio: 'sarahdesigns.dribbble.com',
   },
   // Add more skill posts...
 ];
@@ -43,7 +43,7 @@ const dummyOpportunities: Opportunity[] = [
     title: 'Mobile App Developer Needed',
     company: 'TechInnovate',
     type: 'project',
-    location: 'Remote'
+    location: 'Remote',
   },
   // Add more opportunities...
 ];
@@ -55,31 +55,32 @@ export default function HubPage() {
 
   return (
     <div className="min-h-screen bg-white">
- <TopNavModified menuItems={["Add skill", "Add Opportunity"]} />
+      <TopNavModified menuItems={["Add Skill", "Add Opportunity"]} />
+
       {/* Header Section */}
-      <div className="bg-white py-16 px-4">
+      <div className="bg-white py-4 px-3">
         <div className="container mx-auto">
-          <h1 className="text-4xl font-bold text-[#0f1c47] mb-6">Skills Hub</h1>
-          
+          <h1 className="text-xl font-bold text-[#0f1c47] mb-3">Skills Hub</h1>
+
           {/* Search and Filters */}
           <div className="space-y-4">
             <input
               type="text"
               placeholder="Search skills, professionals, or topics..."
-              className="w-full p-4 rounded-lg bg-gray-400 text-gray-700 placeholder-gray-700"
+              className="w-full p-4 rounded-xl bg-white border-2 border-[#0f1c47]/10 focus:border-[#bf2c7e] focus:ring-0 transition-all"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
-            
+
             <div className="flex flex-wrap gap-2">
               {['all', 'design', 'development', 'writing', 'marketing'].map((filter) => (
                 <button
                   key={filter}
                   onClick={() => setActiveFilter(filter)}
-                  className={`px-4 py-2 rounded-full ${
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
                     activeFilter === filter
                       ? 'bg-[#bf2c7e] text-white'
-                      : 'bg-[#0f1c47] text-white hover:bg-gray-700'
+                      : 'bg-[#0f1c47]/10 text-[#0f1c47] hover:bg-[#bf2c7e]/10 hover:text-[#bf2c7e]'
                   }`}
                 >
                   {filter.charAt(0).toUpperCase() + filter.slice(1)}
@@ -91,21 +92,27 @@ export default function HubPage() {
       </div>
 
       {/* Main Content */}
-      <div className="container mx-auto py-12 px-4">
+      <div className="container mx-auto py-4 px-3">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Skills Grid */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-3">
             {dummySkills.map((skill) => (
               <div
                 key={skill.id}
-                className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow p-6 border border-gray-100"
+                className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow p-6 border border-[#0f1c47]/10"
               >
                 <div className="flex items-start justify-between mb-4">
                   <div>
                     <h3 className="text-xl font-bold text-[#0f1c47]">{skill.title}</h3>
                     <p className="text-[#bf2c7e] text-sm">{skill.category}</p>
                   </div>
-                  <span className="px-3 py-1 text-sm rounded-full bg-[#bf2c7e]/10 text-[#bf2c7e]">
+                  <span
+                    className={`px-3 py-1 text-sm rounded-full ${
+                      skill.type === 'freelancer'
+                        ? 'bg-[#bf2c7e]/10 text-[#bf2c7e]'
+                        : 'bg-[#0f1c47]/10 text-[#0f1c47]'
+                    }`}
+                  >
                     {skill.type}
                   </span>
                 </div>
@@ -152,13 +159,13 @@ export default function HubPage() {
           </div>
 
           {/* Opportunities Sidebar */}
-          <div className="space-y-6">
+          <div className="space-y-3">
             <h2 className="text-2xl font-bold text-[#0f1c47]">Opportunities</h2>
-            
+
             {dummyOpportunities.map((opp) => (
               <div
                 key={opp.id}
-                className="bg-white rounded-xl shadow-lg p-6 border border-gray-100"
+                className="bg-white rounded-2xl shadow-lg p-6 border border-[#0f1c47]/10"
               >
                 <h3 className="text-lg font-semibold text-[#0f1c47]">{opp.title}</h3>
                 <div className="flex items-center gap-2 text-sm text-[#0f1c47] mt-2">
@@ -166,10 +173,16 @@ export default function HubPage() {
                   <span>📍 {opp.location}</span>
                 </div>
                 <div className="mt-4 flex justify-between items-center">
-                  <span className="px-3 py-1 text-sm rounded-full bg-[#bf2c7e]/10 text-[#bf2c7e]">
+                  <span
+                    className={`px-3 py-1 text-sm rounded-full ${
+                      opp.type === 'freelance'
+                        ? 'bg-[#bf2c7e]/10 text-[#bf2c7e]'
+                        : 'bg-[#0f1c47]/10 text-[#0f1c47]'
+                    }`}
+                  >
                     {opp.type}
                   </span>
-                  <button className="bg-[#bf2c7e] text-white px-4 py-2 rounded-full hover:bg-opacity-90">
+                  <button className="bg-[#bf2c7e] text-white px-4 py-2 rounded-full hover:bg-[#a02468] transition-colors">
                     Apply Now
                   </button>
                 </div>
@@ -179,21 +192,18 @@ export default function HubPage() {
         </div>
       </div>
 
-            {/* Create Post FAB */}
-<button className="hidden sm:fixed sm:bottom-20 sm:right-8 sm:bg-[#bf2c7e] sm:text-white sm:p-4 sm:rounded-full sm:shadow-lg sm:hover:scale-105 sm:transition-transform lg:flex sm:items-center sm:gap-2">
-  <span className="hidden sm:inline">Post Your Skill</span>
-</button>
-
-
       {/* Skill Detail Modal */}
       {selectedPost && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50">
           <div className="container mx-auto p-4 h-full flex items-center justify-center">
-            <div className="bg-white rounded-xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="bg-white rounded-2xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
               {/* Modal Content */}
               <div className="flex justify-between items-start mb-6">
                 <h2 className="text-3xl font-bold text-[#0f1c47]">{selectedPost.title}</h2>
-                <button onClick={() => setSelectedPost(null)} className="text-gray-500 hover:text-[#bf2c7e]">
+                <button
+                  onClick={() => setSelectedPost(null)}
+                  className="text-gray-500 hover:text-[#bf2c7e]"
+                >
                   ✕
                 </button>
               </div>
@@ -226,14 +236,16 @@ export default function HubPage() {
 
                 {/* Comments Section */}
                 <div>
-                  <h3 className="text-xl font-semibold text-[#0f1c47] mb-4">Comments ({selectedPost.comments})</h3>
+                  <h3 className="text-xl font-semibold text-[#0f1c47] mb-4">
+                    Comments ({selectedPost.comments})
+                  </h3>
                   <div className="space-y-4">
                     <textarea
-                      className="w-full p-4 border border-gray-200 rounded-lg"
+                      className="w-full p-4 border border-[#0f1c47]/10 rounded-xl focus:border-[#bf2c7e] focus:ring-0"
                       placeholder="Add a comment..."
                       rows={3}
                     />
-                    <button className="bg-[#bf2c7e] text-white px-6 py-2 rounded-full">
+                    <button className="bg-[#bf2c7e] text-white px-6 py-2 rounded-full hover:bg-[#a02468] transition-colors">
                       Post Comment
                     </button>
                   </div>

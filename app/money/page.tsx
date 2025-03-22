@@ -352,7 +352,7 @@ export default function MoneyPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto py-12 px-4">
+      <div className="container mx-auto py-4 px-3">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
           <OverviewCard
             title="Wallet Overview"

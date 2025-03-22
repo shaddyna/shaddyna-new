@@ -150,20 +150,10 @@ const ShopsPage: FC = () => {
       </section>
 
              {/* Create Post FAB */}
-<button className="hidden sm:fixed sm:bottom-20 sm:right-8 sm:bg-[#bf2c7e] sm:text-white sm:p-4 sm:rounded-full sm:shadow-lg sm:hover:scale-105 sm:transition-transform lg:flex sm:items-center sm:gap-2">
-  <span className="hidden sm:inline">Create shop</span>
-</button>
+      <button className="hidden sm:fixed sm:bottom-20 sm:right-8 sm:bg-[#bf2c7e] sm:text-white sm:p-4 sm:rounded-full sm:shadow-lg sm:hover:scale-105 sm:transition-transform lg:flex sm:items-center sm:gap-2">
+        <span className="hidden sm:inline">Create shop</span>
+      </button>
 
-      {/* CTA Section */}
-      <section className="py-16 px-4 bg-[#0f1c47]">
-        <div className="container mx-auto text-center">
-          <h2 className="text-4xl font-bold mb-4 text-white">Ready to Start Selling?</h2>
-          <p className="text-gray-200 mb-8">Join our community of successful vendors</p>
-          <button className="bg-[#bf2c7e] text-white px-8 py-4 rounded-lg text-lg hover:bg-opacity-90">
-            Start Your Shop Now
-          </button>
-        </div>
-      </section>
     </div>
   );
 };

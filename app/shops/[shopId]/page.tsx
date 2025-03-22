@@ -162,7 +162,7 @@ const ShopDetailsPage = () => {
       </div>
 
       {/* Shop Details Section */}
-      <div className="container mx-auto p-6">
+      <div className="container mx-auto p-3">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Shop Details */}
           <div className="space-y-6">
@@ -182,8 +182,8 @@ const ShopDetailsPage = () => {
           </div>
         </div>
 {/* Products Section */}
-<div className="mt-8 px-2 sm:px-4">
-  <h2 className="text-xl sm:text-2xl font-bold text-[#0f1c47] mb-4 sm:mb-6">
+<div className="mt-4 px-2 sm:px-0">
+  <h2 className="text-xl sm:text-2xl font-bold text-[#0f1c47] mb-4 sm:mb-3">
     Products
   </h2>
 

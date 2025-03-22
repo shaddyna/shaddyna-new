@@ -182,16 +182,19 @@ const ShopDetailsPage = () => {
           </div>
         </div>
 {/* Products Section */}
-<div className="mt-12">
-  <h2 className="text-3xl font-bold text-[#0f1c47] mb-6">Products</h2>
-  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-4">
+<div className="mt-8 px-2 sm:px-4">
+  <h2 className="text-xl sm:text-2xl font-bold text-[#0f1c47] mb-4 sm:mb-6">
+    Products
+  </h2>
+
+  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
     {shop.productsList.map((product) => (
       <div
         key={product.id}
-        className="bg-white p-4 rounded-2xl shadow-sm hover:shadow-md transition-shadow border border-[#0f1c47]/10"
+        className="bg-white p-2 sm:p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow border border-[#0f1c47]/10"
       >
         {/* Product Image */}
-        <div className="w-full h-48 rounded-xl overflow-hidden mb-4">
+        <div className="w-full h-32 sm:h-40 md:h-48 rounded-lg overflow-hidden mb-3">
           <img
             src={product.image}
             alt={product.name}
@@ -201,43 +204,44 @@ const ShopDetailsPage = () => {
         </div>
 
         {/* Product Details */}
-        <h3 className="text-xl font-bold text-[#0f1c47] truncate">{product.name}</h3>
-        <p className="text-[#bf2c7e] font-medium">{product.price}</p>
+        <h3 className="text-sm sm:text-lg font-bold text-[#0f1c47] truncate">
+          {product.name}
+        </h3>
+        <p className="text-xs sm:text-sm text-[#bf2c7e] font-medium">
+          {product.price}
+        </p>
 
         {/* Rating Stars */}
-        <div className="flex items-center mt-2">
+        <div className="flex items-center mt-1 sm:mt-2">
           {[...Array(5)].map((_, i) => (
             i < Math.floor(product.id) ? (
-              <AiFillStar key={i} className="text-yellow-400" />
+              <AiFillStar key={i} className="text-yellow-400 text-xs sm:text-base" />
             ) : (
-              <AiOutlineStar key={i} className="text-gray-300" />
+              <AiOutlineStar key={i} className="text-gray-300 text-xs sm:text-base" />
             )
           ))}
         </div>
 
-        {/* Add to Cart and Wishlist Buttons */}
-        <div className="flex justify-between items-center mt-4">
+        {/* Buttons */}
+        <div className="flex justify-between items-center mt-3 sm:mt-4">
           {/* Add to Cart Button */}
           <button
-            className="bg-[#0f1c47] text-white py-1 px-2 sm:py-1.5 sm:px-5 rounded-full font-bold text-xs sm:text-sm shadow-md hover:scale-105 flex items-center gap-1"
-           
+            className="bg-[#0f1c47] text-white py-1 px-2 sm:py-1.5 sm:px-4 rounded-full font-bold text-[10px] sm:text-sm shadow-md hover:scale-105 flex items-center gap-1"
           >
-            <FiShoppingCart className="h-5 w-5" />
-            Add to Cart
+            <FiShoppingCart className="h-4 w-4 sm:h-5 sm:w-5" />
+            Add
           </button>
 
           {/* Wishlist Button */}
-          <button
-            className="text-[#bf2c7e] hover:text-red-600 transition-transform hover:scale-110"
-          
-          >
-            <FiHeart className="h-5 w-5" />
+          <button className="text-[#bf2c7e] hover:text-red-600 transition-transform hover:scale-110">
+            <FiHeart className="h-4 w-4 sm:h-5 sm:w-5" />
           </button>
         </div>
       </div>
     ))}
   </div>
 </div>
+
       </div>
     </div>
   );

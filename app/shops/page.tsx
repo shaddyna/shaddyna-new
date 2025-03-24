@@ -253,40 +253,47 @@ const ShopsPage: FC = () => {
         </div>
       </section>
 
-      {/* Featured Shops */}
-      <section className="py-4 px-4">
-        <div className="container mx-auto">
-          <h2 className="text-3xl font-bold mb-8 text-[#0f1c47]">Featured Shops</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {shops.filter((s) => s.isFeatured).map((shop) => (
-              <div
-                key={shop.id}
-                className="bg-white p-6 rounded-2xl shadow-lg border-2 border-[#bf2c7e]"
-              >
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="w-16 h-16 rounded-full bg-[#bf2c7e]/10 flex items-center justify-center">
-                    <span className="text-[#bf2c7e] font-bold text-xl">{shop.name[0]}</span>
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-[#0f1c47]">{shop.name}</h3>
-                    <p className="text-gray-600">{shop.category}</p>
-                  </div>
-                </div>
-                <p className="text-gray-600 mb-4">{shop.description}</p>
-                <div className="flex justify-between items-center">
-                  <div>
-                    <span className="text-[#bf2c7e]">★ {shop.rating}</span>
-                    <span className="ml-4 text-gray-600">{shop.products} products</span>
-                  </div>
-                  <button className="bg-[#0f1c47] text-white px-4 py-2 rounded-xl hover:bg-[#0f1c47]/80 transition-colors">
-                    Visit Shop
-                  </button>
-                </div>
-              </div>
-            ))}
+{/* Featured Shops */}
+<section className="py-4 px-4">
+  <div className="container mx-auto">
+    <h2 className="text-3xl font-bold mb-8 text-[#0f1c47]">Featured Shops</h2>
+    <div className="flex gap-6 overflow-x-auto whitespace-nowrap scrollbar-hide">
+      {shops.filter((s) => s.isFeatured).map((shop) => (
+        <div
+          key={shop.id}
+          className="bg-white p-6 rounded-2xl shadow-lg border-2 border-[#bf2c7e] min-w-[250px] md:min-w-[300px]"
+        >
+          <div className="flex items-center gap-4 mb-4">
+            <div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-[#bf2c7e]/10 flex items-center justify-center">
+              <span className="text-[#bf2c7e] font-bold text-lg md:text-xl">{shop.name[0]}</span>
+            </div>
+            <div>
+              <h3 className="text-lg md:text-xl font-bold text-[#0f1c47]">{shop.name}</h3>
+              <p className="text-gray-600 text-sm md:text-base">{shop.category}</p>
+            </div>
+          </div>
+          
+          {/* Responsive Description */}
+          <p className="text-gray-600 text-sm md:text-base mb-4 line-clamp-2 md:line-clamp-3">
+            {shop.description}
+          </p>
+
+          <div className="flex justify-between items-center">
+            <div>
+              <span className="text-[#bf2c7e]">★ {shop.rating}</span>
+              <span className="ml-4 text-gray-600">{shop.products} products</span>
+            </div>
+            <button className="bg-[#0f1c47] text-white px-4 py-2 rounded-xl text-sm md:text-base hover:bg-[#0f1c47]/80 transition-colors">
+              Visit Shop
+            </button>
           </div>
         </div>
-      </section>
+      ))}
+    </div>
+  </div>
+</section>
+
+
 
       {/* All Shops */}
 <section className="py-8 px-3 sm:py-10 sm:px-6 md:py-12 md:px-10 bg-white">

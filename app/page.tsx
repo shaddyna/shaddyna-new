@@ -9,6 +9,8 @@ import FeaturedShops from '@/components/FeaturedShops';
 import ExploreShelves from '@/components/ExploreShelves';
 import LatestSkillPosts from '@/components/LatestSkillPosts';
 import FinancialSummary from '@/components/FinancialSummary';
+import { AiFillStar, AiOutlineStar } from 'react-icons/ai';
+import { FiHeart, FiShoppingCart } from 'react-icons/fi';
 
 // Dummy data for FeaturedShops
 const featuredShops = [
@@ -189,7 +191,7 @@ const HomePage = () => {
         </div>
       </section>
 
-    {/* Product Sections */}
+    {/* Product Sections *
     {Object.entries(products).map(([section, items]) => (
         <section key={section} className="py-12">
           <div className="container mx-auto px-4">
@@ -220,7 +222,83 @@ const HomePage = () => {
             </div>
           </div>
         </section>
-      ))}
+      ))}*/}
+
+      {/* Product Sections */}
+{/* Product Sections */}
+{Object.entries(products).map(([section, items]) => (
+  <section key={section} className="py-8 sm:py-12">
+    <div className="container mx-auto px-4">
+      <h2 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 capitalize">
+        {section} Products
+      </h2>
+      <div className="flex overflow-x-auto pb-6 gap-4 scrollbar-hide pl-2">
+        {items.map((product) => (
+          <div
+            key={product.id}
+            className="flex-shrink-0 w-56 sm:w-64 bg-white p-3 rounded-xl shadow-sm hover:shadow-md transition-shadow border border-[#0f1c47]/10"
+          >
+            {/* Product Image */}
+            <div className="w-full h-40 sm:h-48 rounded-lg overflow-hidden mb-3 cursor-pointer">
+              <img
+                src={product.image}
+                alt={product.name}
+                className="w-full h-full object-cover"
+              />
+            </div>
+
+            {/* Product Details */}
+            <div className="p-1">
+              <h3 className="text-sm sm:text-base font-bold text-[#0f1c47] truncate mb-1">
+                {product.name}
+              </h3>
+              
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-xs sm:text-sm text-[#bf2c7e] font-bold">
+                  {product.price}
+                </span>
+                {section === 'discounted' && (
+                  <span className="text-xs text-gray-500 line-through">
+                    {product.price}
+                  </span>
+                )}
+              </div>
+
+              <p className="text-xs text-gray-500 truncate mb-2">
+                {product.shop}
+              </p>
+
+              {/* Rating Stars */}
+              <div className="flex items-center mb-3">
+                {[...Array(5)].map((_, i) => (
+                  i < Math.floor(product.id) ? (
+                    <AiFillStar key={i} className="text-yellow-400 text-xs sm:text-sm" />
+                  ) : (
+                    <AiOutlineStar key={i} className="text-gray-300 text-xs sm:text-sm" />
+                  )
+                ))}
+              </div>
+
+              {/* Buttons */}
+              <div className="flex justify-between items-center">
+                <button
+                  className="bg-[#0f1c47] text-white py-1 px-3 rounded-full font-medium text-xs shadow hover:scale-105 flex items-center gap-1"
+                >
+                  <FiShoppingCart className="h-4 w-4" />
+                  Add
+                </button>
+
+                <button className="text-[#bf2c7e] hover:text-red-600 transition-transform hover:scale-110">
+                  <FiHeart className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+))}
 
      {/* Brands Section */}
      <section className="py-12 bg-gray-50">

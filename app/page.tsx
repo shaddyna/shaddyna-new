@@ -12,58 +12,158 @@ import FinancialSummary from '@/components/FinancialSummary';
 import { AiFillStar, AiOutlineStar } from 'react-icons/ai';
 import { FiHeart, FiShoppingCart } from 'react-icons/fi';
 
+interface Shelf {
+  id: string;
+  name: string;
+  type: 'product' | 'service' | 'other';
+  description: string;
+  members: number;
+  openForMembers: boolean;
+  icon?: string;
+}
+
+interface Skill {
+  id: string;
+  title: string;
+  category: string;
+  type: 'freelancer' | 'other';
+  user: string;
+  experience: string;
+  portfolio?: string;
+  likes: number;
+  comments: number;
+}
+
 // Dummy data for FeaturedShops
 const featuredShops = [
   {
     id: 1,
     name: "Tech Haven",
-    items: ["Wireless Earbuds Pro", "Smart Home Kit", "4K Webcam"],
+    category: "Electronics",
+    description: "Cutting-edge tech gadgets and accessories for modern living",
+    rating: 4.8,
+    products: 42,
+    isFeatured: true,
     icon: "💻"
   },
   {
     id: 2,
     name: "Urban Threads",
-    items: ["Designer Backpacks", "Limited Edition Sneakers", "Organic Cotton Tees"],
+    category: "Fashion",
+    description: "Trendsetting apparel and accessories for the style-conscious",
+    rating: 4.5,
+    products: 36,
+    isFeatured: true,
     icon: "👕"
   },
   {
     id: 3,
     name: "Green Living",
-    items: ["Smart Planters", "Solar Chargers", "Eco Yoga Mats"],
+    category: "Lifestyle",
+    description: "Sustainable products for eco-friendly home and wellness",
+    rating: 4.9,
+    products: 28,
+    isFeatured: true,
     icon: "🌿"
   }
 ];
 
 // Dummy data for ExploreShelves
-const shelves = [
+const shelves: Shelf[] = [
   { 
-    category: 'Tech Innovation', 
+    id: '1',
+    name: 'Tech Innovation', 
+    type: 'product' as const,  // or just 'product' if using TypeScript
     members: 45,
-    icon: '🚀',
-    description: 'Building the future of technology'
+    description: 'Building the future of technology',
+    openForMembers: true,
+    icon: '🚀'
   },
   { 
-    category: 'Fashion Collabs', 
+    id: '2',
+    name: 'Fashion Collabs', 
+    type: 'service' as const,  // or just 'service' if using TypeScript
     members: 32,
-    icon: '👗',
-    description: 'Redefining modern fashion trends'
+    description: 'Redefining modern fashion trends',
+    openForMembers: false,
+    icon: '👗'
   },
   { 
-    category: 'Community Investments', 
+    id: '3',
+    name: 'Community Investments', 
+    type: 'other' as const,  // or just 'other' if using TypeScript
     members: 28,
-    icon: '🤝',
-    description: 'Local community development projects'
+    description: 'Local community development projects',
+    openForMembers: true,
+    icon: '🤝'
   }
 ];
-
 // Dummy data for LatestSkillPosts
-const skills = [
-  'Full Stack Development',
-  'UI/UX Design',
-  'Digital Marketing Strategy',
-  '3D Product Modeling',
-  'Blockchain Development',
-  'AI/ML Engineering'
+const skills: Skill[] = [
+  {
+    id: '1',
+    title: 'Full Stack Development',
+    category: 'Web Development',
+    type: 'freelancer',
+    user: 'Alex Johnson',
+    experience: '5+ years',
+    portfolio: 'alexjohnson.dev',
+    likes: 24,
+    comments: 8
+  },
+  {
+    id: '2',
+    title: 'UI/UX Design',
+    category: 'Design',
+    type: 'freelancer',
+    user: 'Sarah Chen',
+    experience: '3 years',
+    portfolio: 'sarahchen.design',
+    likes: 42,
+    comments: 15
+  },
+  {
+    id: '3',
+    title: 'Digital Marketing Strategy',
+    category: 'Marketing',
+    type: 'other',
+    user: 'Marcus Wong',
+    experience: '7+ years',
+    likes: 18,
+    comments: 5
+  },
+  {
+    id: '4',
+    title: '3D Product Modeling',
+    category: 'Design',
+    type: 'freelancer',
+    user: 'Elena Rodriguez',
+    experience: '4 years',
+    portfolio: 'elenarodriguez.art',
+    likes: 31,
+    comments: 12
+  },
+  {
+    id: '5',
+    title: 'Blockchain Development',
+    category: 'Web3',
+    type: 'freelancer',
+    user: 'Jamal Williams',
+    experience: '2 years',
+    portfolio: 'jamalwilliams.xyz',
+    likes: 56,
+    comments: 22
+  },
+  {
+    id: '6',
+    title: 'AI/ML Engineering',
+    category: 'Data Science',
+    type: 'other',
+    user: 'Priya Patel',
+    experience: '6+ years',
+    likes: 39,
+    comments: 9
+  }
 ];
 
 // Dummy data for Financial Summary (static values)
@@ -190,41 +290,6 @@ const HomePage = () => {
           </div>
         </div>
       </section>
-
-    {/* Product Sections *
-    {Object.entries(products).map(([section, items]) => (
-        <section key={section} className="py-12">
-          <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-bold mb-8 capitalize">{section} Products</h2>
-            <div className="flex overflow-x-auto pb-4 gap-6 scrollbar-hide">
-              {items.map((product) => (
-                <div 
-                  key={product.id}
-                  className="w-64 flex-shrink-0 bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300"
-                >
-                  <img 
-                    src={product.image} 
-                    alt={product.name}
-                    className="w-full h-48 object-cover rounded-t-xl"
-                  />
-                  <div className="p-4">
-                    <h3 className="font-semibold mb-2">{product.name}</h3>
-                    <div className="flex justify-between items-center">
-                      <span className="text-[#bf2c7e] font-bold">{product.price}</span>
-                      {section === 'discounted' && (
-                        <span className="text-sm text-gray-500 line-through">{product.price}</span>
-                      )}
-                    </div>
-                    <p className="text-sm text-gray-500 mt-2">{product.shop}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      ))}*/}
-
-      {/* Product Sections */}
 {/* Product Sections */}
 {Object.entries(products).map(([section, items]) => (
   <section key={section} className="py-8 sm:py-12">

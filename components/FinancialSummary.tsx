@@ -11,15 +11,15 @@ const FinancialSummary: FC = () => {
           <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mb-6">
             <div>
               <p className="text-gray-600">Wallet Balance</p>
-              <p className="text-2xl font-bold text-[#0f1c47]">$5,430.00</p>
+              <p className="text-2xl font-bold text-[#0f1c47]">Ksh5,430.00</p>
             </div>
             <div>
               <p className="text-gray-600">Active Investments</p>
-              <p className="text-2xl font-bold text-[#0f1c47]">$12,500.00</p>
+              <p className="text-2xl font-bold text-[#0f1c47]">Ksh12,500.00</p>
             </div>
             <div>
               <p className="text-gray-600">Recent Earnings</p>
-              <p className="text-2xl font-bold text-[#0f1c47]">$2,340.00</p>
+              <p className="text-2xl font-bold text-[#0f1c47]">Ksh2,340.00</p>
             </div>
           </div>
           <button className="text-[#bf2c7e] hover:text-[#a8246d] font-medium">

@@ -10,9 +10,9 @@ interface RoleContentProps {
 
 export const RoleContent = ({ role, orders, products, users }: RoleContentProps) => {
   switch(role) {
-    case 'user':
+    case 'customer':
       return <UserOrders orders={orders} />;
-    case 'vendor':
+    case 'seller':
       return <VendorProducts products={products} />;
     case 'admin':
       return <AdminUsers users={users} />;

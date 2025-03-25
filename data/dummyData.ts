@@ -5,7 +5,7 @@ export const dummyUser: User = {
   id: 1,
   name: 'John Doe',
   email: 'john@example.com',
-  role: 'vendor',
+  role: 'seller',
   location: 'Nairobi',
   phone: '+254712345678',
   avatar: 'https://via.placeholder.com/150'

@@ -20,6 +20,8 @@ import { Order } from '@/types/profile';
 import { CustomerOrders } from '@/components/vendorComponents/CustomerOrder';
 import { EditShopModal } from '@/components/vendorComponents/EditShopModal';
 import { Shop } from '@/types/profile';
+import { useAuth } from '@/context/AuthContext';
+import { useEffect } from 'react';
 
 interface Withdrawal {
   id: string;
@@ -73,6 +75,23 @@ const API_URL = "https://shaddyna-backend.onrender.com/api/products"; // Adjust 
 
 
 export default function ProfilePage() {
+  const router = useRouter();
+ // const { user, isLoading: authLoading } = useAuth();
+  const { user, isLoading: authLoading, logout } = useAuth();
+  
+  // Redirect if not authenticated
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push('/login');
+    }
+  }, [user, authLoading, router]);
+
+
+
+  // Now you can use the authenticated user directly
+  const [activeTab, setActiveTab] = useState('overview');
+  const [showEditModal, setShowEditModal] = useState(false);
+
   const [withdrawalAmount, setWithdrawalAmount] = useState<number>(0);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedValues, setSelectedValues] = useState<Record<string, string>>({});
@@ -81,7 +100,10 @@ export default function ProfilePage() {
   const [productStock, setProductStock] = useState("");
   const [productPrice, setProductPrice] = useState("");
   const [images, setImages] = useState<File[]>([]);
-  const router = useRouter();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+
+
   //const categoryAttributes = selectedCategory ? productCategories[selectedCategory as keyof typeof productCategories].attributes : null;
   const categoryAttributes = selectedCategory 
   ? productCategories[selectedCategory as keyof typeof productCategories].attributes 
@@ -149,9 +171,9 @@ export default function ProfilePage() {
       console.error("Error adding product:", error);
     }
   };
-  const [currentUser, setCurrentUser] = useState<User>(dummyUser);
-  const [activeTab, setActiveTab] = useState('overview');
-  const [showEditModal, setShowEditModal] = useState(false);
+ // const [currentUser, setCurrentUser] = useState<User>(dummyUser);
+  //const [activeTab, setActiveTab] = useState('overview');
+  //const [showEditModal, setShowEditModal] = useState(false);
   const [twoFactorEnabled, setTwoFactorEnabled] = useState(true);
   const [shop, setShop] = useState({
     name: "Mizzo Collections",
@@ -209,6 +231,10 @@ const [isShopEditModalOpen, setIsShopEditModalOpen] = useState(false);
     .filter(order => order.status === "Completed")
     .reduce((sum, order) => sum + order.total, 0);
 
+    if (authLoading || !user) {
+      return <div>Loading...</div>;
+    }
+
     const renderRoleContent = () => {
 
       const [editedProduct, setEditedProduct] = useState<Product>({ 
@@ -217,13 +243,13 @@ const [isShopEditModalOpen, setIsShopEditModalOpen] = useState(false);
         stock: 0, 
         price: 0 
       });
-      switch(currentUser.role) {
-        case 'user':
+      switch(user.role) {
+        case 'customer':
           return (
-            <UserDashboard dummyOrders={dummyOrders} />
+            <UserDashboard dummyOrders={dummyOrders}  />
           );
           
-        case 'vendor':
+        case 'seller':
           const handleWithdrawalRequest = () => {
             if (withdrawalAmount <= 0) {
               alert("Please enter a valid amount");
@@ -324,11 +350,23 @@ const [isShopEditModalOpen, setIsShopEditModalOpen] = useState(false);
       }
     };
 
+    const handleLogout = async () => {
+      setIsLoggingOut(true);
+      try {
+        await logout();
+        // The logout function already handles redirect, so no need to push here
+      } catch (error) {
+        console.error('Logout failed:', error);
+      } finally {
+        setIsLoggingOut(false);
+      }
+    };
+
   return (
     <div className="min-h-screen bg-gray-50">
      <ProfileNavbar onBack={() => router.back()} />
       <ProfileHeader 
-        currentUser={currentUser} 
+        currentUser={user} 
         setShowEditModal={setShowEditModal} 
       />
       <MainContent
@@ -337,11 +375,12 @@ const [isShopEditModalOpen, setIsShopEditModalOpen] = useState(false);
         renderRoleContent={renderRoleContent}
         twoFactorEnabled={twoFactorEnabled}
         setTwoFactorEnabled={setTwoFactorEnabled}
+        onLogout={handleLogout} 
       />
       <EditProfileModal
         showEditModal={showEditModal}
         setShowEditModal={setShowEditModal}
-        currentUser={currentUser}
+        currentUser={user}
       />
     </div>
   );

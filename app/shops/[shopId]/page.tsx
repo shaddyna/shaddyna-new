@@ -1,65 +1,105 @@
 "use client";
 import { useParams, useRouter } from 'next/navigation';
-import { FiArrowLeft, FiFacebook, FiHeart, FiInstagram, FiShoppingCart, FiTwitter } from 'react-icons/fi'; // Nove icons
+import { FiArrowLeft, FiFacebook, FiHeart, FiInstagram, FiShoppingCart, FiTwitter } from 'react-icons/fi';
 import { useState, useEffect } from 'react';
 import { AiFillStar, AiOutlineStar } from 'react-icons/ai';
+import axios from 'axios';
 
-// Dummy data generators
-const categories = ['Fashion', 'Electronics', 'Food', 'Home Goods', 'Art'];
-const shops = [...Array(9)].map((_, i) => ({
-  id: i,
-  name: `Shop ${i + 1}`,
-  category: categories[i % 5],
-  rating: (4 + Math.random()).toFixed(1),
-  products: Math.floor(Math.random() * 100),
-  description: `Specializing in ${categories[i % 5]} products and services`,
-  owner: `Owner ${i + 1}`,
-  social: ['twitter', 'instagram'],
-  isFeatured: i < 2,
-  image: `https://picsum.photos/300/200?random=${i}`, // Placeholder image URL
-  location: 'Nairobi, Kenya', // Added location
-  contact: '+254 700 000 000', // Added contact
-  openingHours: '9:00 AM - 6:00 PM', // Added opening hours
-  productsList: [
-    {
-      id: i * 10 + 1,
-      name: `Product ${i * 10 + 1}`,
-      price: `KES ${Math.floor(Math.random() * 1000) + 500}`,
-      image: `https://picsum.photos/150/150?random=${i * 10 + 1}`,
-    },
-    {
-      id: i * 10 + 2,
-      name: `Product ${i * 10 + 2}`,
-      price: `KES ${Math.floor(Math.random() * 1000) + 500}`,
-      image: `https://picsum.photos/150/150?random=${i * 10 + 2}`,
-    },
-    {
-      id: i * 10 + 3,
-      name: `Product ${i * 10 + 3}`,
-      price: `KES ${Math.floor(Math.random() * 1000) + 500}`,
-      image: `https://picsum.photos/150/150?random=${i * 10 + 3}`,
-    },
-  ], // Added dummy products
-}));
+interface Shop {
+  createdAt: string | number | Date;
+  _id: string;
+  name: string;
+  location: string;
+  image: string;
+  description: string;
+  rating: number;
+  productsCount: number;
+  joinDate: string;
+  contact: string;
+  email: string;
+  successfulSalesCount: number;
+  products: Array<{ name: string; price: string; image: string }>;
+  socialLinks: {
+    facebook: string;
+    instagram: string;
+    twitter: string;
+  };
+  openingHours?: string;
+}
+
+interface Product {
+  shelfId: string;
+  images: string[];
+  _id: string;
+  name: string;
+  price: number;
+  image: string;
+  sellerId: string;
+  rating: number;
+}
 
 const ShopDetailsPage = () => {
-  const { shopId } = useParams(); // Get shopId from URL
-  const router = useRouter(); // Initialize useRouter
-  const shop = shops.find((s) => s.id === Number(shopId)); // Find the shop by ID
-
+  const { shopId } = useParams();
+  const router = useRouter();
+  
+  const [shop, setShop] = useState<Shop | null>(null);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  
   // State for scroll position and header effects
   const [scrollY, setScrollY] = useState(0);
   const [imageScale, setImageScale] = useState(1);
   const [imageTranslateY, setImageTranslateY] = useState(0);
   const [opacity, setOpacity] = useState(1);
 
+  useEffect(() => {
+    const fetchShopDetails = async () => {
+      if (!shopId) return;
+
+      try {
+        setLoading(true);
+        setError(null);
+
+        // Fetch shop details
+        const { data: shopResponse } = await axios.get(
+          `https://shaddyna-backend.onrender.com/api/shops/${shopId}`
+        );
+
+        const { shop: shopData } = shopResponse;
+        const sellerId = shopData?.sellerId?._id || shopData?.sellerId;
+
+        setShop(shopData);
+
+        // Fetch all products
+        const { data: productsResponse } = await axios.get(
+          `https://shaddyna-backend.onrender.com/api/products/all`
+        );
+
+        // Filter products by sellerId
+        const shopProducts = productsResponse.products.filter(
+          (product: Product) => product.sellerId?.toString() === sellerId?.toString()
+        );
+
+        setProducts(shopProducts);
+      } catch (error) {
+        console.error("Error fetching shop details:", error);
+        setError("Failed to fetch shop details");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchShopDetails();
+  }, [shopId]);
+
   // Update scroll position and header effects
   useEffect(() => {
     const handleScroll = () => {
       setScrollY(window.scrollY);
-      const scale = Math.max(0.5, 1 - window.scrollY / 300); // Shrink image scale
-      const translateY = Math.min(50, window.scrollY / 2); // Translate image vertically
-      const opacity = Math.max(0, 1 - window.scrollY / 200); // Fade out image
+      const scale = Math.max(0.5, 1 - window.scrollY / 300);
+      const translateY = Math.min(50, window.scrollY / 2);
+      const opacity = Math.max(0, 1 - window.scrollY / 200);
       setImageScale(scale);
       setImageTranslateY(translateY);
       setOpacity(opacity);
@@ -69,8 +109,28 @@ const ShopDetailsPage = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div>Loading shop details...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-red-500">{error}</div>
+      </div>
+    );
+  }
+
   if (!shop) {
-    return <div>Shop not found</div>;
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div>Shop not found</div>
+      </div>
+    );
   }
 
   return (
@@ -127,7 +187,7 @@ const ShopDetailsPage = () => {
               className="w-full h-full rounded-full border-4 border-[#bf2c7e] shadow-lg object-cover"
             />
             <div className="absolute bottom-2 right-2 bg-[#bf2c7e] rounded-full px-3 py-1 text-xs font-bold shadow-md">
-              ⭐ {shop.rating}
+              ⭐ {shop.rating?.toFixed(1) || '4.5'}
             </div>
           </div>
 
@@ -136,15 +196,15 @@ const ShopDetailsPage = () => {
             <h1 className="text-3xl font-bold mb-2">{shop.name}</h1>
             <p className="text-sm flex justify-center md:justify-start gap-4 text-gray-300">
               <span>📍 {shop.location}</span>
-              <span>🛍️ {shop.productsList.length} products</span>
+              <span>🛍️ {products.length} products</span>
             </p>
 
             {/* Social Links */}
             <div className="flex justify-center md:justify-start gap-4 mt-4">
               {[
-                { icon: FiFacebook, link: "#" },
-                { icon: FiInstagram, link: "#" },
-                { icon: FiTwitter, link: "#" },
+                { icon: FiFacebook, link: shop.socialLinks?.facebook || "#" },
+                { icon: FiInstagram, link: shop.socialLinks?.instagram || "#" },
+                { icon: FiTwitter, link: shop.socialLinks?.twitter || "#" },
               ].map(({ icon: Icon, link }, index) => (
                 <a
                   key={index}
@@ -176,72 +236,82 @@ const ShopDetailsPage = () => {
               <div className="space-y-2">
                 <p className="text-gray-600">📍 {shop.location}</p>
                 <p className="text-gray-600">📞 {shop.contact}</p>
-                <p className="text-gray-600">🕒 {shop.openingHours}</p>
+                {shop.openingHours && (
+                  <p className="text-gray-600">🕒 {shop.openingHours}</p>
+                )}
+                <p className="text-gray-600">📧 {shop.email}</p>
+                <p className="text-gray-600">🏆 {shop.successfulSalesCount} successful sales</p>
               </div>
             </div>
           </div>
         </div>
-{/* Products Section */}
-<div className="mt-4 px-0 sm:px-0">
-  <h2 className="text-xl sm:text-2xl font-bold text-[#0f1c47] mb-4 sm:mb-3">
-    Products
-  </h2>
 
-  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-    {shop.productsList.map((product) => (
-      <div
-        key={product.id}
-        className="bg-white p-2 sm:p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow border border-[#0f1c47]/10"
-      >
-        {/* Product Image */}
-        <div className="w-full h-32 sm:h-40 md:h-48 rounded-lg overflow-hidden mb-3">
-          <img
-            src={product.image}
-            alt={product.name}
-            className="w-full h-full object-cover"
-            onClick={() => router.push(`/product/${product.id}`)}
-          />
+        {/* Products Section */}
+        <div className="mt-4 px-0 sm:px-0">
+          <h2 className="text-xl sm:text-2xl font-bold text-[#0f1c47] mb-4 sm:mb-3">
+            Products
+          </h2>
+
+          {products.length === 0 ? (
+            <div className="text-center py-8 text-gray-500">
+              No products available in this shop yet.
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+              {products.map((product) => (
+                <div
+                  key={product._id}
+                  className="bg-white p-2 sm:p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow border border-[#0f1c47]/10"
+                >
+                  {/* Product Image */}
+                  <div className="w-full h-32 sm:h-40 md:h-48 rounded-lg overflow-hidden mb-3">
+                    <img
+                      src={product.image || product.images?.[0] || 'https://via.placeholder.com/150'}
+                      alt={product.name}
+                      className="w-full h-full object-cover"
+                      onClick={() => router.push(`/product/${product._id}`)}
+                    />
+                  </div>
+
+                  {/* Product Details */}
+                  <h3 className="text-sm sm:text-lg font-bold text-[#0f1c47] truncate">
+                    {product.name}
+                  </h3>
+                  <p className="text-xs sm:text-sm text-[#bf2c7e] font-medium">
+                    KES {product.price}
+                  </p>
+
+                  {/* Rating Stars */}
+                  <div className="flex items-center mt-1 sm:mt-2">
+                    {[...Array(5)].map((_, i) => (
+                      i < Math.floor(product.rating || 4) ? (
+                        <AiFillStar key={i} className="text-yellow-400 text-xs sm:text-base" />
+                      ) : (
+                        <AiOutlineStar key={i} className="text-gray-300 text-xs sm:text-base" />
+                      )
+                    ))}
+                  </div>
+
+                  {/* Buttons */}
+                  <div className="flex justify-between items-center mt-3 sm:mt-4">
+                    {/* Add to Cart Button */}
+                    <button
+                      className="bg-[#0f1c47] text-white py-1 px-2 sm:py-1.5 sm:px-4 rounded-full font-bold text-[10px] sm:text-sm shadow-md hover:scale-105 flex items-center gap-1"
+                    >
+                      <FiShoppingCart className="h-4 w-4 sm:h-5 sm:w-5" />
+                      Add
+                    </button>
+
+                    {/* Wishlist Button */}
+                    <button className="text-[#bf2c7e] hover:text-red-600 transition-transform hover:scale-110">
+                      <FiHeart className="h-4 w-4 sm:h-5 sm:w-5" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
-
-        {/* Product Details */}
-        <h3 className="text-sm sm:text-lg font-bold text-[#0f1c47] truncate">
-          {product.name}
-        </h3>
-        <p className="text-xs sm:text-sm text-[#bf2c7e] font-medium">
-          {product.price}
-        </p>
-
-        {/* Rating Stars */}
-        <div className="flex items-center mt-1 sm:mt-2">
-          {[...Array(5)].map((_, i) => (
-            i < Math.floor(product.id) ? (
-              <AiFillStar key={i} className="text-yellow-400 text-xs sm:text-base" />
-            ) : (
-              <AiOutlineStar key={i} className="text-gray-300 text-xs sm:text-base" />
-            )
-          ))}
-        </div>
-
-        {/* Buttons */}
-        <div className="flex justify-between items-center mt-3 sm:mt-4">
-          {/* Add to Cart Button */}
-          <button
-            className="bg-[#0f1c47] text-white py-1 px-2 sm:py-1.5 sm:px-4 rounded-full font-bold text-[10px] sm:text-sm shadow-md hover:scale-105 flex items-center gap-1"
-          >
-            <FiShoppingCart className="h-4 w-4 sm:h-5 sm:w-5" />
-            Add
-          </button>
-
-          {/* Wishlist Button */}
-          <button className="text-[#bf2c7e] hover:text-red-600 transition-transform hover:scale-110">
-            <FiHeart className="h-4 w-4 sm:h-5 sm:w-5" />
-          </button>
-        </div>
-      </div>
-    ))}
-  </div>
-</div>
-
       </div>
     </div>
   );

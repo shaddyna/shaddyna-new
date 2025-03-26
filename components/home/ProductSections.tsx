@@ -195,7 +195,8 @@ const ProductSections = () => {
                 className="group bg-white rounded-lg sm:rounded-xl shadow-xs hover:shadow-md transition-all duration-300 border border-gray-100 overflow-hidden flex flex-col"
               >
                 {/* Product Image - Optimized for mobile */}
-                <div className="relative w-full aspect-[1/1.2] sm:aspect-[3/4] overflow-hidden">
+               <div className="relative w-full aspect-[1/1.2] sm:aspect-[3/4] overflow-hidden">
+         
                   <img
                     src={product.images[0] || 'https://placehold.co/300x360?text=No+Image'}
                     alt={product.name}

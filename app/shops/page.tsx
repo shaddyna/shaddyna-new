@@ -1,7 +1,7 @@
 "use client";
 import TopNavModified from '@/components/TopNavModified';
 import { FC, useState, useEffect } from 'react';
-import { FiFilter, FiGrid, FiList } from 'react-icons/fi';
+import { FiFilter, FiGrid, FiList, FiSearch, FiX } from 'react-icons/fi';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 
@@ -102,7 +102,98 @@ const ShopsPage: FC = () => {
     <div className="min-h-screen bg-white">
       <TopNavModified menuItems={["Create Shop"]} />
 
-      {/* Search & Filter Section */}
+      {/* Enhanced Search & Filter Section */}
+<section className="bg-white py-6 sm:py-8 px-4 sm:px-6 border-b border-gray-100">
+  <div className="max-w-7xl mx-auto">
+    {/* Main Search and Controls */}
+    <div className="flex flex-col md:flex-row gap-4 mb-6">
+      {/* Search Input - Modern with floating label effect */}
+      <div className="relative flex-1 group">
+        <input
+          type="text"
+          placeholder=" "
+          className="w-full p-4 pl-12 pr-4 rounded-xl border-2 border-gray-200 focus:border-[#bf2c7e] focus:ring-0 transition-all peer bg-gray-50 h-14"
+        />
+        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 peer-focus:text-[#bf2c7e] transition-colors">
+          <FiSearch className="w-5 h-5" />
+        </div>
+        <label className="absolute left-12 top-1/2 -translate-y-1/2 text-gray-500 peer-focus:text-[#bf2c7e] peer-focus:scale-90 peer-focus:-translate-y-7 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 origin-left transition-all duration-200 pointer-events-none bg-white px-1 ml-1 peer-focus:bg-white peer-focus:px-2">
+          Search shops...
+        </label>
+      </div>
+
+      {/* Action Buttons */}
+      <div className="flex gap-3">
+        <button className="flex items-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-[#bf2c7e] to-[#a02468] text-white font-medium hover:shadow-lg hover:shadow-[#bf2c7e]/20 transition-all">
+          <FiFilter className="w-5 h-5" />
+          <span className="hidden sm:inline">Filters</span>
+        </button>
+        <button
+          onClick={() => setViewMode(prev => (prev === 'grid' ? 'list' : 'grid'))}
+          className="flex items-center gap-2 px-5 py-3 rounded-xl bg-[#0f1c47] text-white font-medium hover:bg-[#0f1c47]/90 transition-all"
+        >
+          {viewMode === 'grid' ? (
+            <>
+              <FiList className="w-5 h-5" />
+              <span className="hidden sm:inline">List View</span>
+            </>
+          ) : (
+            <>
+              <FiGrid className="w-5 h-5" />
+              <span className="hidden sm:inline">Grid View</span>
+            </>
+          )}
+        </button>
+      </div>
+    </div>
+
+    {/* Category Filters - Modern horizontal scroll for mobile */}
+    <div className="relative">
+      <div className="flex space-x-2 pb-2 overflow-x-auto scrollbar-hide">
+        <button
+          onClick={() => setActiveFilter('all')}
+          className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all ${
+            activeFilter === 'all'
+              ? 'bg-gradient-to-r from-[#bf2c7e] to-[#a02468] text-white shadow-md'
+              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+          }`}
+        >
+          All Shops
+        </button>
+        {categories.map((category) => (
+          <button
+            key={category}
+            onClick={() => setActiveFilter(category)}
+            className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all ${
+              activeFilter === category
+                ? 'bg-gradient-to-r from-[#bf2c7e] to-[#a02468] text-white shadow-md'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            }`}
+          >
+            {category}
+          </button>
+        ))}
+      </div>
+    </div>
+
+    {/* Active Filters Indicator (optional) */}
+    {activeFilter !== 'all' && (
+      <div className="mt-4 flex items-center">
+        <span className="text-sm text-gray-500 mr-2">Active filter:</span>
+        <span className="px-3 py-1 bg-[#bf2c7e]/10 text-[#bf2c7e] rounded-full text-sm font-medium flex items-center">
+          {activeFilter}
+          <button 
+            onClick={() => setActiveFilter('all')}
+            className="ml-2 text-[#bf2c7e] hover:text-[#a02468]"
+          >
+            <FiX className="w-4 h-4" />
+          </button>
+        </span>
+      </div>
+    )}
+  </div>
+</section>
+      {/* Search & Filter Section *
       <section className="bg-white py-8 px-4">
         <div className="container mx-auto">
           <div className="flex flex-col md:flex-row gap-4 mb-6">
@@ -126,7 +217,7 @@ const ShopsPage: FC = () => {
             </div>
           </div>
 
-          {/* Category Filters */}
+          {/* Category Filters *
           <div className="flex flex-wrap gap-2">
             <button
               onClick={() => setActiveFilter('all')}
@@ -153,7 +244,7 @@ const ShopsPage: FC = () => {
             ))}
           </div>
         </div>
-      </section>
+      </section>*/}
 
       {/* CTA Section */}
       <section className="py-16 px-4 bg-[#0f1c47]">

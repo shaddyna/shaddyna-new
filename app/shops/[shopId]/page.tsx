@@ -269,7 +269,7 @@ const ShopDetailsPage = () => {
                       src={product.image || product.images?.[0] || 'https://via.placeholder.com/150'}
                       alt={product.name}
                       className="w-full h-full object-cover"
-                      onClick={() => router.push(`/product/${product._id}`)}
+                      onClick={() => router.push(`/products/${product._id}`)}
                     />
                   </div>
 

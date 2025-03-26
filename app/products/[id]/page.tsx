@@ -1,9 +1,9 @@
-"use client"
+"use client";
+
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { FiShoppingCart, FiHeart, FiArrowLeft, FiShare2 } from 'react-icons/fi';
 import { AiFillStar, AiOutlineStar } from 'react-icons/ai';
-
 
 interface ProductDetail {
   id: string;
@@ -20,12 +20,17 @@ interface ProductDetail {
   originalPrice?: number;
 }
 
-// Correct the type definition
-interface ProductDetailPageProps {
-  params: { id: string };
+// Correct type definition that matches Next.js expectations
+interface PageProps {
+  params: {
+    id: string;
+  };
+  searchParams?: {
+    [key: string]: string | string[] | undefined;
+  };
 }
 
-export default function ProductDetailPage({ params }: ProductDetailPageProps) {
+export default function ProductDetailPage({ params }: PageProps) {
   const router = useRouter();
   const productId = params.id;
   const [product, setProduct] = useState<ProductDetail | null>(null);
@@ -33,38 +38,6 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
-
-
-{/*'use client';
-
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { FiShoppingCart, FiHeart, FiArrowLeft, FiShare2 } from 'react-icons/fi';
-import { AiFillStar, AiOutlineStar } from 'react-icons/ai';
-
-interface ProductDetail {
-  id: string;
-  name: string;
-  description: string;
-  price?: number;
-  images: string[];
-  rating?: number;
-  stock?: number;
-  category?: string;
-  attributes: Record<string, string>;
-  isNew?: boolean;
-  isDiscounted?: boolean;
-  originalPrice?: number;
-}
-
-export default function ProductDetailPage({ params }: { params: { id: string } }) {
-  const router = useRouter();
-  const productId = params.id;
-  const [product, setProduct] = useState<ProductDetail | null>(null);
-  const [selectedImage, setSelectedImage] = useState<string>('');
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [quantity, setQuantity] = useState(1);*/}
 
   useEffect(() => {
     const fetchProductDetail = async () => {
@@ -104,6 +77,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
 
     if (productId) fetchProductDetail();
   }, [productId]);
+  
 
   const handleQuantityChange = (value: number) => {
     if (value < 1) return;
@@ -200,7 +174,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                   )}
                   {product.isDiscounted && (
                     <span className="text-xs font-semibold bg-[#bf2c7e] text-white px-3 py-1 rounded-full shadow-sm">
-                      {`Math.round(((product.originalPrice! - product.price!) / product.originalPrice!) * 100`}% Off
+                      {product.originalPrice && product.price ? `${Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}% Off` : ''}
                     </span>
                   )}
                 </div>

@@ -262,7 +262,6 @@ export const UserDashboard = () => {
         setLoading(true);
         const response = await fetchWithAuth(`/api/orders/orders/customer/${user._id}`);
         
-        console.log('API Response:', response);
 
         if (Array.isArray(response) && response.length === 0) {
           setOrders([]);

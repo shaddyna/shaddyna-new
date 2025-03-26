@@ -103,56 +103,52 @@ const ShopsPage: FC = () => {
       <TopNavModified menuItems={["Create Shop"]} />
 
       {/* Enhanced Search & Filter Section */}
-<section className="bg-white py-6 sm:py-8 px-4 sm:px-6 border-b border-gray-100">
+{/* Enhanced Search & Filter Section */}
+<section className="bg-white py-4 sm:py-6 px-3 sm:px-6 border-b border-gray-100">
   <div className="max-w-7xl mx-auto">
     {/* Main Search and Controls */}
-    <div className="flex flex-col md:flex-row gap-4 mb-6">
-      {/* Search Input - Modern with floating label effect */}
-      <div className="relative flex-1 group">
+    <div className="flex flex-row gap-2 sm:gap-3 mb-4 sm:mb-6">
+      {/* Search Input - Compact mobile version */}
+      <div className="relative flex-1 group min-w-[120px]">
         <input
           type="text"
           placeholder=" "
-          className="w-full p-4 pl-12 pr-4 rounded-xl border-2 border-gray-200 focus:border-[#bf2c7e] focus:ring-0 transition-all peer bg-gray-50 h-14"
+          className="w-full p-2 pl-10 pr-3 sm:p-4 sm:pl-12 rounded-lg sm:rounded-xl border-2 border-gray-200 focus:border-[#bf2c7e] focus:ring-0 transition-all peer bg-gray-50 h-10 sm:h-14"
         />
-        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 peer-focus:text-[#bf2c7e] transition-colors">
-          <FiSearch className="w-5 h-5" />
+        <div className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-gray-400 peer-focus:text-[#bf2c7e] transition-colors">
+          <FiSearch className="w-4 h-4 sm:w-5 sm:h-5" />
         </div>
-        <label className="absolute left-12 top-1/2 -translate-y-1/2 text-gray-500 peer-focus:text-[#bf2c7e] peer-focus:scale-90 peer-focus:-translate-y-7 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 origin-left transition-all duration-200 pointer-events-none bg-white px-1 ml-1 peer-focus:bg-white peer-focus:px-2">
+        <label className="absolute left-8 sm:left-12 top-1/2 -translate-y-1/2 text-sm sm:text-base text-gray-500 peer-focus:text-[#bf2c7e] peer-focus:scale-90 peer-focus:-translate-y-7 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 origin-left transition-all duration-200 pointer-events-none bg-white px-1 ml-1 peer-focus:bg-white peer-focus:px-2">
           Search shops...
         </label>
       </div>
 
-      {/* Action Buttons */}
-      <div className="flex gap-3">
-        <button className="flex items-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-[#bf2c7e] to-[#a02468] text-white font-medium hover:shadow-lg hover:shadow-[#bf2c7e]/20 transition-all">
-          <FiFilter className="w-5 h-5" />
-          <span className="hidden sm:inline">Filters</span>
+      {/* Action Buttons - Compact mobile layout */}
+      <div className="flex gap-1 sm:gap-2">
+        <button className="flex items-center p-2 sm:px-3 sm:py-2 rounded-lg sm:rounded-xl bg-gradient-to-r from-[#bf2c7e] to-[#a02468] text-white font-medium hover:shadow-lg hover:shadow-[#bf2c7e]/20 transition-all">
+          <FiFilter className="w-4 h-4 sm:w-5 sm:h-5" />
+          <span className="sr-only sm:not-sr-only sm:ml-1 sm:inline">Filters</span>
         </button>
         <button
           onClick={() => setViewMode(prev => (prev === 'grid' ? 'list' : 'grid'))}
-          className="flex items-center gap-2 px-5 py-3 rounded-xl bg-[#0f1c47] text-white font-medium hover:bg-[#0f1c47]/90 transition-all"
+          className="flex items-center p-2 sm:px-3 sm:py-2 rounded-lg sm:rounded-xl bg-[#0f1c47] text-white font-medium hover:bg-[#0f1c47]/90 transition-all"
         >
           {viewMode === 'grid' ? (
-            <>
-              <FiList className="w-5 h-5" />
-              <span className="hidden sm:inline">List View</span>
-            </>
+            <FiList className="w-4 h-4 sm:w-5 sm:h-5" />
           ) : (
-            <>
-              <FiGrid className="w-5 h-5" />
-              <span className="hidden sm:inline">Grid View</span>
-            </>
+            <FiGrid className="w-4 h-4 sm:w-5 sm:h-5" />
           )}
+          <span className="sr-only sm:not-sr-only sm:ml-1">{viewMode === 'grid' ? 'List' : 'Grid'}</span>
         </button>
       </div>
     </div>
 
-    {/* Category Filters - Modern horizontal scroll for mobile */}
-    <div className="relative">
-      <div className="flex space-x-2 pb-2 overflow-x-auto scrollbar-hide">
+    {/* Category Filters - Tight mobile layout */}
+    <div className="relative pb-1 sm:pb-2">
+      <div className="flex space-x-2 overflow-x-auto scrollbar-hide py-1">
         <button
           onClick={() => setActiveFilter('all')}
-          className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all ${
+          className={`flex-shrink-0 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-all ${
             activeFilter === 'all'
               ? 'bg-gradient-to-r from-[#bf2c7e] to-[#a02468] text-white shadow-md'
               : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -164,7 +160,7 @@ const ShopsPage: FC = () => {
           <button
             key={category}
             onClick={() => setActiveFilter(category)}
-            className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all ${
+            className={`flex-shrink-0 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-all ${
               activeFilter === category
                 ? 'bg-gradient-to-r from-[#bf2c7e] to-[#a02468] text-white shadow-md'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -176,17 +172,17 @@ const ShopsPage: FC = () => {
       </div>
     </div>
 
-    {/* Active Filters Indicator (optional) */}
+    {/* Active Filters Indicator */}
     {activeFilter !== 'all' && (
-      <div className="mt-4 flex items-center">
-        <span className="text-sm text-gray-500 mr-2">Active filter:</span>
-        <span className="px-3 py-1 bg-[#bf2c7e]/10 text-[#bf2c7e] rounded-full text-sm font-medium flex items-center">
+      <div className="mt-2 sm:mt-3 flex items-center">
+        <span className="text-xs sm:text-sm text-gray-500 mr-1 sm:mr-2">Active:</span>
+        <span className="px-2 py-0.5 sm:px-3 sm:py-1 bg-[#bf2c7e]/10 text-[#bf2c7e] rounded-full text-xs sm:text-sm font-medium flex items-center">
           {activeFilter}
           <button 
             onClick={() => setActiveFilter('all')}
-            className="ml-2 text-[#bf2c7e] hover:text-[#a02468]"
+            className="ml-1 sm:ml-2 text-[#bf2c7e] hover:text-[#a02468]"
           >
-            <FiX className="w-4 h-4" />
+            <FiX className="w-3 h-3 sm:w-4 sm:h-4" />
           </button>
         </span>
       </div>
@@ -247,54 +243,54 @@ const ShopsPage: FC = () => {
       </section>*/}
 
  {/* Premium CTA Section */}
-<section className="relative py-20 px-4 sm:py-28 overflow-hidden">
+{/* Premium CTA Section */}
+<section className="relative py-12 sm:py-20 px-4 overflow-hidden">
   {/* Background Gradient */}
   <div className="absolute inset-0 bg-gradient-to-br from-[#0f1c47] to-[#2a3a6e] z-0"></div>
   
   {/* Decorative Elements */}
   <div className="absolute top-0 left-0 w-full h-full opacity-10 z-0">
-    <div className="absolute top-10 left-10 w-32 h-32 rounded-full bg-[#bf2c7e] mix-blend-overlay"></div>
-    <div className="absolute bottom-20 right-20 w-40 h-40 rounded-full bg-[#bf2c7e] mix-blend-overlay"></div>
-    <div className="absolute top-1/2 left-1/4 w-16 h-16 rounded-full bg-white mix-blend-overlay"></div>
+    <div className="absolute top-8 left-8 w-20 h-20 sm:w-32 sm:h-32 rounded-full bg-[#bf2c7e] mix-blend-overlay"></div>
+    <div className="absolute bottom-16 right-8 w-24 h-24 sm:w-40 sm:h-40 rounded-full bg-[#bf2c7e] mix-blend-overlay"></div>
+    <div className="absolute top-1/2 left-1/4 w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-white mix-blend-overlay"></div>
   </div>
 
   <div className="max-w-6xl mx-auto relative z-10">
     <div className="text-center">
       {/* Animated Heading */}
-      <h2 className="text-3xl sm:text-5xl font-bold mb-6 text-white animate-fade-in-up">
+      <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6 text-white animate-fade-in-up">
         Ready to <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#ff8a9f] to-[#bf2c7e]">Start Selling?</span>
       </h2>
       
-      {/* Subheading with subtle animation */}
-      <p className="text-lg sm:text-xl text-gray-300 mb-10 max-w-2xl mx-auto animate-fade-in-up delay-100">
+      {/* Subheading */}
+      <p className="text-base sm:text-lg md:text-xl text-gray-300 mb-6 sm:mb-10 max-w-2xl mx-auto animate-fade-in-up delay-100">
         Join our thriving community of successful vendors and grow your business with us
       </p>
       
-      {/* Enhanced CTA Button */}
+      {/* CTA Button */}
       <div className="animate-fade-in-up delay-200">
-        <button className="relative group bg-gradient-to-r from-[#bf2c7e] to-[#a02468] text-white px-10 py-5 rounded-xl text-lg font-medium hover:shadow-xl hover:shadow-[#bf2c7e]/30 transition-all duration-300 overflow-hidden">
+        <button className="relative group bg-gradient-to-r from-[#bf2c7e] to-[#a02468] text-white px-6 py-4 sm:px-10 sm:py-5 rounded-lg sm:rounded-xl text-base sm:text-lg font-medium hover:shadow-xl hover:shadow-[#bf2c7e]/30 transition-all duration-300 overflow-hidden">
           <span className="relative z-10 flex items-center justify-center gap-2">
-            <FiPlusCircle className="w-6 h-6" />
+            <FiPlusCircle className="w-5 h-5 sm:w-6 sm:h-6" />
             Create Your Shop Now
           </span>
           
-          {/* Button Hover Effect */}
+          {/* Hover Effects */}
           <span className="absolute inset-0 bg-gradient-to-r from-[#a02468] to-[#bf2c7e] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
-          
-          {/* Button Shine Effect */}
           <span className="absolute top-0 left-0 w-10 h-full bg-white/30 -skew-x-12 -translate-x-16 group-hover:translate-x-[400%] transition-transform duration-700"></span>
         </button>
       </div>
       
       {/* Trust Indicators */}
-      <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-6 text-gray-300 animate-fade-in-up delay-300">
-        <div className="flex items-center gap-2">
-          <FiUsers className="w-5 h-5" />
+      <div className="mt-8 sm:mt-12 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 text-gray-300 animate-fade-in-up delay-300">
+        <div className="flex items-center gap-2 text-sm sm:text-base">
+          <FiUsers className="w-4 h-4 sm:w-5 sm:h-5" />
           <span>10,000+ Happy Vendors</span>
         </div>
+        <div className="sm:hidden w-8 h-px bg-gray-500 my-1"></div>
         <div className="hidden sm:block w-px h-6 bg-gray-500"></div>
-        <div className="flex items-center gap-2">
-          <FiStar className="w-5 h-5" />
+        <div className="flex items-center gap-2 text-sm sm:text-base">
+          <FiStar className="w-4 h-4 sm:w-5 sm:h-5" />
           <span>4.9/5 Average Rating</span>
         </div>
       </div>

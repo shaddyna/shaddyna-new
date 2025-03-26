@@ -20,17 +20,8 @@ interface ProductDetail {
   originalPrice?: number;
 }
 
-// Correct type definition that matches Next.js expectations
-interface PageProps {
-  params: {
-    id: string;
-  };
-  searchParams?: {
-    [key: string]: string | string[] | undefined;
-  };
-}
-
-export default function ProductDetailPage({ params }: PageProps) {
+// Remove explicit PageProps interface and use inline type definition
+export default function ProductDetailPage({ params }: { params: { id: string } }) {
   const router = useRouter();
   const productId = params.id;
   const [product, setProduct] = useState<ProductDetail | null>(null);
@@ -77,7 +68,7 @@ export default function ProductDetailPage({ params }: PageProps) {
 
     if (productId) fetchProductDetail();
   }, [productId]);
-  
+
 
   const handleQuantityChange = (value: number) => {
     if (value < 1) return;

@@ -1,4 +1,4 @@
-import { User } from "@/types/types";
+import { User } from "@/types/profile";
 
 interface EditProfileModalProps {
     showEditModal: boolean;
@@ -31,7 +31,7 @@ interface EditProfileModalProps {
                 <input
                   type="text"
                   className="w-full p-3 border rounded-lg"
-                  defaultValue={currentUser.name}
+                  defaultValue={currentUser.firstName}
                 />
               </div>
               <button className="w-full bg-[#bf2c7e] text-white py-3 rounded-lg hover:bg-opacity-90">

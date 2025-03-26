@@ -34,7 +34,7 @@ interface ProfileHeaderProps {
     </div>
   );*/}
 
-  import { User } from "@/types/types";
+  import { User } from "@/types/profile";
 import { FiEdit2, FiCheckCircle } from "react-icons/fi";
 
 // ProfileHeader.tsx
@@ -50,7 +50,7 @@ export const ProfileHeader = ({ currentUser, setShowEditModal }: ProfileHeaderPr
         {/* Avatar Container with Status Indicator */}
         <div className="relative">
           <img 
-            src={currentUser.avatar} 
+            src={currentUser._id} 
             className="w-28 h-28 md:w-32 md:h-32 rounded-full border-4 border-[#bf2c7e]/90 
             shadow-lg hover:border-[#bf2c7e] transition-all duration-300 mx-auto md:mx-0"
             alt="Profile" 
@@ -63,7 +63,7 @@ export const ProfileHeader = ({ currentUser, setShowEditModal }: ProfileHeaderPr
         <div className="text-center md:text-left space-y-3 flex-1">
           <div className="mb-2">
             <h1 className="text-2xl md:text-4xl font-bold text-white mb-1 animate-fade-in-up">
-              {currentUser.name}
+              {currentUser.firstName}
             </h1>
             <p className="text-gray-200 font-light text-sm md:text-base">
               {"Digital Creator & Technology Enthusiast"}

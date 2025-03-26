@@ -1,15 +1,6 @@
 // data/dummyData.ts
 import { User, Order, Product, PlatformUser } from '@/types/profile';
 
-export const dummyUser: User = {
-  id: 1,
-  name: 'John Doe',
-  email: 'john@example.com',
-  role: 'seller',
-  location: 'Nairobi',
-  phone: '+254712345678',
-  avatar: 'https://via.placeholder.com/150'
-};
 export const dummyOrders: Order[] = [
   {
     id: "1",

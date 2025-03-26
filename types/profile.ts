@@ -1,13 +1,28 @@
 // types/profile.ts
-export interface User {
-    id: number;
-    name: string;
-    email: string;
-    role: 'customer' | 'seller' | 'admin';
-    location: string;
-    phone: string;
-    avatar: string;
-  }
+//export interface User {
+   // id: number;
+   // name: string;
+   // email: string;
+   // role: 'customer' | 'seller' | 'admin';
+   // location: string;
+   // phone: string;
+  //  avatar: string;
+ // }
+
+ export interface User {
+  _id: string; // Mongoose uses ObjectId, so it should be a string
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  role: 'admin' | 'seller' | 'customer';
+  deleted: boolean;
+  resetToken?: string;
+  resetTokenExpiry?: Date;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
   
   export interface Order {
     id: string;

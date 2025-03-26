@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { ProfileHeader } from '@/components/ProfileHeader';
 import { MainContent } from '@/components/MainContent';
 import { User } from '@/types/profile';
-import { dummyUser, dummyOrders, dummyUsers, dummyProducts } from '@/data/dummyData';
+import { dummyOrders, dummyUsers, dummyProducts } from '@/data/dummyData';
 import { EditProfileModal } from '@/components/EditProfileModal';
 import axios from 'axios';
 import { ProfileNavbar } from '@/components/ProfileNavBar';
@@ -246,7 +246,7 @@ const [isShopEditModalOpen, setIsShopEditModalOpen] = useState(false);
       switch(user.role) {
         case 'customer':
           return (
-            <UserDashboard dummyOrders={dummyOrders}  />
+            <UserDashboard />
           );
           
         case 'seller':

@@ -1,7 +1,7 @@
 "use client";
 import TopNavModified from '@/components/TopNavModified';
 import { FC, useState, useEffect } from 'react';
-import { FiFilter, FiGrid, FiList, FiSearch, FiX } from 'react-icons/fi';
+import { FiFilter, FiGrid, FiList, FiPlusCircle, FiSearch, FiStar, FiUsers, FiX } from 'react-icons/fi';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 
@@ -246,16 +246,61 @@ const ShopsPage: FC = () => {
         </div>
       </section>*/}
 
-      {/* CTA Section */}
-      <section className="py-16 px-4 bg-[#0f1c47]">
-        <div className="container mx-auto text-center">
-          <h2 className="text-4xl font-bold mb-4 text-white">Ready to Start Selling?</h2>
-          <p className="text-gray-200 mb-8">Join our community of successful vendors</p>
-          <button className="bg-[#bf2c7e] text-white px-8 py-4 rounded-xl text-lg hover:bg-[#a02468] transition-colors">
+ {/* Premium CTA Section */}
+<section className="relative py-20 px-4 sm:py-28 overflow-hidden">
+  {/* Background Gradient */}
+  <div className="absolute inset-0 bg-gradient-to-br from-[#0f1c47] to-[#2a3a6e] z-0"></div>
+  
+  {/* Decorative Elements */}
+  <div className="absolute top-0 left-0 w-full h-full opacity-10 z-0">
+    <div className="absolute top-10 left-10 w-32 h-32 rounded-full bg-[#bf2c7e] mix-blend-overlay"></div>
+    <div className="absolute bottom-20 right-20 w-40 h-40 rounded-full bg-[#bf2c7e] mix-blend-overlay"></div>
+    <div className="absolute top-1/2 left-1/4 w-16 h-16 rounded-full bg-white mix-blend-overlay"></div>
+  </div>
+
+  <div className="max-w-6xl mx-auto relative z-10">
+    <div className="text-center">
+      {/* Animated Heading */}
+      <h2 className="text-3xl sm:text-5xl font-bold mb-6 text-white animate-fade-in-up">
+        Ready to <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#ff8a9f] to-[#bf2c7e]">Start Selling?</span>
+      </h2>
+      
+      {/* Subheading with subtle animation */}
+      <p className="text-lg sm:text-xl text-gray-300 mb-10 max-w-2xl mx-auto animate-fade-in-up delay-100">
+        Join our thriving community of successful vendors and grow your business with us
+      </p>
+      
+      {/* Enhanced CTA Button */}
+      <div className="animate-fade-in-up delay-200">
+        <button className="relative group bg-gradient-to-r from-[#bf2c7e] to-[#a02468] text-white px-10 py-5 rounded-xl text-lg font-medium hover:shadow-xl hover:shadow-[#bf2c7e]/30 transition-all duration-300 overflow-hidden">
+          <span className="relative z-10 flex items-center justify-center gap-2">
+            <FiPlusCircle className="w-6 h-6" />
             Create Your Shop Now
-          </button>
+          </span>
+          
+          {/* Button Hover Effect */}
+          <span className="absolute inset-0 bg-gradient-to-r from-[#a02468] to-[#bf2c7e] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+          
+          {/* Button Shine Effect */}
+          <span className="absolute top-0 left-0 w-10 h-full bg-white/30 -skew-x-12 -translate-x-16 group-hover:translate-x-[400%] transition-transform duration-700"></span>
+        </button>
+      </div>
+      
+      {/* Trust Indicators */}
+      <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-6 text-gray-300 animate-fade-in-up delay-300">
+        <div className="flex items-center gap-2">
+          <FiUsers className="w-5 h-5" />
+          <span>10,000+ Happy Vendors</span>
         </div>
-      </section>
+        <div className="hidden sm:block w-px h-6 bg-gray-500"></div>
+        <div className="flex items-center gap-2">
+          <FiStar className="w-5 h-5" />
+          <span>4.9/5 Average Rating</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
       {/* Featured Shops */}
       <section className="py-4 px-4">

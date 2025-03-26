@@ -1,4 +1,40 @@
-'use client';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { FiShoppingCart, FiHeart, FiArrowLeft, FiShare2 } from 'react-icons/fi';
+import { AiFillStar, AiOutlineStar } from 'react-icons/ai';
+import { Metadata } from 'next';
+
+interface ProductDetail {
+  id: string;
+  name: string;
+  description: string;
+  price?: number;
+  images: string[];
+  rating?: number;
+  stock?: number;
+  category?: string;
+  attributes: Record<string, string>;
+  isNew?: boolean;
+  isDiscounted?: boolean;
+  originalPrice?: number;
+}
+
+// Correct the type definition
+interface ProductDetailPageProps {
+  params: { id: string };
+}
+
+export default function ProductDetailPage({ params }: ProductDetailPageProps) {
+  const router = useRouter();
+  const productId = params.id;
+  const [product, setProduct] = useState<ProductDetail | null>(null);
+  const [selectedImage, setSelectedImage] = useState<string>('');
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [quantity, setQuantity] = useState(1);
+
+
+{/*'use client';
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -27,7 +63,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
   const [selectedImage, setSelectedImage] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [quantity, setQuantity] = useState(1);
+  const [quantity, setQuantity] = useState(1);*/}
 
   useEffect(() => {
     const fetchProductDetail = async () => {

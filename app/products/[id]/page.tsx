@@ -1,8 +1,9 @@
+"use client"
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { FiShoppingCart, FiHeart, FiArrowLeft, FiShare2 } from 'react-icons/fi';
 import { AiFillStar, AiOutlineStar } from 'react-icons/ai';
-import { Metadata } from 'next';
+
 
 interface ProductDetail {
   id: string;

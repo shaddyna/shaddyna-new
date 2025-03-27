@@ -3,6 +3,7 @@
 
 import Link from "next/link";
 import { UserAccountIcon } from "hugeicons-react";
+import { PlusCircleIcon } from "lucide-react";
 
 export default function TopNav() {
   return (

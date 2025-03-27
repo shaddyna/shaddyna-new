@@ -31,15 +31,18 @@ import { usePathname } from "next/navigation";
 import TopNav from "@/components/TopNav";
 import BottomNav from "@/components/BottomNav";
 import DesktopNav from "@/components/DesktopNav";
+import TopHomeNav from "@/components/TopHomeNav";
 
 const pagesWithMobileNav = ["/", "/hub", "/shops", "/shelves", "/money",];
-const pagesWithTopMobileNav = ["/", "/money",];
+const pagesWithTopMobileNav = ["/money",];
+const pagesWithTopHomeNav = ["/",];
 const pagesWithDesktopNav = ["/", "/hub", "/shops", "/shelves", "/money", "/profile", "/events"];
 
 export default function NavigationWrapper() {
   const pathname = usePathname();
   const shouldShowMobileNav = pagesWithMobileNav.includes(pathname);
   const shouldShowTopMobileNav = pagesWithTopMobileNav.includes(pathname);
+  const shouldShowTopHomeNav = pagesWithTopHomeNav.includes(pathname);
   const shouldShowTopDesktopNav = pagesWithDesktopNav.includes(pathname);
 
   return (
@@ -47,6 +50,7 @@ export default function NavigationWrapper() {
       {shouldShowTopDesktopNav && <DesktopNav />}
       <div className="flex-1">
         {shouldShowTopMobileNav && <TopNav />}
+        {shouldShowTopHomeNav && <TopHomeNav />}
         {shouldShowMobileNav && <BottomNav />}
       </div>
     </div>

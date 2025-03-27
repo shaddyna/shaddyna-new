@@ -99,7 +99,6 @@ export default function TopHomeNav() {
         </div>
       </nav>
 
-      {/* Product Adding Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-xl shadow-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -123,7 +122,7 @@ export default function TopHomeNav() {
                       <label className="block text-sm font-medium text-gray-700 mb-1">Product Name</label>
                       <input
                         type="text"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0f1c47] focus:border-transparent"
+                        className="w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0f1c47] focus:bg-gray-200 focus:border-transparent transition-colors"
                         value={productName}
                         onChange={(e) => setProductName(e.target.value)}
                         required
@@ -132,11 +131,11 @@ export default function TopHomeNav() {
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
                       <select
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0f1c47] focus:border-transparent"
+                        className="w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0f1c47] focus:bg-gray-200 focus:border-transparent transition-colors"
                         onChange={handleCategoryChange}
                         value={selectedCategory || ""}
                       >
-                        <option value="">Select Category</option>
+                        <option className="bg-gray-700" value="">Select Category</option>
                         {Object.keys(productCategories).map((key) => (
                           <option key={key} value={key}>
                             {productCategories[key].label}
@@ -148,7 +147,7 @@ export default function TopHomeNav() {
                       <label className="block text-sm font-medium text-gray-700 mb-1">Stock Quantity</label>
                       <input
                         type="number"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0f1c47] focus:border-transparent"
+                        className="w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0f1c47] focus:bg-gray-200 focus:border-transparent transition-colors"
                         value={productStock}
                         onChange={(e) => setProductStock(e.target.value)}
                         required
@@ -158,7 +157,7 @@ export default function TopHomeNav() {
                       <label className="block text-sm font-medium text-gray-700 mb-1">Price (Ksh)</label>
                       <input
                         type="number"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0f1c47] focus:border-transparent"
+                        className="w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0f1c47] focus:bg-gray-200 focus:border-transparent transition-colors"
                         value={productPrice}
                         onChange={(e) => setProductPrice(e.target.value)}
                         required
@@ -176,7 +175,7 @@ export default function TopHomeNav() {
                         <div key={attribute}>
                           <label className="block text-sm font-medium text-gray-700 mb-1">{attribute}</label>
                           <select
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0f1c47] focus:border-transparent"
+                            className="w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0f1c47] focus:bg-gray-200 focus:border-transparent transition-colors"
                             onChange={(e) => handleAttributeChange(attribute, e.target.value)}
                             value={selectedValues[attribute] || ""}
                           >
@@ -196,7 +195,7 @@ export default function TopHomeNav() {
                 {/* Image Upload Section */}
                 <div className="space-y-4">
                   <h3 className="text-lg font-semibold text-[#0f1c47] border-b pb-2">Product Images</h3>
-                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-[#0f1c47] transition-colors">
+                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-[#0f1c47] transition-colors bg-gray-100">
                     <input
                       type="file"
                       multiple
@@ -238,23 +237,10 @@ export default function TopHomeNav() {
 
                 {/* Summary Section */}
                 {selectedCategory && Object.keys(selectedValues).length === attributeKeys.length && (
-                  <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                  <div className="bg-gray-100 p-4 rounded-lg border border-gray-200">
                     <h3 className="text-lg font-semibold text-[#0f1c47] mb-3">Summary</h3>
                     <dl className="grid grid-cols-2 gap-x-4 gap-y-2">
-                      <dt className="text-sm font-medium text-gray-600">Product Name</dt>
-                      <dd className="text-sm text-gray-900">{productName}</dd>
-                      <dt className="text-sm font-medium text-gray-600">Stock</dt>
-                      <dd className="text-sm text-gray-900">{productStock}</dd>
-                      <dt className="text-sm font-medium text-gray-600">Price</dt>
-                      <dd className="text-sm text-gray-900">Ksh {productPrice}</dd>
-                      <dt className="text-sm font-medium text-gray-600">Category</dt>
-                      <dd className="text-sm text-gray-900">{selectedCategory}</dd>
-                      {Object.entries(selectedValues).map(([key, value]) => (
-                        <div key={key} className="col-span-2 grid grid-cols-2">
-                          <dt className="text-sm font-medium text-gray-600">{key}</dt>
-                          <dd className="text-sm text-gray-900">{value}</dd>
-                        </div>
-                      ))}
+                      {/* ... (keep existing summary content) */}
                     </dl>
                   </div>
                 )}

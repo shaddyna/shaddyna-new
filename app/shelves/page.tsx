@@ -235,7 +235,7 @@ export default function ShelvesPage() {
         setLoading(true);
         setError(null);
         
-        const response = await fetch("http://localhost:5000/api/shelf/shelves");
+        const response = await fetch("https://shaddyna-backend.onrender.com/api/shelf/shelves");
         
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);

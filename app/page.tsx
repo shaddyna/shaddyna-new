@@ -46,8 +46,8 @@ const HomePage = () => {
       <div className="container max-w-7xl mx-auto">
         <HeroCarousel />
       </div>
-      {/* Category Scroll */}
-      <CategoryScroll categories={categories} title="Shop by Category" />
+      {/* Category Scroll 
+      <CategoryScroll categories={categories} title="Shop by Category" />*/}
       <ProductSection />
       {/* Brands Section */}
       <BrandsSection brands={brands} title="Featured Brands" />

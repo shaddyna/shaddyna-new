@@ -1,11 +1,14 @@
 "use client";
-import TopNavModified from '@/components/TopNavModified';
 import { FC, useState, useEffect } from 'react';
-import { FiFilter, FiGrid, FiList, FiPlusCircle, FiSearch, FiStar, FiUsers, FiX } from 'react-icons/fi';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
+import TopNavModified from '@/components/TopNavModified';
+import ShopSearch from '@/components/shop/ShopSearch';
+import ShopFilters from '@/components/shop/ShopFilters';
+import PremiumCTA from '@/components/shop/PremiumCTA';
+import FeaturedShopCard from '@/components/shop/FeaturedShopCard';
+import ShopList from '@/components/shop/ShopList';
 
-// Categories remain the same
 const categories = ['Fashion', 'Electronics', 'Food', 'Home Goods', 'Art'];
 
 interface Shop {
@@ -32,7 +35,6 @@ const ShopsPage: FC = () => {
   const [shops, setShops] = useState<Shop[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [shopProductsCount, setShopProductsCount] = useState<{ [key: string]: number }>({});
 
   const fetchShops = async () => {
     try {
@@ -47,32 +49,21 @@ const ShopsPage: FC = () => {
     }
   };
 
-  const fetchShopDetailsData = async (shopId: string) => {
-    try {
-      // You can implement this if you need additional shop details
-      // const response = await axios.get(`/api/shops/${shopId}/details`);
-      // return response.data;
-    } catch (err) {
-      console.error(`Error fetching details for shop ${shopId}:`, err);
-    }
-  };
-
   useEffect(() => {
     fetchShops();
   }, []);
 
-  useEffect(() => {
-    if (shops.length > 0) {
-      shops.forEach((shop) => {
-        if (!shopProductsCount[shop._id]) {
-          fetchShopDetailsData(shop._id);
-        }
-      });
-    }
-  }, [shops]);
-
   const handleShopClick = (shopId: string) => {
     router.push(`/shops/${shopId}`);
+  };
+
+  const handleFollow = (shopId: string) => {
+    setIsFollowing((prev) => ({ ...prev, [shopId]: !prev[shopId] }));
+  };
+
+  const handleSearch = (query: string) => {
+    // Implement search functionality
+    console.log('Searching for:', query);
   };
 
   if (loading) {
@@ -97,340 +88,60 @@ const ShopsPage: FC = () => {
     );
   }
 
-  // Rest of your component remains the same with minor adjustments for _id
+  const filteredShops = shops.filter((shop) => 
+    activeFilter === 'all' || shop.category === activeFilter
+  );
+
+  const featuredShops = shops.filter((shop) => shop.isFeatured);
+
   return (
     <div className="min-h-screen bg-white">
       <TopNavModified menuItems={["Create Shop"]} />
 
-      {/* Enhanced Search & Filter Section */}
-{/* Enhanced Search & Filter Section */}
-<section className="bg-white py-4 sm:py-6 px-3 sm:px-6 border-b border-gray-100">
-  <div className="max-w-7xl mx-auto">
-    {/* Main Search and Controls */}
-    <div className="flex flex-row gap-2 sm:gap-3 mb-4 sm:mb-6">
-      {/* Search Input - Compact mobile version */}
-      <div className="relative flex-1 group min-w-[120px]">
-        <input
-          type="text"
-          placeholder=" "
-          className="w-full p-2 pl-10 pr-3 sm:p-4 sm:pl-12 rounded-lg sm:rounded-xl border-2 border-gray-200 focus:border-[#bf2c7e] focus:ring-0 transition-all peer bg-gray-50 h-10 sm:h-14"
-        />
-        <div className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-gray-400 peer-focus:text-[#bf2c7e] transition-colors">
-          <FiSearch className="w-4 h-4 sm:w-5 sm:h-5" />
-        </div>
-        <label className="absolute left-8 sm:left-12 top-1/2 -translate-y-1/2 text-sm sm:text-base text-gray-500 peer-focus:text-[#bf2c7e] peer-focus:scale-90 peer-focus:-translate-y-7 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 origin-left transition-all duration-200 pointer-events-none bg-white px-1 ml-1 peer-focus:bg-white peer-focus:px-2">
-          Search shops...
-        </label>
-      </div>
-
-      {/* Action Buttons - Compact mobile layout */}
-      <div className="flex gap-1 sm:gap-2">
-        <button className="flex items-center p-2 sm:px-3 sm:py-2 rounded-lg sm:rounded-xl bg-gradient-to-r from-[#bf2c7e] to-[#a02468] text-white font-medium hover:shadow-lg hover:shadow-[#bf2c7e]/20 transition-all">
-          <FiFilter className="w-4 h-4 sm:w-5 sm:h-5" />
-          <span className="sr-only sm:not-sr-only sm:ml-1 sm:inline">Filters</span>
-        </button>
-        <button
-          onClick={() => setViewMode(prev => (prev === 'grid' ? 'list' : 'grid'))}
-          className="flex items-center p-2 sm:px-3 sm:py-2 rounded-lg sm:rounded-xl bg-[#0f1c47] text-white font-medium hover:bg-[#0f1c47]/90 transition-all"
-        >
-          {viewMode === 'grid' ? (
-            <FiList className="w-4 h-4 sm:w-5 sm:h-5" />
-          ) : (
-            <FiGrid className="w-4 h-4 sm:w-5 sm:h-5" />
-          )}
-          <span className="sr-only sm:not-sr-only sm:ml-1">{viewMode === 'grid' ? 'List' : 'Grid'}</span>
-        </button>
-      </div>
-    </div>
-
-    {/* Category Filters - Tight mobile layout */}
-    <div className="relative pb-1 sm:pb-2">
-      <div className="flex space-x-2 overflow-x-auto scrollbar-hide py-1">
-        <button
-          onClick={() => setActiveFilter('all')}
-          className={`flex-shrink-0 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-all ${
-            activeFilter === 'all'
-              ? 'bg-gradient-to-r from-[#bf2c7e] to-[#a02468] text-white shadow-md'
-              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-          }`}
-        >
-          All Shops
-        </button>
-        {categories.map((category) => (
-          <button
-            key={category}
-            onClick={() => setActiveFilter(category)}
-            className={`flex-shrink-0 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-all ${
-              activeFilter === category
-                ? 'bg-gradient-to-r from-[#bf2c7e] to-[#a02468] text-white shadow-md'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-            }`}
-          >
-            {category}
-          </button>
-        ))}
-      </div>
-    </div>
-
-    {/* Active Filters Indicator */}
-    {activeFilter !== 'all' && (
-      <div className="mt-2 sm:mt-3 flex items-center">
-        <span className="text-xs sm:text-sm text-gray-500 mr-1 sm:mr-2">Active:</span>
-        <span className="px-2 py-0.5 sm:px-3 sm:py-1 bg-[#bf2c7e]/10 text-[#bf2c7e] rounded-full text-xs sm:text-sm font-medium flex items-center">
-          {activeFilter}
-          <button 
-            onClick={() => setActiveFilter('all')}
-            className="ml-1 sm:ml-2 text-[#bf2c7e] hover:text-[#a02468]"
-          >
-            <FiX className="w-3 h-3 sm:w-4 sm:h-4" />
-          </button>
-        </span>
-      </div>
-    )}
-  </div>
-</section>
-      {/* Search & Filter Section *
-      <section className="bg-white py-8 px-4">
-        <div className="container mx-auto">
-          <div className="flex flex-col md:flex-row gap-4 mb-6">
-            <input
-              type="text"
-              placeholder="Search shops..."
-              className="flex-1 p-3 rounded-xl border-2 border-[#0f1c47]/10 focus:border-[#bf2c7e] focus:ring-0 transition-all"
-            />
-            <div className="flex gap-2">
-              <button className="bg-[#bf2c7e] text-white px-4 py-2 rounded-xl flex items-center gap-2 hover:bg-[#a02468] transition-colors">
-                <FiFilter className="text-lg" />
-                Filter
-              </button>
-              <button
-                onClick={() => setViewMode(prev => (prev === 'grid' ? 'list' : 'grid'))}
-                className="bg-[#0f1c47] text-white px-4 py-2 rounded-xl flex items-center gap-2 hover:bg-[#0f1c47]/80 transition-colors"
-              >
-                {viewMode === 'grid' ? <FiList className="text-lg" /> : <FiGrid className="text-lg" />}
-                {viewMode === 'grid' ? 'List View' : 'Grid View'}
-              </button>
-            </div>
-          </div>
-
-          {/* Category Filters *
-          <div className="flex flex-wrap gap-2">
-            <button
-              onClick={() => setActiveFilter('all')}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                activeFilter === 'all'
-                  ? 'bg-[#bf2c7e] text-white'
-                  : 'bg-[#0f1c47]/10 text-[#0f1c47] hover:bg-[#bf2c7e]/10 hover:text-[#bf2c7e]'
-              }`}
-            >
-              All
-            </button>
-            {categories.map((category) => (
-              <button
-                key={category}
-                onClick={() => setActiveFilter(category)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                  activeFilter === category
-                    ? 'bg-[#bf2c7e] text-white'
-                    : 'bg-[#0f1c47]/10 text-[#0f1c47] hover:bg-[#bf2c7e]/10 hover:text-[#bf2c7e]'
-                }`}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
-        </div>
-      </section>*/}
-
- {/* Premium CTA Section */}
-{/* Premium CTA Section */}
-<section className="relative py-12 sm:py-20 px-4 overflow-hidden">
-  {/* Background Gradient */}
-  <div className="absolute inset-0 bg-gradient-to-br from-[#0f1c47] to-[#2a3a6e] z-0"></div>
-  
-  {/* Decorative Elements */}
-  <div className="absolute top-0 left-0 w-full h-full opacity-10 z-0">
-    <div className="absolute top-8 left-8 w-20 h-20 sm:w-32 sm:h-32 rounded-full bg-[#bf2c7e] mix-blend-overlay"></div>
-    <div className="absolute bottom-16 right-8 w-24 h-24 sm:w-40 sm:h-40 rounded-full bg-[#bf2c7e] mix-blend-overlay"></div>
-    <div className="absolute top-1/2 left-1/4 w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-white mix-blend-overlay"></div>
-  </div>
-
-  <div className="max-w-6xl mx-auto relative z-10">
-    <div className="text-center">
-      {/* Animated Heading */}
-      <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6 text-white animate-fade-in-up">
-        Ready to <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#ff8a9f] to-[#bf2c7e]">Start Selling?</span>
-      </h2>
-      
-      {/* Subheading */}
-      <p className="text-base sm:text-lg md:text-xl text-gray-300 mb-6 sm:mb-10 max-w-2xl mx-auto animate-fade-in-up delay-100">
-        Join our thriving community of successful vendors and grow your business with us
-      </p>
-      
-      {/* CTA Button */}
-      <div className="animate-fade-in-up delay-200">
-        <button className="relative group bg-gradient-to-r from-[#bf2c7e] to-[#a02468] text-white px-6 py-4 sm:px-10 sm:py-5 rounded-lg sm:rounded-xl text-base sm:text-lg font-medium hover:shadow-xl hover:shadow-[#bf2c7e]/30 transition-all duration-300 overflow-hidden">
-          <span className="relative z-10 flex items-center justify-center gap-2">
-            <FiPlusCircle className="w-5 h-5 sm:w-6 sm:h-6" />
-            Create Your Shop Now
-          </span>
-          
-          {/* Hover Effects */}
-          <span className="absolute inset-0 bg-gradient-to-r from-[#a02468] to-[#bf2c7e] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
-          <span className="absolute top-0 left-0 w-10 h-full bg-white/30 -skew-x-12 -translate-x-16 group-hover:translate-x-[400%] transition-transform duration-700"></span>
-        </button>
-      </div>
-      
-      {/* Trust Indicators */}
-      <div className="mt-8 sm:mt-12 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 text-gray-300 animate-fade-in-up delay-300">
-        <div className="flex items-center gap-2 text-sm sm:text-base">
-          <FiUsers className="w-4 h-4 sm:w-5 sm:h-5" />
-          <span>10,000+ Happy Vendors</span>
-        </div>
-        <div className="sm:hidden w-8 h-px bg-gray-500 my-1"></div>
-        <div className="hidden sm:block w-px h-6 bg-gray-500"></div>
-        <div className="flex items-center gap-2 text-sm sm:text-base">
-          <FiStar className="w-4 h-4 sm:w-5 sm:h-5" />
-          <span>4.9/5 Average Rating</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-      {/* Featured Shops */}
-      <section className="py-4 px-4">
-        <div className="container mx-auto">
-          <h2 className="text-3xl font-bold mb-8 text-[#0f1c47]">Featured Shops</h2>
-          <div className="flex gap-6 overflow-x-auto whitespace-nowrap scrollbar-hide">
-            {shops.filter((s) => s.isFeatured).map((shop) => (
-              <div
-                key={shop._id}
-                className="bg-white p-6 rounded-2xl shadow-lg border-2 border-[#bf2c7e] min-w-[250px] md:min-w-[300px]"
-              >
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-[#bf2c7e]/10 flex items-center justify-center">
-                    <span className="text-[#bf2c7e] font-bold text-lg md:text-xl">{shop.name[0]}</span>
-                  </div>
-                  <div>
-                    <h3 className="text-lg md:text-xl font-bold text-[#0f1c47]">{shop.name}</h3>
-                    <p className="text-gray-600 text-sm md:text-base">{shop.category}</p>
-                  </div>
-                </div>
-                
-                <p className="text-gray-600 text-sm md:text-base mb-4 line-clamp-2 md:line-clamp-3">
-                  {shop.description || `Specializing in ${shop.category} products`}
-                </p>
-
-                <div className="flex justify-between items-center">
-                  <div>
-                    <span className="text-[#bf2c7e]">★ {shop.rating?.toFixed(1) || '4.5'}</span>
-                    <span className="ml-4 text-gray-600">{shop.products || 0} products</span>
-                  </div>
-                  <button 
-                    onClick={() => handleShopClick(shop._id)}
-                    className="bg-[#0f1c47] text-white px-4 py-2 rounded-xl text-sm md:text-base hover:bg-[#0f1c47]/80 transition-colors"
-                  >
-                    Visit Shop
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
+      <section className="bg-white py-4 sm:py-6 px-3 sm:px-6 border-b border-gray-100">
+        <div className="max-w-7xl mx-auto">
+          <ShopSearch 
+            viewMode={viewMode} 
+            onViewModeChange={setViewMode} 
+            onSearch={handleSearch} 
+          />
+          <ShopFilters 
+            categories={categories} 
+            activeFilter={activeFilter} 
+            onFilterChange={setActiveFilter} 
+          />
         </div>
       </section>
 
-      {/* All Shops */}
+      <PremiumCTA />
+
+      {featuredShops.length > 0 && (
+        <section className="py-4 px-4">
+          <div className="container mx-auto">
+            <h2 className="text-3xl font-bold mb-8 text-[#0f1c47]">Featured Shops</h2>
+            <div className="flex gap-6 overflow-x-auto whitespace-nowrap scrollbar-hide">
+              {featuredShops.map((shop) => (
+                <FeaturedShopCard 
+                  key={shop._id} 
+                  shop={shop} 
+                  onClick={handleShopClick} 
+                />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       <section className="py-8 px-3 sm:py-10 sm:px-6 md:py-12 md:px-10 bg-white">
         <div className="container mx-auto">
           <h2 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-[#0f1c47]">All Shops</h2>
-          
-          <div className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6`}>
-            {shops
-              .filter((shop) => activeFilter === 'all' || shop.category === activeFilter)
-              .map((shop) => (
-                <div
-                  key={shop._id}
-                  className="bg-white p-4 sm:p-5 rounded-xl shadow-sm hover:shadow-md transition-shadow border border-[#0f1c47]/10 cursor-pointer"
-                  onClick={() => handleShopClick(shop._id)}
-                >
-                  {/* Shop Image */}
-                  <div className="w-full h-40 sm:h-48 rounded-lg overflow-hidden mb-3 sm:mb-4">
-                    <img
-                      src={shop.image || `https://picsum.photos/300/200?random=${shop._id}`}
-                      alt={shop.name}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-
-                  {/* Shop Details */}
-                  <div className="flex items-start justify-between mb-3 sm:mb-4">
-                    <div>
-                      <h3 className="text-lg sm:text-xl font-bold text-[#0f1c47] truncate">{shop.name}</h3>
-                      <p className="text-gray-600 text-xs sm:text-sm">{shop.category}</p>
-                    </div>
-                    {shop.isFeatured && (
-                      <span className="text-[#bf2c7e] bg-[#bf2c7e]/10 px-2 py-1 rounded-full text-xs sm:text-sm">
-                        Sponsored
-                      </span>
-                    )}
-                  </div>
-
-                  <p className="text-gray-600 text-sm sm:text-base mb-3 sm:mb-4 truncate">
-                    {shop.description || `Specializing in ${shop.category} products`}
-                  </p>
-
-                  {/* Additional Shop Info */}
-                  <div className="space-y-1 sm:space-y-2 mb-3 sm:mb-4 text-sm sm:text-base">
-                    <div className="flex items-center gap-2 text-[#0f1c47]">
-                      <span>📍 {shop.location || 'Nairobi, Kenya'}</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-[#0f1c47]">
-                      <span>📞 {shop.contact || '+254 700 000 000'}</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-[#0f1c47]">
-                      <span>🕒 {shop.openingHours || '9:00 AM - 6:00 PM'}</span>
-                    </div>
-                  </div>
-
-                  {/* Rating and Follow Button */}
-                  <div className="flex items-center justify-between mb-3 sm:mb-4">
-                    <div>
-                      <span className="text-[#bf2c7e] font-bold">★ {shop.rating?.toFixed(1) || '4.5'}</span>
-                      <span className="ml-2 text-gray-600 text-xs sm:text-sm">{shop.products || 0} products</span>
-                    </div>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setIsFollowing((prev) => ({ ...prev, [shop._id]: !prev[shop._id] }));
-                      }}
-                      className={`px-3 sm:px-4 py-1 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
-                        isFollowing[shop._id]
-                          ? 'bg-[#0f1c47] text-white'
-                          : 'bg-[#bf2c7e] text-white hover:bg-[#a02468]'
-                      }`}
-                    >
-                      {isFollowing[shop._id] ? 'Following' : 'Follow'}
-                    </button>
-                  </div>
-
-                  {/* Social Media Links */}
-                  <div className="border-t border-[#0f1c47]/10 pt-3 sm:pt-4">
-                    <p className="text-gray-600 text-xs sm:text-sm mb-2">Owner: {shop.owner || 'Shop Owner'}</p>
-                    <div className="flex gap-2">
-                      {(shop.social || ['twitter', 'instagram']).map((platform) => (
-                        <button
-                          key={platform}
-                          className="text-[#0f1c47] hover:text-[#bf2c7e] transition-colors text-sm sm:text-base"
-                        >
-                          {platform === 'twitter' ? '𝕏' : '📸'}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              ))}
-          </div>
+          <ShopList 
+            shops={filteredShops} 
+            isFollowing={isFollowing} 
+            onFollow={handleFollow} 
+            onClick={handleShopClick} 
+            viewMode={viewMode} 
+          />
         </div>
       </section>
     </div>
@@ -438,244 +149,3 @@ const ShopsPage: FC = () => {
 };
 
 export default ShopsPage;
-
-{/*"use client";
-import TopNavModified from '@/components/TopNavModified';
-import { FC, useState } from 'react';
-import { FiFilter, FiGrid, FiList } from 'react-icons/fi'; // Nove icons for filter and view modes
-import { useRouter } from 'next/navigation'
-
-
-// Dummy data generators
-const categories = ['Fashion', 'Electronics', 'Food', 'Home Goods', 'Art'];
-const shops = [...Array(9)].map((_, i) => ({
-  id: i,
-  name: `Shop ${i + 1}`,
-  category: categories[i % 5],
-  rating: (4 + Math.random()).toFixed(1),
-  products: Math.floor(Math.random() * 100),
-  description: `Specializing in ${categories[i % 5]} products and services`,
-  owner: `Owner ${i + 1}`,
-  social: ['twitter', 'instagram'],
-  isFeatured: i < 2,
-  image: `https://picsum.photos/300/200?random=${i}`, // Placeholder image URL
-  location: 'Nairobi, Kenya', // Added location
-  contact: '+254 700 000 000', // Added contact
-  openingHours: '9:00 AM - 6:00 PM', // Added opening hours
-}));
-
-
-const ShopsPage: FC = () => {
-  const router = useRouter();
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [isFollowing, setIsFollowing] = useState<{ [key: number]: boolean }>({});
-  const [activeFilter, setActiveFilter] = useState<string>('all'); // Added activeFilter state
-  const handleShopClick = (shopId: number) => {
-    router.push(`/shops/${shopId}`);
-  };
-  
-
-  return (
-    <div className="min-h-screen bg-white">
-      <TopNavModified menuItems={["Create Shop"]} />
-
-      {/* Search & Filter Section *
-      <section className="bg-white py-8 px-4">
-        <div className="container mx-auto">
-          <div className="flex flex-col md:flex-row gap-4 mb-6">
-            <input
-              type="text"
-              placeholder="Search shops..."
-              className="flex-1 p-3 rounded-xl border-2 border-[#0f1c47]/10 focus:border-[#bf2c7e] focus:ring-0 transition-all"
-            />
-            <div className="flex gap-2">
-              <button className="bg-[#bf2c7e] text-white px-4 py-2 rounded-xl flex items-center gap-2 hover:bg-[#a02468] transition-colors">
-                <FiFilter className="text-lg" />
-                Filter
-              </button>
-              <button
-                onClick={() => setViewMode(prev => (prev === 'grid' ? 'list' : 'grid'))}
-                className="bg-[#0f1c47] text-white px-4 py-2 rounded-xl flex items-center gap-2 hover:bg-[#0f1c47]/80 transition-colors"
-              >
-                {viewMode === 'grid' ? <FiList className="text-lg" /> : <FiGrid className="text-lg" />}
-                {viewMode === 'grid' ? 'List View' : 'Grid View'}
-              </button>
-            </div>
-          </div>
-
-          {/* Category Filters *
-          <div className="flex flex-wrap gap-2">
-            {categories.map((category) => (
-              <button
-                key={category}
-                onClick={() => setActiveFilter(category)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                  activeFilter === category
-                    ? 'bg-[#bf2c7e] text-white'
-                    : 'bg-[#0f1c47]/10 text-[#0f1c47] hover:bg-[#bf2c7e]/10 hover:text-[#bf2c7e]'
-                }`}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section *
-      <section className="py-16 px-4 bg-[#0f1c47]">
-        <div className="container mx-auto text-center">
-          <h2 className="text-4xl font-bold mb-4 text-white">Ready to Start Selling?</h2>
-          <p className="text-gray-200 mb-8">Join our community of successful vendors</p>
-          <button className="bg-[#bf2c7e] text-white px-8 py-4 rounded-xl text-lg hover:bg-[#a02468] transition-colors">
-            Create Your Shop Now
-          </button>
-        </div>
-      </section>
-
-{/* Featured Shops *
-<section className="py-4 px-4">
-  <div className="container mx-auto">
-    <h2 className="text-3xl font-bold mb-8 text-[#0f1c47]">Featured Shops</h2>
-    <div className="flex gap-6 overflow-x-auto whitespace-nowrap scrollbar-hide">
-      {shops.filter((s) => s.isFeatured).map((shop) => (
-        <div
-          key={shop.id}
-          className="bg-white p-6 rounded-2xl shadow-lg border-2 border-[#bf2c7e] min-w-[250px] md:min-w-[300px]"
-        >
-          <div className="flex items-center gap-4 mb-4">
-            <div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-[#bf2c7e]/10 flex items-center justify-center">
-              <span className="text-[#bf2c7e] font-bold text-lg md:text-xl">{shop.name[0]}</span>
-            </div>
-            <div>
-              <h3 className="text-lg md:text-xl font-bold text-[#0f1c47]">{shop.name}</h3>
-              <p className="text-gray-600 text-sm md:text-base">{shop.category}</p>
-            </div>
-          </div>
-          
-          {/* Responsive Description *
-          <p className="text-gray-600 text-sm md:text-base mb-4 line-clamp-2 md:line-clamp-3">
-            {shop.description}
-          </p>
-
-          <div className="flex justify-between items-center">
-            <div>
-              <span className="text-[#bf2c7e]">★ {shop.rating}</span>
-              <span className="ml-4 text-gray-600">{shop.products} products</span>
-            </div>
-            <button className="bg-[#0f1c47] text-white px-4 py-2 rounded-xl text-sm md:text-base hover:bg-[#0f1c47]/80 transition-colors">
-              Visit Shop
-            </button>
-          </div>
-        </div>
-      ))}
-    </div>
-  </div>
-</section>
-
-
-
-      {/* All Shops *
-<section className="py-8 px-3 sm:py-10 sm:px-6 md:py-12 md:px-10 bg-white">
-  <div className="container mx-auto">
-    <h2 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-[#0f1c47]">All Shops</h2>
-    
-    <div className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6`}>
-      {shops
-        .filter((shop) => activeFilter === 'all' || shop.category === activeFilter)
-        .map((shop) => (
-          <div
-            key={shop.id}
-            className="bg-white p-4 sm:p-5 rounded-xl shadow-sm hover:shadow-md transition-shadow border border-[#0f1c47]/10 cursor-pointer"
-            onClick={() => handleShopClick(shop.id)}
-          >
-            {/* Shop Image *
-            <div className="w-full h-40 sm:h-48 rounded-lg overflow-hidden mb-3 sm:mb-4">
-              <img
-                src={shop.image}
-                alt={shop.name}
-                className="w-full h-full object-cover"
-              />
-            </div>
-
-            {/* Shop Details *
-            <div className="flex items-start justify-between mb-3 sm:mb-4">
-              <div>
-                <h3 className="text-lg sm:text-xl font-bold text-[#0f1c47] truncate">{shop.name}</h3>
-                <p className="text-gray-600 text-xs sm:text-sm">{shop.category}</p>
-              </div>
-              <span className="text-[#bf2c7e] bg-[#bf2c7e]/10 px-2 py-1 rounded-full text-xs sm:text-sm">
-                Sponsored
-              </span>
-            </div>
-
-            <p className="text-gray-600 text-sm sm:text-base mb-3 sm:mb-4 truncate">{shop.description}</p>
-
-            {/* Additional Shop Info *
-            <div className="space-y-1 sm:space-y-2 mb-3 sm:mb-4 text-sm sm:text-base">
-              <div className="flex items-center gap-2 text-[#0f1c47]">
-                <span>📍 {shop.location}</span>
-              </div>
-              <div className="flex items-center gap-2 text-[#0f1c47]">
-                <span>📞 {shop.contact}</span>
-              </div>
-              <div className="flex items-center gap-2 text-[#0f1c47]">
-                <span>🕒 {shop.openingHours}</span>
-              </div>
-            </div>
-
-            {/* Rating and Follow Button *
-            <div className="flex items-center justify-between mb-3 sm:mb-4">
-              <div>
-                <span className="text-[#bf2c7e] font-bold">★ {shop.rating}</span>
-                <span className="ml-2 text-gray-600 text-xs sm:text-sm">{shop.products} products</span>
-              </div>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsFollowing((prev) => ({ ...prev, [shop.id]: !prev[shop.id] }));
-                }}
-                className={`px-3 sm:px-4 py-1 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
-                  isFollowing[shop.id]
-                    ? 'bg-[#0f1c47] text-white'
-                    : 'bg-[#bf2c7e] text-white hover:bg-[#a02468]'
-                }`}
-              >
-                {isFollowing[shop.id] ? 'Following' : 'Follow'}
-              </button>
-            </div>
-
-            {/* Social Media Links *
-            <div className="border-t border-[#0f1c47]/10 pt-3 sm:pt-4">
-              <p className="text-gray-600 text-xs sm:text-sm mb-2">Owner: {shop.owner}</p>
-              <div className="flex gap-2">
-                {shop.social.map((platform) => (
-                  <button
-                    key={platform}
-                    className="text-[#0f1c47] hover:text-[#bf2c7e] transition-colors text-sm sm:text-base"
-                  >
-                    {platform === 'twitter' ? '𝕏' : '📸'}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-        ))}
-    </div>
-  </div>
-</section>
-    </div>
-  );
-};
-
-export default ShopsPage;*/}
-
-
-
-
-
-
-
-
-
-

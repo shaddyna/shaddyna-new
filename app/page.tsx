@@ -8,7 +8,6 @@ import FeaturedShops from '@/components/FeaturedShops';
 import ExploreShelves from '@/components/ExploreShelves';
 import LatestSkillPosts from '@/components/LatestSkillPosts';
 import FinancialSummary from '@/components/FinancialSummary';
-import CategoryScroll from '@/components/home/CategoryScroll';
 import ProductSection from '@/components/home/ProductSections';
 import BrandsSection from '@/components/home/BrandsSection';
 import AdvertiseSection from '@/components/home/AdvertiseSection';
@@ -16,7 +15,6 @@ import {
   featuredShops,
   shelves,
   skills,
-  categories,
   brands
 } from './homedata';
 const HomePage = () => {

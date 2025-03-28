@@ -27,28 +27,22 @@ const ProductSections = () => {
     let isMounted = true;
     const controller = new AbortController();
     const signal = controller.signal;
-
+  
     const fetchProducts = async () => {
       try {
-        const cachedProducts = localStorage.getItem("products");
-        if (cachedProducts && isMounted) {
-          setProducts(JSON.parse(cachedProducts));
-          setIsLoading(false);
-          return;
-        }
-
+        // ✅ Always fetch fresh products first
         const response = await fetch(
           "https://shaddyna-backend.onrender.com/api/products/all",
           { signal }
         );
-        
+  
         if (!response.ok) throw new Error("Failed to fetch products");
-        
+  
         const data = await response.json();
-        
+  
         const fetchedProducts: Product[] = data.products.map((product: any) => ({
           _id: product._id,
-          name: product.name || 'Unnamed Product',
+          name: product.name || "Unnamed Product",
           price: product.price ?? 0,
           images: product.images || [],
           rating: product.rating || Math.floor(Math.random() * 5) + 1,
@@ -57,31 +51,40 @@ const ProductSections = () => {
           isNew: product.isNew,
           isTrending: product.isTrending,
           isDiscounted: product.isDiscounted,
-          originalPrice: product.originalPrice
+          originalPrice: product.originalPrice,
         }));
-        
+  
         if (isMounted) {
-          localStorage.setItem("products", JSON.stringify(fetchedProducts));
           setProducts(fetchedProducts);
           setError(null);
+          
+          // ✅ Refresh cache only with new products
+          localStorage.setItem("products", JSON.stringify(fetchedProducts));
         }
       } catch (err) {
-        if (err instanceof Error && err.name !== 'AbortError' && isMounted) {
+        if (err instanceof Error && err.name !== "AbortError" && isMounted) {
           console.error("Error fetching products:", err);
           setError("Failed to load products. Please try again later.");
+  
+          // ✅ Fallback to cache only if fetching fails
+          const cachedProducts = localStorage.getItem("products");
+          if (cachedProducts) {
+            setProducts(JSON.parse(cachedProducts));
+          }
         }
       } finally {
         if (isMounted) setIsLoading(false);
       }
     };
-
+  
     fetchProducts();
-
+  
     return () => {
       isMounted = false;
       controller.abort();
     };
   }, []);
+  
 
   if (isLoading) {
     return (

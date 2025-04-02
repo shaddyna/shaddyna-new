@@ -191,4 +191,3 @@ const ProductItem: React.FC<ProductItemProps> = ({
     </div>
   </div>
 );
-

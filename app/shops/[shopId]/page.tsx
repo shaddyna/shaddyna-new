@@ -71,7 +71,7 @@ const ShopDetailsPage = () => {
 
         // Fetch shop details
         const { data: shopResponse } = await axios.get(
-          `http://localhost:5000/api/shops/${shopId}`
+          `https://shaddyna-backend.onrender.com/api/shops/${shopId}`
         );
 
         const { shop: shopData } = shopResponse;

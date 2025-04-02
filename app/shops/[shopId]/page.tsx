@@ -4,7 +4,18 @@ import { FiArrowLeft, FiFacebook, FiHeart, FiInstagram, FiShoppingCart, FiTwitte
 import { useState, useEffect } from 'react';
 import { AiFillStar, AiOutlineStar } from 'react-icons/ai';
 import axios from 'axios';
+import { useCartStore } from '@/stores/cart-store';
+import { Snackbar } from '@mui/material';
+import MuiAlert, { AlertProps } from '@mui/material/Alert';
+import React from 'react';
 
+
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
+  props,
+  ref,
+) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 interface Shop {
   createdAt: string | number | Date;
   _id: string;
@@ -60,6 +71,38 @@ const ShopDetailsPage = () => {
   const [imageScale, setImageScale] = useState(1);
   const [imageTranslateY, setImageTranslateY] = useState(0);
   const [opacity, setOpacity] = useState(1);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
+const [snackbarOpen, setSnackbarOpen] = useState(false);
+
+
+  const handleAddToCart = (product: Product) => {
+    try {
+      useCartStore.getState().addItem({
+        _id: product._id,
+        name: product.name,
+        price: product.price,
+        quantity: 1,
+        image: product.image || product.images?.[0] || '',
+        color: '',
+        stock: 10,
+        sellerId: product.sellerId,
+        shelfId: product.shelfId
+      });
+      
+      setSnackbarMessage(`${product.name} added to cart!`);
+      setSnackbarSeverity('success');
+      setSnackbarOpen(true);
+    } catch (error) {
+      setSnackbarMessage('Failed to add item to cart');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
+    }
+  };
+
+
+
+
 
   useEffect(() => {
     const fetchShopDetails = async () => {
@@ -387,71 +430,91 @@ const ShopDetailsPage = () => {
         </div>
 
         {/* Products Section */}
-        <div className="mt-12 px-0 sm:px-0">
-          <h2 className="text-xl sm:text-2xl font-bold text-[#0f1c47] mb-4 sm:mb-6">
-            Products
-          </h2>
+      <div className="mt-12 px-0 sm:px-0">
+        <h2 className="text-xl sm:text-2xl font-bold text-[#0f1c47] mb-4 sm:mb-6">
+          Products
+        </h2>
 
-          {products.length === 0 ? (
-            <div className="text-center py-8 text-gray-500">
-              No products available in this shop yet.
-            </div>
-          ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-              {products.map((product) => (
-                <div
-                  key={product._id}
-                  className="bg-white p-2 sm:p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow border border-[#0f1c47]/10"
-                >
-                  {/* Product Image */}
-                  <div className="w-full h-32 sm:h-40 md:h-48 rounded-lg overflow-hidden mb-3">
-                    <img
-                      src={product.image || product.images?.[0] || 'https://via.placeholder.com/150'}
-                      alt={product.name}
-                      className="w-full h-full object-cover"
-                      onClick={() => router.push(`/products/${product._id}`)}
-                    />
-                  </div>
-
-                  {/* Product Details */}
-                  <h3 className="text-sm sm:text-lg font-bold text-[#0f1c47] truncate">
-                    {product.name}
-                  </h3>
-                  <p className="text-xs sm:text-sm text-[#bf2c7e] font-medium">
-                    KES {product.price}
-                  </p>
-
-                  {/* Rating Stars */}
-                  <div className="flex items-center mt-1 sm:mt-2">
-                    {[...Array(5)].map((_, i) => (
-                      i < Math.floor(product.rating || 4) ? (
-                        <AiFillStar key={i} className="text-yellow-400 text-xs sm:text-base" />
-                      ) : (
-                        <AiOutlineStar key={i} className="text-gray-300 text-xs sm:text-base" />
-                      )
-                    ))}
-                  </div>
-
-                  {/* Buttons */}
-                  <div className="flex justify-between items-center mt-3 sm:mt-4">
-                    {/* Add to Cart Button */}
-                    <button
-                      className="bg-[#0f1c47] text-white py-1 px-2 sm:py-1.5 sm:px-4 rounded-full font-bold text-[10px] sm:text-sm shadow-md hover:scale-105 flex items-center gap-1"
-                    >
-                      <FiShoppingCart className="h-4 w-4 sm:h-5 sm:w-5" />
-                      Add
-                    </button>
-
-                    {/* Wishlist Button */}
-                    <button className="text-[#bf2c7e] hover:text-red-600 transition-transform hover:scale-110">
-                      <FiHeart className="h-4 w-4 sm:h-5 sm:w-5" />
-                    </button>
-                  </div>
+        {products.length === 0 ? (
+          <div className="text-center py-8 text-gray-500">
+            No products available in this shop yet.
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+            {products.map((product) => (
+              <div
+                key={product._id}
+                className="bg-white p-2 sm:p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow border border-[#0f1c47]/10"
+              >
+                {/* Product Image */}
+                <div className="w-full h-32 sm:h-40 md:h-48 rounded-lg overflow-hidden mb-3">
+                  <img
+                    src={product.image || product.images?.[0] || 'https://via.placeholder.com/150'}
+                    alt={product.name}
+                    className="w-full h-full object-cover"
+                    onClick={() => router.push(`/products/${product._id}`)}
+                  />
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
+
+                {/* Product Details */}
+                <h3 className="text-sm sm:text-lg font-bold text-[#0f1c47] truncate">
+                  {product.name}
+                </h3>
+                <p className="text-xs sm:text-sm text-[#bf2c7e] font-medium">
+                  KES {product.price}
+                </p>
+
+                {/* Rating Stars */}
+                <div className="flex items-center mt-1 sm:mt-2">
+                  {[...Array(5)].map((_, i) => (
+                    i < Math.floor(product.rating || 4) ? (
+                      <AiFillStar key={i} className="text-yellow-400 text-xs sm:text-base" />
+                    ) : (
+                      <AiOutlineStar key={i} className="text-gray-300 text-xs sm:text-base" />
+                    )
+                  ))}
+                </div>
+
+                {/* Buttons */}
+                <div className="flex justify-between items-center mt-3 sm:mt-4">
+                  {/* Add to Cart Button */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleAddToCart(product);
+                    }}
+                    className="bg-[#0f1c47] text-white py-1 px-2 sm:py-1.5 sm:px-4 rounded-full font-bold text-[10px] sm:text-sm shadow-md hover:scale-105 flex items-center gap-1"
+                  >
+                    <FiShoppingCart className="h-4 w-4 sm:h-5 sm:w-5" />
+                    Add
+                  </button>
+
+                  {/* Wishlist Button */}
+                  <button className="text-[#bf2c7e] hover:text-red-600 transition-transform hover:scale-110">
+                    <FiHeart className="h-4 w-4 sm:h-5 sm:w-5" />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+           {/* Snackbar Notification */}
+           <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={() => setSnackbarOpen(false)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      >
+        <Alert 
+          onClose={() => setSnackbarOpen(false)} 
+          severity={snackbarSeverity}
+          sx={{ width: '100%' }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
       </div>
     </div>
   );

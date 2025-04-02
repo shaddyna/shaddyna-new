@@ -291,6 +291,7 @@ import Link from "next/link";
 import { UserAccountIcon } from "hugeicons-react";
 import { PlusCircleIcon } from "lucide-react";
 import { FiPlus, FiTrash } from "react-icons/fi";
+import MobileNav from "./MobileNav";
 
 export default function TopHomeNav() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -412,17 +413,8 @@ export default function TopHomeNav() {
 
   return (
     <>
-      <nav className="flex justify-between items-center p-4 bg-white shadow-md border-b lg:hidden">
-        <h1 className="text-lg font-bold text-[#0f1c47]">Shaddyna</h1>
-        <div className="flex items-center space-x-4">
-          <button onClick={() => setIsModalOpen(true)}>
-            <PlusCircleIcon size={24} className="text-[#0f1c47] hover:text-black transition" />
-          </button>
-          <Link href="/profile">
-            <UserAccountIcon size={24} className="text-[#0f1c47] hover:text-black transition" />
-          </Link>
-        </div>
-      </nav>
+    
+    <MobileNav setIsModalOpen={setIsModalOpen} />
 
       {/* Product Adding Modal */}
       {isModalOpen && (

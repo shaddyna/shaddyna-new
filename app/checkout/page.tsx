@@ -11,6 +11,18 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { ShoppingCartIcon, ChevronLeftIcon } from 'lucide-react';
 
+interface CartItem {
+  _id: string
+  name: string
+  price: number
+  quantity: number
+  image: string
+  color: string
+  stock: number
+  sellerId: string 
+  shelfId: string 
+}
+
 // Form validation schemas
 const shippingSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
@@ -38,6 +50,85 @@ const paymentSchema = z.object({
     })
   ).min(1, "At least one payment is required")
 });
+
+// Order Summary Sidebar Component
+const OrderSummary = ({ items }: { items: CartItem[] }) => {
+  const subtotal = useMemo(() => {
+    return items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  }, [items]);
+
+  const shippingCost = 0; // Free shipping in this case
+  const total = subtotal + shippingCost;
+
+  // Group items by seller for display
+  const itemsBySeller = useMemo(() => {
+    return items.reduce((acc, item) => {
+      if (!acc[item.sellerId]) {
+        acc[item.sellerId] = [];
+      }
+      acc[item.sellerId].push(item);
+      return acc;
+    }, {} as Record<string, typeof items>);
+  }, [items]);
+
+  return (
+    <div className="bg-white rounded-lg shadow-sm p-6 sticky top-4">
+      <h2 className="text-lg font-medium text-gray-900 mb-4">Order Summary</h2>
+      
+      {/* Items List */}
+      <div className="mb-4 max-h-64 overflow-y-auto">
+        {Object.entries(itemsBySeller).map(([sellerId, sellerItems]) => (
+          <div key={sellerId} className="mb-4">
+            <h3 className="font-medium text-gray-700 mb-2">Seller {sellerId.slice(0, 4)}...</h3>
+            {sellerItems.map(item => (
+              <div key={`${item._id}-${item.color}`} className="flex justify-between items-start py-2 border-b border-gray-100">
+                <div className="flex items-center space-x-3">
+                  <div className="relative h-12 w-12 rounded-md overflow-hidden">
+                    <img
+                      src={item.image || '/placeholder-product.jpg'}
+                      alt={item.name}
+                      className="h-full w-full object-cover"
+                    />
+                    <span className="absolute -top-1 -right-1 bg-gray-800 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                      {item.quantity}
+                    </span>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-900">{item.name}</p>
+                    {item.color && (
+                      <p className="text-xs text-gray-500">Color: {item.color}</p>
+                    )}
+                  </div>
+                </div>
+                <p className="text-sm font-medium text-gray-900">
+                  KES {(item.price * item.quantity).toFixed(2)}
+                </p>
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+
+      {/* Totals */}
+      <div className="space-y-3 border-t border-gray-200 pt-4">
+        <div className="flex justify-between">
+          <span className="text-gray-600">Subtotal ({items.length} items)</span>
+          <span className="text-gray-900">KES {subtotal.toFixed(2)}</span>
+        </div>
+        <div className="flex justify-between">
+          <span className="text-gray-600">Shipping</span>
+          <span className="text-gray-900">Free</span>
+        </div>
+        <div className="flex justify-between font-medium text-gray-900 pt-2">
+          <span>Total</span>
+          <span>KES {total.toFixed(2)}</span>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -483,7 +574,7 @@ export default function CheckoutPage() {
                 </div>
                 
                 {/* Order Summary */}
-                <div>
+                {/*<div>
                   <h3 className="font-medium text-gray-900 mb-3">Order Summary</h3>
                   <div className="space-y-6">
                     {sellerTotals.map(({ sellerId, items }, sellerIndex) => (
@@ -495,13 +586,15 @@ export default function CheckoutPage() {
                           {items.map((item) => (
                             <div key={`${item._id}-${item.color}`} className="flex justify-between items-center">
                               {/* Item display */}
-                            </div>
+                           {/*} </div>
                           ))}
                         </div>
                       </div>
                     ))}
                   </div>
-                </div>
+                </div>*/}
+
+                <OrderSummary items={items} />
                 
                 <Button 
                   onClick={handlePlaceOrder}
@@ -514,15 +607,7 @@ export default function CheckoutPage() {
             )}
           </div>
 
-          {/* Order Summary Sidebar */}
-          <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg shadow-sm p-6 sticky top-4">
-              <h2 className="text-lg font-medium text-gray-900 mb-4">Order Summary</h2>
-              <div className="space-y-4">
-                {/* Order summary totals */}
-              </div>
-            </div>
-          </div>
+          <OrderSummary items={items} />
         </div>
       </div>
     </div>

@@ -253,6 +253,9 @@ import { useCartStore } from '@/stores/cart-store'
 import { Snackbar } from '@mui/material'
 import MuiAlert, { AlertProps } from '@mui/material/Alert'
 import React from 'react'
+import CartNotification from '@/components/cart/CartNotification'
+
+
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   props,
@@ -507,7 +510,9 @@ const PurchaseModal = ({ product, onClose }: { product: Product, onClose: () => 
   )
 }
 
-const CartNotification = ({ count, onCheckout }: { count: number, onCheckout: () => void }) => (
+
+
+{/*const CartNotification = ({ count, onCheckout }: { count: number, onCheckout: () => void }) => (
   <div className="fixed bottom-4 right-4 left-4 sm:left-auto bg-white shadow-xl rounded-xl p-4 flex items-center justify-between animate-slide-up">
     <div className="flex items-center gap-3">
       <FiShoppingCart className="text-[#bf2c7e] text-xl" />
@@ -520,7 +525,7 @@ const CartNotification = ({ count, onCheckout }: { count: number, onCheckout: ()
       Checkout
     </button>
   </div>
-)
+)*/}
 
 export default function BuyGoodsPage() {
   const [products, setProducts] = useState<Product[]>([])
@@ -646,10 +651,16 @@ export default function BuyGoodsPage() {
           </div>
         )}
 
-        {items.length > 0 && (
+       {/*} {items.length > 0 && (
           <CartNotification 
             count={items.length} 
             onCheckout={() => router.push('/checkout')}
+          />
+        )}*/}
+
+        {items.length > 0 && (
+          <CartNotification 
+            onCheckout={() => router.push('/checkout')} 
           />
         )}
 

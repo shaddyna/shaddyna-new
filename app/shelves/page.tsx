@@ -366,7 +366,11 @@ export default function ShelvesPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-white">
-        <TopNavModified menuItems={["Add Shelf", "My Shelves"]} />
+          <TopNavModified menuItems={["Add Shelf", "My Shelves"]} onMenuItemClick={function (item: string): void {
+          throw new Error('Function not implemented.');
+        } } />
+        {/*
+        <TopNavModified menuItems={["Add Shelf", "My Shelves"]} />*/}
         <div className="container mx-auto py-8 px-4">
           <p>Loading shelves...</p>
         </div>
@@ -386,7 +390,10 @@ export default function ShelvesPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      <TopNavModified menuItems={["Add Shelf", "My Shelves"]} />
+      {/*<TopNavModified menuItems={["Add Shelf", "My Shelves"]} />*/}
+      <TopNavModified menuItems={["Add Shelf", "My Shelves"]} onMenuItemClick={function (item: string): void {
+          throw new Error('Function not implemented.');
+        } } />
   
       {/* Floating Create Shelf Button */}
       <div className="fixed bottom-8 right-8 z-40">

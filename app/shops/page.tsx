@@ -69,7 +69,10 @@ const ShopsPage: FC = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-white">
-        <TopNavModified menuItems={["Create Shop"]} />
+        {/*<TopNavModified menuItems={["Create Shop"]} />*/}
+        <TopNavModified menuItems={["Create Shop"]} onMenuItemClick={function (item: string): void {
+          throw new Error('Function not implemented.');
+        } } />
         <div className="container mx-auto py-8 px-4 text-center">
           <p>Loading shops...</p>
         </div>
@@ -80,7 +83,10 @@ const ShopsPage: FC = () => {
   if (error) {
     return (
       <div className="min-h-screen bg-white">
-        <TopNavModified menuItems={["Create Shop"]} />
+        {/*<TopNavModified menuItems={["Create Shop"]} />*/}
+        <TopNavModified menuItems={["Create Shop"]} onMenuItemClick={function (item: string): void {
+          throw new Error('Function not implemented.');
+        } } />
         <div className="container mx-auto py-8 px-4 text-center text-red-500">
           <p>{error}</p>
         </div>
@@ -96,7 +102,10 @@ const ShopsPage: FC = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      <TopNavModified menuItems={["Create Shop"]} />
+      {/*<TopNavModified menuItems={["Create Shop"]} />*/}
+      <TopNavModified menuItems={["Create Shop"]} onMenuItemClick={function (item: string): void {
+        throw new Error('Function not implemented.');
+      } } />
 
       <section className="bg-white py-4 sm:py-6 px-3 sm:px-6 border-b border-gray-100">
         <div className="max-w-7xl mx-auto">

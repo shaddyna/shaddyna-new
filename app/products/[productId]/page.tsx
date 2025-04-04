@@ -52,7 +52,36 @@ export default function ProductDetailPage() {
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success')
   const [activeTab, setActiveTab] = useState('description')
 
+
+
   useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        setLoading(true)
+        setError(null)
+        
+        const { data } = await axios.get(`https://shaddyna-backend.onrender.com/api/products/${productId}`)
+        
+        // Set default stock to 1 if none exists
+        const productData = {
+          ...data.product,
+          stock: data.product.stock || 1 // Add this line
+        }
+        
+        setProduct(productData)
+      } catch (err) {
+        console.error("Error fetching product:", err)
+        setError("Failed to load product details")
+      } finally {
+        setLoading(false)
+      }
+    }
+  
+    fetchProduct()
+  }, [productId])
+  
+
+ /* useEffect(() => {
     const fetchProduct = async () => {
       try {
         setLoading(true)
@@ -69,7 +98,7 @@ export default function ProductDetailPage() {
     }
 
     fetchProduct()
-  }, [productId])
+  }, [productId])*/
 
   const handleAddToCart = () => {
     if (!product) return
@@ -236,7 +265,7 @@ export default function ProductDetailPage() {
             </div>
 
             <div>
-              {/*<p className="text-3xl font-bold text-[#bf2c7e]">KES {product.price.toLocaleString()}</p>*/}
+              <p className="text-3xl font-bold text-[#bf2c7e]">KES {product.price.toLocaleString()}</p>
               <p className={`text-sm ${product.stock > 0 ? 'text-green-600' : 'text-red-600'}`}>
                 {product.stock > 0 ? `In Stock (${product.stock} available)` : 'Out of Stock'}
               </p>

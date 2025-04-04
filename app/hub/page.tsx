@@ -1,6 +1,7 @@
 "use client";
 import TopNavModified from '@/components/TopNavModified';
 import { useState } from 'react';
+import AddSkillForm from "@/components/AddSkillForm"; 
 
 interface SkillPost {
   id: number;
@@ -52,10 +53,27 @@ export default function HubPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedPost, setSelectedPost] = useState<SkillPost | null>(null);
   const [activeFilter, setActiveFilter] = useState('all');
+  const [showSkillForm, setShowSkillForm] = useState(false);
+
+  const handleMenuItemClick = (item: string) => {
+    if (item === "Add Skill") {
+      setShowSkillForm(true);
+    } else if (item === "Add Opportunity") {
+      // Handle opportunity form
+    }
+  };
+
 
   return (
     <div className="min-h-screen bg-white">
-      <TopNavModified menuItems={["Add Skill", "Add Opportunity"]} />
+          <TopNavModified 
+        menuItems={["Add Skill", "Add Opportunity"]} 
+        onMenuItemClick={handleMenuItemClick} 
+      />
+
+{showSkillForm && (
+        <AddSkillForm onClose={() => setShowSkillForm(false)} />
+      )}
 
       {/* Header Section */}
       <div className="bg-white py-4 px-3">

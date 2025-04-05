@@ -99,6 +99,17 @@ const AddSkillForm = ({ onClose }: AddSkillFormProps) => {
     setLoading(true);
     setError('');
 
+      
+  // Validate portfolio items
+  const hasEmptyPortfolioItems = formData.portfolio.some(item => 
+    !item.title.trim() || !item.description.trim() || !item.image
+  );
+  
+  if (hasEmptyPortfolioItems) {
+    setError('All portfolio items must have title, description, and image');
+    return;
+  }
+
     try {
       const formDataToSend = new FormData();
       formDataToSend.append('name', formData.name);
@@ -115,11 +126,12 @@ const AddSkillForm = ({ onClose }: AddSkillFormProps) => {
         if (item.image) formDataToSend.append(`portfolio[${index}][image]`, item.image);
       });
 
-      await axios.post('/api/skills', formDataToSend, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
+
+await axios.post('https://shaddyna-backend.onrender.com/api/skill', formDataToSend, {
+  headers: {
+    'Content-Type': 'multipart/form-data'
+  }
+});
       
       onClose();
       router.refresh();

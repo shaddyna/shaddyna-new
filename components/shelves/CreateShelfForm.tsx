@@ -263,7 +263,7 @@ export const CreateShelfForm = ({ onSubmit, onCancel, users, loading = false }: 
   const [investmentDuration, setInvestmentDuration] = useState<string>('');
   const [investmentRiskLevel, setInvestmentRiskLevel] = useState<'low' | 'medium' | 'high'>('medium');
 
-  const handleSubmit = async (e: FormEvent) => {
+  /*const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     
     try {
@@ -325,6 +325,70 @@ export const CreateShelfForm = ({ onSubmit, onCancel, users, loading = false }: 
             }
           })
         }),
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to create shelf');
+      }
+  
+      const createdShelf = await response.json();
+      onSubmit(createdShelf.data);
+    } catch (error: any) {
+      console.error("Shelf creation error:", error);
+      alert(error.message || "Failed to create shelf");
+    }
+  };*/
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    
+    try {
+      const formData = new FormData();
+      
+      // Append all form fields
+      formData.append('name', name);
+      formData.append('description', description);
+      formData.append('type', type);
+      formData.append('openForMembers', String(openForMembers));
+     // In your handleSubmit function:
+formData.append('members', JSON.stringify(
+  selectedMembers.map(member => ({
+    userId: member._id,
+    role: 'member'
+  }))
+));
+  
+      // Append type-specific details
+      if (type === 'product') {
+        formData.append('productDetails', JSON.stringify({
+          price: productPrice,
+          stock: productStock,
+          category: productCategory
+        }));
+        // Append each image file
+        productImages.forEach(image => {
+          formData.append('images', image);
+        });
+      } else if (type === 'service') {
+        formData.append('serviceDetails', JSON.stringify({
+          price: servicePrice,
+          duration: serviceDuration,
+          availability: serviceAvailability
+        }));
+      } else if (type === 'investment') {
+        formData.append('investmentDetails', JSON.stringify({
+          amount: investmentAmount,
+          roi: investmentROI,
+          duration: investmentDuration,
+          riskLevel: investmentRiskLevel
+        }));
+      }
+  
+      const response = await fetch("https://shaddyna-backend.onrender.com/api/shelf/create", {
+        method: 'POST',
+        body: formData,
+        // Don't set Content-Type header - browser will set it with boundary
       });
   
       if (!response.ok) {

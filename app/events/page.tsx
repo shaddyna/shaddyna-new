@@ -393,7 +393,7 @@ export default function SeminarsPage() {
           />
         )}
       </main>
-      <BottomNavigationBar />
+   
     </div>
   )
 }

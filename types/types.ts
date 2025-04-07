@@ -1,5 +1,78 @@
+export interface User {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  image?: string;
+  role: string;
+}
 
-    export interface User {
+export interface Member {
+  userId: string | User; // Can be either ID or populated User object
+  role: string;
+}
+
+export interface ProductDetails {
+  name: string;
+  price: number;
+  stock: number;
+  images: string[];
+  category: string;
+}
+
+export interface ServiceDetails {
+  price: number;
+  duration: string;
+  availability: ('Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday' | 'Saturday' | 'Sunday')[];
+}
+
+export interface InvestmentDetails {
+  amount: number;
+  roi: number;
+  duration: string;
+  riskLevel: 'low' | 'medium' | 'high';
+}
+
+export interface Shelf {
+  _id: string;
+  name: string;
+  description: string;
+  type: 'product' | 'service' | 'investment';
+  openForMembers: boolean;
+  members: Member[];
+  productDetails?: ProductDetails[];
+  serviceDetails?: ServiceDetails[];
+  investmentDetails?: InvestmentDetails[];
+  createdAt: Date | string;
+  updatedAt: Date | string;
+  __v?: number;
+}
+
+export interface CreateShelfFormProps {
+  onSuccess: (newShelf: Shelf) => void;
+  onCancel: () => void;
+  users: User[];
+  loading?: boolean;
+}
+
+export interface Transaction {
+  id: number;
+  type: 'deposit' | 'withdrawal' | 'investment' | 'purchase';
+  date: string;
+  amount: number;
+  description: string;
+  status: 'completed' | 'pending' | 'failed';
+}
+
+export interface Investment {
+  id: number;
+  name: string;
+  amount: number;
+  return: number;
+  progress: number;
+  status: 'active' | 'matured';
+}
+/* export interface User {
       _id: string;
       firstName: string;
       lastName: string;
@@ -101,4 +174,4 @@ export interface Investment {
   return: number
   progress: number
   status: 'active' | 'matured'
-}
+}*/

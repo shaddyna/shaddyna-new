@@ -1,7 +1,21 @@
-/*"use client";
-import { Shelf } from "@/types/types";
+"use client";
+import { Shelf, User } from "@/types/types";
 import Image from "next/image";
 import { FiUsers, FiPackage, FiDollarSign, FiMessageSquare, FiSend } from "react-icons/fi";
+import { useEffect, useState } from "react";
+
+interface MemberWithUser {
+  userId: {
+    _id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    image?: string;
+    role?: string;
+  };
+  role: string;
+  _id?: string;
+}
 
 interface ShelfDetailsModalProps {
   shelf: Shelf;
@@ -10,10 +24,120 @@ interface ShelfDetailsModalProps {
 }
 
 export const ShelfDetailsModal = ({ shelf, onClose, onJoinRequest }: ShelfDetailsModalProps) => {
+  const [members, setMembers] = useState<MemberWithUser[]>([]);
+  const [loadingMembers, setLoadingMembers] = useState(true);
+
+  useEffect(() => {
+    const processMembers = async () => {
+      setLoadingMembers(true);
+      try {
+        const safeMembers = shelf.members.map(member => {
+          const userId = typeof member.userId === 'string' 
+            ? { _id: member.userId } 
+            : member.userId || { _id: 'unknown' };
+
+          return {
+            ...member,
+            userId: {
+              id: userId._id,
+              firstName: 'Loading...',
+              lastName: '',
+              email: '',
+              role: 'member',
+              ...userId
+            }
+          };
+        });
+
+        const needsFetch = safeMembers.some(m => 
+          typeof m.userId === 'string' || 
+          !m.userId.firstName || 
+          m.userId.firstName === 'Loading...'
+        );
+        
+        if (needsFetch) {
+          const memberIds = safeMembers.map(m => m.userId._id);
+          const response = await fetch(`https://shaddyna-backend.onrender.com/api/users/bulk?ids=${memberIds.join(',')}`);
+          
+          if (response.ok) {
+            const userData: User[] = await response.json();
+            const updatedMembers = safeMembers.map(member => {
+              const user = userData.find(u => u._id === member.userId._id);
+              return {
+                ...member,
+                userId: {
+                  ...member.userId,
+                  firstName: user?.firstName || 'Unknown',
+                  lastName: user?.lastName || 'User',
+                  email: user?.email || '',
+                  image: user?.image,
+                  role: user?.role || 'member'
+                }
+              };
+            });
+            setMembers(updatedMembers);
+            return;
+          }
+        }
+        
+        setMembers(safeMembers);
+      } catch (error) {
+        console.error('Error processing members:', error);
+        setMembers(shelf.members.map(member => ({
+          ...member,
+          userId: {
+            _id: typeof member.userId === 'string' ? member.userId : member.userId?._id || 'unknown',
+            firstName: 'Unknown',
+            lastName: 'User',
+            email: '',
+            role: 'member'
+          }
+        })));
+      } finally {
+        setLoadingMembers(false);
+      }
+    };
+
+    processMembers();
+  }, [shelf.members]);
+
+  const renderMemberAvatar = (member: MemberWithUser) => {
+    const initials = `${member.userId.firstName?.charAt(0) || 'U'}${member.userId.lastName?.charAt(0) || ''}`;
+    const fullName = `${member.userId.firstName} ${member.userId.lastName}`;
+
+    return (
+      <div className="w-8 h-8 rounded-full bg-[#bf2c7e]/10 flex items-center justify-center overflow-hidden">
+        {member.userId.image ? (
+          <Image 
+            src={member.userId.image} 
+            alt={fullName}
+            width={32}
+            height={32}
+            className="object-cover"
+          />
+        ) : (
+          <span className="text-[#bf2c7e]">{initials}</span>
+        )}
+      </div>
+    );
+  };
+
+  const renderMemberItem = (member: MemberWithUser) => (
+    <div key={member.userId._id} className="flex items-center space-x-2 p-2 bg-[#f8f9fa] rounded-lg">
+      {renderMemberAvatar(member)}
+      <div>
+        <p className="text-sm font-medium text-[#0f1c47]">
+          {member.userId.firstName} {member.userId.lastName}
+        </p>
+        <p className="text-xs text-gray-500">{member.userId.email || 'No email'}</p>
+        <p className="text-xs text-gray-500 capitalize">{member.role}</p>
+      </div>
+    </div>
+  );
+
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-        {/* Header *
         <div className="flex justify-between items-start mb-6">
           <div>
             <h2 className="text-2xl font-bold text-[#0f1c47]">{shelf.name}</h2>
@@ -27,50 +151,49 @@ export const ShelfDetailsModal = ({ shelf, onClose, onJoinRequest }: ShelfDetail
           </button>
         </div>
 
-        {/* Main Content *
         <div className="grid md:grid-cols-3 gap-6">
-          {/* Left Column *
           <div className="md:col-span-2 space-y-6">
-            {/* Description *
             <div>
               <h3 className="text-lg font-semibold text-[#0f1c47] mb-2">Description</h3>
               <p className="text-gray-600">{shelf.description}</p>
             </div>
 
-            {/* Members Section *
             <div>
               <h3 className="text-lg font-semibold text-[#0f1c47] mb-3 flex items-center">
-                <FiUsers className="mr-2" /> Members ({shelf.members.length})
+                <FiUsers className="mr-2" /> Members ({members.length})
               </h3>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                {shelf.members.map(member => (
-                  <div key={member._id} className="flex items-center space-x-2 p-2 bg-[#f8f9fa] rounded-lg">
-                    <div className="w-8 h-8 rounded-full bg-[#bf2c7e]/10 flex items-center justify-center overflow-hidden">
-                      {member.image ? (
-                        <Image src={member.image} alt={member.name} width={32} height={32} />
-                      ) : (
-                        <span className="text-[#bf2c7e]">{member.name.charAt(0)}</span>
-                      )}
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-[#0f1c47]">{member.name}</p>
-                      <p className="text-xs text-gray-500 capitalize">{member.role}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
+              {loadingMembers ? (
+                <div className="flex justify-center py-4">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#bf2c7e]"></div>
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  {members.map(renderMemberItem)}
+                </div>
+              )}
             </div>
 
-            {/* Products/Services Section *
             <div>
               <h3 className="text-lg font-semibold text-[#0f1c47] mb-3 flex items-center">
                 <FiPackage className="mr-2" /> {shelf.type === 'investment' ? 'Investments' : 'Products & Services'}
               </h3>
               <div className="space-y-2">
-                {shelf.products.length > 0 ? (
-                  shelf.products.map((product, index) => (
+                {shelf.type === 'product' && shelf.productDetails && shelf.productDetails.length > 0 ? (
+                  shelf.productDetails.map((product, index) => (
                     <div key={index} className="p-3 bg-[#f8f9fa] rounded-lg">
-                      <p className="text-[#0f1c47]">{product}</p>
+                      <p className="text-[#0f1c47]">{product.name}</p>
+                    </div>
+                  ))
+                ) : shelf.type === 'service' && shelf.serviceDetails && shelf.serviceDetails.length > 0 ? (
+                  shelf.serviceDetails.map((service, index) => (
+                    <div key={index} className="p-3 bg-[#f8f9fa] rounded-lg">
+                      <p className="text-[#0f1c47]">Service (Duration: {service.duration})</p>
+                    </div>
+                  ))
+                ) : shelf.type === 'investment' && shelf.investmentDetails && shelf.investmentDetails.length > 0 ? (
+                  shelf.investmentDetails.map((investment, index) => (
+                    <div key={index} className="p-3 bg-[#f8f9fa] rounded-lg">
+                      <p className="text-[#0f1c47]">Investment: Ksh {investment.amount.toLocaleString()}</p>
                     </div>
                   ))
                 ) : (
@@ -80,22 +203,19 @@ export const ShelfDetailsModal = ({ shelf, onClose, onJoinRequest }: ShelfDetail
             </div>
           </div>
 
-          {/* Right Column *
           <div className="space-y-6">
-            {/* Investment Summary *
             {shelf.type === 'investment' && (
               <div className="p-4 bg-green-50 rounded-lg">
                 <h3 className="text-lg font-semibold text-green-800 mb-2 flex items-center">
                   <FiDollarSign className="mr-2" /> Investment Summary
                 </h3>
                 <p className="text-2xl font-bold text-green-600 mb-1">
-                  ${shelf.investments.toLocaleString()}
+                  Ksh {shelf.investmentDetails?.reduce((sum, inv) => sum + inv.amount, 0).toLocaleString() ?? '0'}
                 </p>
                 <p className="text-sm text-green-700">Total contributions</p>
               </div>
             )}
 
-            {/* Chat Section *
             <div>
               <h3 className="text-lg font-semibold text-[#0f1c47] mb-3 flex items-center">
                 <FiMessageSquare className="mr-2" /> Collaboration Chat
@@ -116,7 +236,6 @@ export const ShelfDetailsModal = ({ shelf, onClose, onJoinRequest }: ShelfDetail
               </div>
             </div>
 
-            {/* Action Buttons *
             <div className="space-y-2">
               {shelf.openForMembers && (
                 <button
@@ -135,9 +254,9 @@ export const ShelfDetailsModal = ({ shelf, onClose, onJoinRequest }: ShelfDetail
       </div>
     </div>
   );
-};*/
+};
 
-"use client";
+/*"use client";
 import { Shelf, User } from "@/types/types";
 import Image from "next/image";
 import { FiUsers, FiPackage, FiDollarSign, FiMessageSquare, FiSend } from "react-icons/fi";
@@ -341,7 +460,7 @@ export const ShelfDetailsModal = ({ shelf, onClose, onJoinRequest }: ShelfDetail
                   <FiDollarSign className="mr-2" /> Investment Summary
                 </h3>
                 <p className="text-2xl font-bold text-green-600 mb-1">
-                  ${shelf.investments.toLocaleString()}
+                  Ksh {shelf.investments.toLocaleString()}
                 </p>
                 <p className="text-sm text-green-700">Total contributions</p>
               </div>
@@ -385,4 +504,4 @@ export const ShelfDetailsModal = ({ shelf, onClose, onJoinRequest }: ShelfDetail
       </div>
     </div>
   );
-};
+};*/

@@ -18,22 +18,32 @@ export const ShelfCard = ({ shelf, onViewDetails }: ShelfCardProps) => {
   const getItemCount = () => {
     switch (shelf.type) {
       case 'product':
-        return shelf.productDetails ? 1 : 0; // Assuming 1 product per product shelf
+        return shelf.productDetails?.length || 0;
       case 'service':
-        return 1; // Assuming 1 service per service shelf
+        return shelf.serviceDetails?.length || 0;
       case 'investment':
-        return 1; // Assuming 1 investment per investment shelf
+        return shelf.investmentDetails?.length || 0;
       default:
         return 0;
     }
   };
 
-  // Helper function to get investment value
+  // Helper function to calculate total investment value
   const getInvestmentValue = () => {
     if (shelf.type === 'investment' && shelf.investmentDetails) {
-      return shelf.investmentDetails.amount;
+      return shelf.investmentDetails.reduce((total, investment) => {
+        return total + (investment.amount || 0);
+      }, 0);
     }
     return 0;
+  };
+
+  // Helper function to get first product image if available
+  const getShelfImage = () => {
+    if (shelf.type === 'product' && shelf.productDetails?.[0]?.images?.[0]) {
+      return shelf.productDetails[0].images[0];
+    }
+    return null;
   };
 
   return (
@@ -41,9 +51,17 @@ export const ShelfCard = ({ shelf, onViewDetails }: ShelfCardProps) => {
       {/* Shelf Header */}
       <div className="flex items-start gap-4 mb-4">
         <div className="w-16 h-16 rounded-lg bg-[#bf2c7e]/10 flex items-center justify-center overflow-hidden">
+        {getShelfImage() ? (
+          <img 
+            src={getShelfImage() || undefined} 
+            alt={shelf.name} 
+            className="w-full h-full object-cover"
+          />
+        ) : (
           <div className="text-[#bf2c7e] text-2xl">
             {shelf.name.charAt(0).toUpperCase()}
           </div>
+        )}
         </div>
         
         <div className="flex-1">
@@ -72,7 +90,7 @@ export const ShelfCard = ({ shelf, onViewDetails }: ShelfCardProps) => {
             <FiUsers className="mr-1" />
           </div>
           <span className="text-xs font-medium text-[#0f1c47]">
-            {shelf.members.length} {shelf.members.length === 1 ? 'Member' : 'Members'}
+            {shelf.members?.length || 0} {shelf.members?.length === 1 ? 'Member' : 'Members'}
           </span>
         </div>
         
@@ -90,7 +108,11 @@ export const ShelfCard = ({ shelf, onViewDetails }: ShelfCardProps) => {
             <FiDollarSign className="mr-1" />
           </div>
           <span className="text-xs font-medium text-[#0f1c47]">
-            Ksh {getInvestmentValue().toLocaleString()}
+            {shelf.type === 'investment' ? (
+              `Ksh ${getInvestmentValue().toLocaleString()}`
+            ) : (
+              'N/A'
+            )}
           </span>
         </div>
       </div>
@@ -116,9 +138,10 @@ export const ShelfCard = ({ shelf, onViewDetails }: ShelfCardProps) => {
       </div>
     </div>
   );
-};{/*"use client";
+};
+
+{/*"use client";
 import { Shelf } from "@/types/types";
-import Image from "next/image";
 import { FiUsers, FiDollarSign, FiClock, FiPlusCircle } from "react-icons/fi";
 
 interface ShelfCardProps {
@@ -133,24 +156,36 @@ export const ShelfCard = ({ shelf, onViewDetails }: ShelfCardProps) => {
     day: 'numeric'
   });
 
+  // Helper function to count items based on shelf type
+  const getItemCount = () => {
+    switch (shelf.type) {
+      case 'product':
+        return shelf.productDetails ? 1 : 0; // Assuming 1 product per product shelf
+      case 'service':
+        return 1; // Assuming 1 service per service shelf
+      case 'investment':
+        return 1; // Assuming 1 investment per investment shelf
+      default:
+        return 0;
+    }
+  };
+
+  // Helper function to get investment value
+  const getInvestmentValue = () => {
+    if (shelf.type === 'investment' && shelf.investmentDetails) {
+      return shelf.investmentDetails.amount;
+    }
+    return 0;
+  };
+
   return (
     <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 border border-[#0f1c47]/10 hover:border-[#bf2c7e]/30">
-      {/* Shelf Header with Image *
+      {/* Shelf Header *
       <div className="flex items-start gap-4 mb-4">
         <div className="w-16 h-16 rounded-lg bg-[#bf2c7e]/10 flex items-center justify-center overflow-hidden">
-          {shelf.image ? (
-            <Image 
-              src={shelf.image}
-              alt={shelf.name}
-              width={64}
-              height={64}
-              className="object-cover w-full h-full"
-            />
-          ) : (
-            <div className="text-[#bf2c7e] text-2xl">
-              {shelf.name.charAt(0).toUpperCase()}
-            </div>
-          )}
+          <div className="text-[#bf2c7e] text-2xl">
+            {shelf.name.charAt(0).toUpperCase()}
+          </div>
         </div>
         
         <div className="flex-1">
@@ -188,7 +223,7 @@ export const ShelfCard = ({ shelf, onViewDetails }: ShelfCardProps) => {
             <FiPlusCircle className="mr-1" />
           </div>
           <span className="text-xs font-medium text-[#0f1c47]">
-            {shelf.products.length} {shelf.products.length === 1 ? 'Item' : 'Items'}
+            {getItemCount()} {getItemCount() === 1 ? 'Item' : 'Items'}
           </span>
         </div>
         
@@ -197,7 +232,7 @@ export const ShelfCard = ({ shelf, onViewDetails }: ShelfCardProps) => {
             <FiDollarSign className="mr-1" />
           </div>
           <span className="text-xs font-medium text-[#0f1c47]">
-            Ksh {shelf.investments.toLocaleString()}
+            Ksh {getInvestmentValue().toLocaleString()}
           </span>
         </div>
       </div>
@@ -221,13 +256,15 @@ export const ShelfCard = ({ shelf, onViewDetails }: ShelfCardProps) => {
           </svg>
         </button>
       </div>
-
-     {/*} {shelf.openForMembers && (
-        <div className="absolute top-4 right-4 bg-[#bf2c7e]/10 text-[#bf2c7e] text-xs px-2 py-1 rounded-full flex items-center">
-          <span className="w-2 h-2 bg-[#bf2c7e] rounded-full mr-1"></span>
-          Accepting Members
-        </div>
-      )}*
     </div>
   );
 };*/}
+
+
+
+
+
+
+
+
+

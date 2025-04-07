@@ -1,7 +1,7 @@
 "use client";
 import TopNavModified from '@/components/TopNavModified';
 import { useState, useEffect } from 'react';
-import { Shelf, User } from '@/types/types';
+import { Shelf, User, Member, ProductDetails, ServiceDetails, InvestmentDetails, } from '@/types/types';
 import { ShelfCard } from '@/components/shelves/ShelfCard';
 import { ShelfDetailsModal } from '@/components/shelves/ShelfDetailsModal';
 import { CreateShelfForm } from '@/components/shelves/CreateShelfForm';
@@ -17,7 +17,7 @@ export default function ShelvesPage() {
   const [users, setUsers] = useState<User[]>([]);
   const [usersLoading, setUsersLoading] = useState(false);
 
-  useEffect(() => {
+  /*useEffect(() => {
     const fetchShelves = async () => {
       try {
         setLoading(true);
@@ -76,6 +76,114 @@ export default function ShelvesPage() {
       }
     };
 
+    fetchShelves();
+  }, []);*/
+
+  useEffect(() => {
+    const fetchShelves = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        const response = await fetch("https://shaddyna-backend.onrender.com/api/shelf/shelves");
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+    
+        const responseData = await response.json();
+        
+        // Handle both array and object response formats
+        const shelvesData = Array.isArray(responseData) 
+          ? responseData 
+          : responseData.data || responseData.shelves || [];
+  
+        if (!Array.isArray(shelvesData)) {
+          throw new Error("API response is not an array");
+        }
+  
+        // Transform the backend data to match our frontend types
+        const mappedShelves = shelvesData.map((shelf: any): Shelf => {
+          // Process members
+          const members: Member[] = shelf.members?.map((member: any) => {
+            // Handle cases where userId might be populated or just an ID
+            const userId = typeof member.userId === 'object' 
+              ? {
+                  _id: member.userId._id,
+                  firstName: member.userId.firstName || '',
+                  lastName: member.userId.lastName || '',
+                  email: member.userId.email || '',
+                  image: member.userId.image,
+                  role: member.userId.role || 'member'
+                }
+              : member.userId || '';
+  
+            return {
+              userId,
+              role: member.role || 'member',
+              ...(member._id ? { _id: member._id } : {})
+            };
+          }) || [];
+  
+          // Process details based on shelf type
+          let productDetails: ProductDetails[] | undefined;
+          let serviceDetails: ServiceDetails[] | undefined;
+          let investmentDetails: InvestmentDetails[] | undefined;
+  
+          if (shelf.type === 'product') {
+            productDetails = shelf.productDetails?.map((product: any): ProductDetails => ({
+              name: product.name || '',
+              price: product.price || 0,
+              stock: product.stock || 0,
+              images: product.images || [],
+              category: product.category || 'uncategorized'
+            })) || [];
+          } else if (shelf.type === 'service') {
+            serviceDetails = shelf.serviceDetails?.map((service: any): ServiceDetails => ({
+              price: service.price || 0,
+              duration: service.duration || '',
+              availability: (service.availability || []).filter((day: string) => 
+                ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].includes(day)
+              ) as ServiceDetails['availability']
+            })) || [];
+          } else if (shelf.type === 'investment') {
+            investmentDetails = shelf.investmentDetails?.map((investment: any): InvestmentDetails => ({
+              amount: investment.amount || 0,
+              roi: investment.roi || 0,
+              duration: investment.duration || '',
+              riskLevel: ['low', 'medium', 'high'].includes(investment.riskLevel)
+                ? investment.riskLevel as InvestmentDetails['riskLevel']
+                : 'medium'
+            })) || [];
+          }
+  
+          return {
+            _id: shelf._id || '',
+            name: shelf.name || 'Unnamed Shelf',
+            description: shelf.description || '',
+            type: ['product', 'service', 'investment'].includes(shelf.type)
+              ? shelf.type as Shelf['type']
+              : 'product',
+            openForMembers: shelf.openForMembers !== false,
+            members,
+            ...(productDetails ? { productDetails } : {}),
+            ...(serviceDetails ? { serviceDetails } : {}),
+            ...(investmentDetails ? { investmentDetails } : {}),
+            createdAt: shelf.createdAt || new Date().toISOString(),
+            updatedAt: shelf.updatedAt || new Date().toISOString(),
+            ...(shelf.__v !== undefined ? { __v: shelf.__v } : {})
+          };
+        });
+        
+        setShelves(mappedShelves);
+      } catch (error: any) {
+        console.error("Error fetching shelves:", error);
+        setError(error.message || "Failed to load shelves");
+      } finally {
+        setLoading(false);
+      }
+    };
+  
     fetchShelves();
   }, []);
 

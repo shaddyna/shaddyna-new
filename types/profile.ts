@@ -10,10 +10,11 @@
  // }
 
  export interface User {
-  _id: string; // Mongoose uses ObjectId, so it should be a string
+  _id: string;
   firstName: string;
   lastName: string;
   email: string;
+  phoneNumber?: string; // Make it optional with ?
   password: string;
   role: 'admin' | 'seller' | 'customer';
   deleted: boolean;

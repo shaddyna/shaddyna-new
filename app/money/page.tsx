@@ -6,6 +6,7 @@ import { Transaction } from '@/types/types'
 import { TransactionItem } from '@/components/moneyComponents/TransactionItem'
 import { OverviewCard } from '@/components/moneyComponents/OverviewCard'
 import { QuickActions } from '@/components/moneyComponents/QuickActions'
+import { AddMoneyModal } from '@/components/moneyComponents/AddMoneyModal'
 
 const quickActionsList = [
   { icon: '🎟️', label: 'Pay for Events', path: '/events' },
@@ -138,6 +139,7 @@ export default function MoneyPage() {
             </div>
           )}
         </div>
+        <AddMoneyModal isOpen={showAddMoney} onClose={() => setShowAddMoney(false)} />
       </div>
     </div>
   )

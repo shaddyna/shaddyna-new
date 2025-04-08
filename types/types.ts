@@ -54,14 +54,17 @@ export interface CreateShelfFormProps {
   users: User[];
   loading?: boolean;
 }
-
 export interface Transaction {
-  id: number;
-  type: 'deposit' | 'withdrawal' | 'investment' | 'purchase';
-  date: string;
+  _id: string;
+  userId: string;
+  type: 'deposit' | 'withdrawal' | 'investment' | 'seminar' | 'purchase';
   amount: number;
-  description: string;
-  status: 'completed' | 'pending' | 'failed';
+  mpesaCode?: string;
+  status: 'pending' | 'successful' | 'failed';
+  balanceBefore: number;
+  balanceAfter: number;
+  createdAt: string;
+  updatedAt?: string;
 }
 
 export interface Investment {
@@ -72,6 +75,7 @@ export interface Investment {
   progress: number;
   status: 'active' | 'matured';
 }
+
 /* export interface User {
       _id: string;
       firstName: string;

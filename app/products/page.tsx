@@ -225,7 +225,7 @@ const PurchaseModal = ({ product, onClose }: { product: Product, onClose: () => 
               }}
               className="w-full bg-[#bf2c7e] text-white py-3 rounded-xl hover:bg-[#a02468] transition-colors font-medium"
             >
-              Proceed to Payment
+              Pay With Savings
             </button>
             
             <button

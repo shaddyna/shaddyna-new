@@ -1,6 +1,6 @@
 "use client";
 export const dynamic = "force-dynamic";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
 import axios from "axios";
 import { useAuth } from '@/context/AuthContext';
@@ -36,7 +36,8 @@ const fetchUserSavings = async (token: string) => {
   }
 };
 
-const SeminarPaymentPage = () => {
+// Wrap the main component in Suspense
+const SeminarPaymentContent = () => {
   const searchParams = useSearchParams() as ReadonlyURLSearchParams;
   const initialAmount = searchParams.get("amount") || "";
   const { user, isLoading: authLoading } = useAuth();
@@ -274,6 +275,15 @@ const SeminarPaymentPage = () => {
       </div>
       <BottomNavigationBar />
     </div>
+  );
+};
+
+// Main component with Suspense boundary
+const SeminarPaymentPage = () => {
+  return (
+    <Suspense fallback={<div className="flex justify-center items-center min-h-screen text-[#0f1c47]">Loading payment details...</div>}>
+      <SeminarPaymentContent />
+    </Suspense>
   );
 };
 

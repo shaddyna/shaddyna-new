@@ -1,4 +1,4 @@
-"use client";
+{/*"use client";
 export const dynamic = "force-dynamic";
 
 import { useState, useEffect } from "react";
@@ -335,4 +335,4 @@ const SeminarOtherPaymentPage = () => {
   );
 };
 
-export default SeminarOtherPaymentPage;
+export default SeminarOtherPaymentPage;*/}

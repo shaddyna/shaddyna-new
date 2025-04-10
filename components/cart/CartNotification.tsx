@@ -1,6 +1,5 @@
 import { FiShoppingCart, FiTrash2 } from 'react-icons/fi'
 import { useCartStore } from '@/stores/cart-store'
-import { CartItem } from '@/stores/cart-store'
 
 const CartNotification = ({ 
   onCheckout 

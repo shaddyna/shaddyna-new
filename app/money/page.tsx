@@ -9,11 +9,13 @@ import { QuickActions } from '@/components/moneyComponents/QuickActions'
 import { AddMoneyModal } from '@/components/moneyComponents/AddMoneyModal'
 
 const quickActionsList = [
-  { icon: '🎟️', label: 'Pay for Events', path: '/events' },
-  { icon: '🛍️', label: 'Buy Goods', path: '/products' },
-  { icon: '💸', label: 'Withdraw Funds', path: '/withdraw' },
-  { icon: '📈', label: 'Make Investment', path: '/invest' },
-  { icon: '💰', label: 'Savings', path: '/savings' }
+ 
+    { icon: '🎟️', label: 'Pay for Events', path: '/events' },
+    { icon: '🛍️', label: 'Buy Goods', path: '/products' },
+    { icon: '💸', label: 'Withdraw Funds', path: '/withdraw' },
+    { icon: '💳', label: 'Transfer', path: '/transfer' }, 
+    { icon: '📈', label: 'Make Investment', path: '/invest' },
+    { icon: '💰', label: 'Savings', path: '/savings' }
 ]
 
 export default function MoneyPage() {

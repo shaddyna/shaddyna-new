@@ -392,7 +392,7 @@ export default function BuyGoodsPage() {
 
         {items.length > 0 && (
           <CartNotification 
-            onCheckout={() => router.push('/checkout')} 
+            onCheckout={() => router.push('/cart')} 
           />
         )}
 

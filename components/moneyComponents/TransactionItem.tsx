@@ -1,5 +1,5 @@
 // components/MoneyPage/TransactionItem.tsx
-'use client'
+/*'use client'
 import { Transaction } from '@/types/types'
 
 interface TransactionItemProps {
@@ -88,6 +88,107 @@ export const TransactionItem = ({ transaction }: TransactionItemProps) => {
               : transaction.status === 'failed'
                 ? 'text-red-500'
                 : 'text-yellow-500'
+          }`}
+        >
+          {formatStatus(transaction.status)}
+        </p>
+      </div>
+    </div>
+  );
+};*/
+
+'use client'
+import { Transaction } from '@/types/types'
+
+interface TransactionItemProps {
+  transaction: Transaction; 
+}
+
+export const TransactionItem = ({ transaction }: TransactionItemProps) => {
+  // Format transaction type
+  const formatTransactionType = (type: string) => {
+    switch (type) {
+      case 'deposit':
+        return 'Deposit';
+      case 'withdrawal':
+        return 'Withdrawal';
+      case 'investment':
+        return 'Investment';
+      case 'seminar':
+        return 'Seminar Payment';
+      case 'purchase':
+        return 'Purchase';
+      case 'transfer_sent':
+        return 'Transfer Sent';
+      case 'transfer_received':
+        return 'Transfer Received';
+      default:
+        return type;
+    }
+  };
+
+  // Format transaction status
+  const formatStatus = (status: string) => {
+    switch (status) {
+      case 'successful':
+        return 'Completed';
+      case 'pending':
+        return 'Pending';
+      case 'failed':
+        return 'Failed';
+      default:
+        return status;
+    }
+  };
+
+  // Format date
+  const formattedDate = new Date(transaction.createdAt).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  });
+
+  // Determine description
+  const description = transaction.mpesaCode 
+    ? `M-Pesa: ${transaction.mpesaCode}`
+    : formatTransactionType(transaction.type);
+
+  // Determine if the transaction adds to balance
+  const isCredit = ['deposit', 'transfer_received'].includes(transaction.type);
+
+  // Determine color for the dot and amount
+  const typeColor = isCredit
+    ? 'text-green-500'
+    : transaction.type === 'withdrawal' || transaction.type === 'transfer_sent'
+    ? 'text-red-500'
+    : 'text-[#bf2c7e]';
+
+  const dotColor = isCredit
+    ? 'bg-green-500'
+    : transaction.type === 'withdrawal' || transaction.type === 'transfer_sent'
+    ? 'bg-red-500'
+    : 'bg-[#bf2c7e]';
+
+  return (
+    <div className="flex items-center justify-between p-4 hover:bg-gray-50 rounded-lg">
+      <div className="flex items-center gap-4">
+        <div className={`w-3 h-3 rounded-full ${dotColor}`} />
+        <div>
+          <p className="font-medium text-[#0f1c47]">{description}</p>
+          <p className="text-sm text-gray-500">{formattedDate}</p>
+        </div>
+      </div>
+      <div className="text-right">
+        <p className={`font-medium ${typeColor}`}>
+          {isCredit ? '+' : '-'} Ksh {transaction.amount.toLocaleString()}
+        </p>
+        <p
+          className={`text-sm ${
+            transaction.status === 'successful'
+              ? 'text-green-500'
+              : transaction.status === 'failed'
+              ? 'text-red-500'
+              : 'text-yellow-500'
           }`}
         >
           {formatStatus(transaction.status)}

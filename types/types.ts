@@ -57,7 +57,14 @@ export interface CreateShelfFormProps {
 export interface Transaction {
   _id: string;
   userId: string;
-  type: 'deposit' | 'withdrawal' | 'investment' | 'seminar' | 'purchase';
+  type: 
+    | 'deposit' 
+    | 'withdrawal' 
+    | 'investment' 
+    | 'seminar' 
+    | 'purchase'
+    | 'transfer_sent' 
+    | 'transfer_received';
   amount: number;
   mpesaCode?: string;
   status: 'pending' | 'successful' | 'failed';
@@ -66,6 +73,7 @@ export interface Transaction {
   createdAt: string;
   updatedAt?: string;
 }
+
 
 export interface Investment {
   id: number;

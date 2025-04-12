@@ -17,68 +17,6 @@ export default function ShelvesPage() {
   const [users, setUsers] = useState<User[]>([]);
   const [usersLoading, setUsersLoading] = useState(false);
 
-  /*useEffect(() => {
-    const fetchShelves = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        
-        const response = await fetch("https://shaddyna-backend.onrender.com/api/shelf/shelves");
-        
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-    
-        const responseData = await response.json();
-        
-        // Handle both array and object response formats
-        const shelvesData = Array.isArray(responseData) 
-          ? responseData 
-          : responseData.data || responseData.shelves || [];
-    
-        if (!Array.isArray(shelvesData)) {
-          throw new Error("API response is not an array");
-        }
-    
-        // Transform the backend data to match our frontend types
-        const mappedShelves = shelvesData.map((shelf: any) => {
-          // Handle cases where members might be populated or just IDs
-          const members = shelf.members?.map((member: any) => ({
-            _id: member.userId?._id || member.userId || member._id,
-            name: member.userId?.firstName || member.name || 'Unknown Member',
-            role: member.role || 'member',
-            image: member.userId?.image || member.image || ''
-          })) || [];
-    
-          return {
-            _id: shelf._id || '',
-            name: shelf.name || 'Unnamed Shelf',
-            description: shelf.description || '',
-            image: shelf.image || '',
-            type: ['product', 'service', 'investment'].includes(shelf.type) 
-              ? shelf.type 
-              : 'product',
-            openForMembers: shelf.openForMembers !== false,
-            members,
-            products: shelf.products || [],
-            investments: shelf.investments || 0,
-            createdAt: shelf.createdAt || new Date().toISOString(),
-            updatedAt: shelf.updatedAt || new Date().toISOString()
-          };
-        });
-        
-        setShelves(mappedShelves);
-      } catch (error: any) {
-        console.error("Error fetching shelves:", error);
-        setError(error.message || "Failed to load shelves");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchShelves();
-  }, []);*/
-
   useEffect(() => {
     const fetchShelves = async () => {
       try {

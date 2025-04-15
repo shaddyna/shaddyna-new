@@ -260,7 +260,7 @@ export const UserDashboard = () => {
       
       try {
         setLoading(true);
-        const response = await fetchWithAuth(`/api/orders/orders/customer/${user._id}`);
+        const response = await fetchWithAuth(`/api/orders/my-orders`);
         
 
         if (Array.isArray(response) && response.length === 0) {

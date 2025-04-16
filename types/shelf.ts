@@ -1,4 +1,53 @@
-export type User = {
+export interface User {
+  id: string;
+  userId: string;
+  name: string;
+  avatar?: string;
+  role: 'owner' | 'admin' | 'member';
+  joinedAt: Date;
+}
+
+export interface Post {
+  id: string;
+  title: string;
+  description: string;
+  type: 'product' | 'service' | 'investment';
+  price?: number;
+  currency?: string;
+  images: string[];
+  createdAt: Date;
+  createdBy: User;
+  status: 'active' | 'sold' | 'closed';
+  tags: string[];
+  stats: {
+    views: number;
+    saves: number;
+    inquiries: number;
+  };
+  investmentDetails?: {
+    roi: number;
+    duration: string;
+  };
+}
+export interface Shelf {
+  _id: string;
+  name: string;
+  description: string;
+  bannerImage: string;
+  createdBy: User;
+  members: User[];
+  createdAt: Date;
+  type: ('products' | 'services' | 'investments')[];
+  visibility: 'public' | 'private' | 'unlisted';
+  rules: string;
+  tags: string[];
+  stats: {
+    totalPosts: number;
+    activeMembers: number;
+  };
+}
+
+/*export type User = {
     id: string;
     name: string;
     avatar: string;
@@ -41,7 +90,7 @@ export type User = {
       totalPosts: number;
       activeMembers: number;
     };
-  };
+  };*/
   
   // Dummy data generator functions
  /* export const generateDummyUser = (id: string, name: string, role: User['role'] = 'member'): User => ({

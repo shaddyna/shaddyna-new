@@ -85,8 +85,8 @@ export const SkillsFilter: React.FC<SkillsFilterProps> = ({
       <div>
         <h3 className="font-medium text-[#0f1c47] mb-3">Price Range</h3>
         <div className="flex items-center justify-between mb-2">
-          <span className="text-sm text-gray-600">${filter.priceRange[0]}</span>
-          <span className="text-sm text-gray-600">${filter.priceRange[1]}</span>
+          <span className="text-sm text-gray-600">Ksh {filter.priceRange[0]}</span>
+          <span className="text-sm text-gray-600">Ksh {filter.priceRange[1]}</span>
         </div>
         <input
           type="range"

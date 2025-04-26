@@ -67,7 +67,7 @@ export default function InvestPage() {
         setLoading(true)
         setError(null)
         
-        const response = await fetch("https://shaddyna-backend.onrender.com/api/shelf/shelves", {
+        const response = await fetch("http://localhost:5000/api/shelf/shelves", {
           headers: {
             'Authorization': `Bearer ${token}`,
           },

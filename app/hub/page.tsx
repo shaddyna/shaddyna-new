@@ -1,103 +1,69 @@
+"use client";
 
+import { useState, useEffect } from "react";
+import Head from "next/head";
+import axios from "axios";
+import { SkillCard } from "@/components/skillComponent/skillCard";
+import { SkillsFilter } from "@/components/skillComponent/SkillsFilter";
+import { Skill } from "@/types/skills";
+import AddSkillButton from "@/components/skillComponent/addSkillButton";
+import ManageSkillsButton from "@/components/skillComponent/manageSkillButton";
 
-"use client"
-
-import { useState } from 'react';
-import Head from 'next/head';
-import { SkillCard } from '@/components/skillComponent/skillCard';
-import { SkillsFilter } from '@/components/skillComponent/SkillsFilter';
-import { Skill } from '@/types/skills';
-
-const categories = ['Design', 'Development', 'Marketing', 'Writing', 'Business'];
-const priceTypes = ['hourly', 'fixed', 'negotiable'];
+const categories = ["Design", "Development", "Marketing", "Writing", "Business"];
+const priceTypes = ["hourly", "fixed", "negotiable"];
 
 const SkillsPage = () => {
-  //const [skills, setSkills] = useState<Skill[]>([]);
+  const [skills, setSkills] = useState<Skill[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
   const [filter, setFilter] = useState({
-    category: '',
+    category: "",
     priceRange: [0, 1000] as [number, number],
-    priceType: '',
-    searchQuery: '',
+    priceType: "",
+    searchQuery: "",
+    page: 1,
+    limit: 10,
+    sortBy: "createdAt:desc",
   });
 
-  const [skills, setSkills] = useState<Skill[]>([
-    {
-      id: 'skill1',
-      title: 'UI/UX Design for Mobile Apps',
-      description: 'Crafting intuitive and engaging app designs for startups and agencies.',
-      category: 'Design',
-      tags: ['Figma', 'Prototyping', 'User Flow'],
-      price: 45,
-      priceType: 'hourly',
-      images: ['/images/skills/uiux-1.jpg'],
-      createdAt: new Date('2024-12-01'),
-      createdBy: {
-        id: 'user1',
-        name: 'Alice Mwende',
-        avatar: '/images/users/alice.jpg',
-        bio: 'Passionate designer with 5+ years experience in mobile interfaces.',
-        location: 'Nairobi, Kenya',
-        skills: ['UI Design', 'UX Research'],
-        joinedAt: new Date('2022-05-14'),
-      },
-      likes: ['user2', 'user3', 'user4'],
-      stats: {
-        views: 320,
-        inquiries: 18,
-      },
-    },
-    {
-      id: 'skill2',
-      title: 'Full Stack Web Development',
-      description: 'Building modern web apps using React, Node.js and MongoDB.',
-      category: 'Development',
-      tags: ['React', 'Node.js', 'MongoDB'],
-      price: 1000,
-      priceType: 'fixed',
-      images: ['/images/skills/dev-1.jpg'],
-      createdAt: new Date('2024-11-21'),
-      createdBy: {
-        id: 'user2',
-        name: 'Brian Karanja',
-        avatar: '/images/users/brian.jpg',
-        bio: 'MERN stack engineer helping clients build scalable platforms.',
-        location: 'Eldoret, Kenya',
-        skills: ['React', 'Express', 'MongoDB'],
-        joinedAt: new Date('2021-09-10'),
-      },
-      likes: ['user1', 'user3'],
-      stats: {
-        views: 540,
-        inquiries: 29,
-      },
-    },
-    {
-      id: 'skill3',
-      title: 'SEO Content Writing',
-      description: 'SEO-optimized blogs and web copy that drive traffic and conversions.',
-      category: 'Writing',
-      tags: ['SEO', 'Blogging', 'Content Marketing'],
-      price: 75,
-      priceType: 'negotiable',
-      images: ['/images/skills/writing-1.jpg'],
-      createdAt: new Date('2024-10-10'),
-      createdBy: {
-        id: 'user3',
-        name: 'Cynthia Njeri',
-        avatar: '/images/users/cynthia.jpg',
-        bio: 'Creative writer & strategist for blogs, landing pages, and ads.',
-        location: 'Mombasa, Kenya',
-        skills: ['Writing', 'Copywriting'],
-        joinedAt: new Date('2023-01-25'),
-      },
-      likes: ['user1'],
-      stats: {
-        views: 210,
-        inquiries: 12,
-      },
-    },
-  ]);
-  
+  const [pagination, setPagination] = useState({
+    total: 0,
+    pages: 0,
+  });
+
+  // Fetch skills from the API
+  const fetchSkills = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const params = new URLSearchParams();
+      if (filter.category) params.append("category", filter.category);
+      if (filter.searchQuery) params.append("search", filter.searchQuery);
+      params.append("page", filter.page.toString());
+      params.append("limit", filter.limit.toString());
+      params.append("sortBy", filter.sortBy);
+
+      const response = await axios.get(`http://localhost:5000/api/skill/`, {
+        params,
+      });
+
+      const { total, pages, skills: fetchedSkills } = response.data;
+
+      setSkills(fetchedSkills);
+      setPagination({ total, pages });
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message || "Failed to fetch skills");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchSkills();
+  }, [filter]);
 
   return (
     <div className="min-h-screen bg-white">
@@ -115,10 +81,19 @@ const SkillsPage = () => {
         </div>
       </div>
 
+    {/* Buttons for adding and managing skills */}
       <div className="container mx-auto px-4 py-8">
+    <div className="flex justify-between items-center mb-0 gap-4">
+      <AddSkillButton />
+      <ManageSkillsButton />
+    </div>
+      </div>
+
+      <div className="container mx-auto px-4 py-0">
         <div className="flex flex-col lg:flex-row gap-8">
+          {/* Filters */}
           <div className="lg:w-1/4">
-            <SkillsFilter 
+            <SkillsFilter
               categories={categories}
               priceTypes={priceTypes}
               filter={filter}
@@ -126,27 +101,76 @@ const SkillsPage = () => {
             />
           </div>
 
+          {/* Skills List */}
           <div className="lg:w-3/4">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-2xl font-bold text-[#0f1c47]">
-                {filter.category || 'All'} Skills
+                {filter.category || "All"} Skills
               </h2>
-              <div className="text-gray-500">
-                {skills.length} results
-              </div>
+              <div className="text-gray-500">{pagination.total} results</div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {skills.length > 0 ? (
-                skills.map((skill) => (
-                  <SkillCard key={skill.id} skill={skill} />
-                ))
-              ) : (
-                <div className="col-span-2 bg-gray-50 rounded-lg p-8 text-center">
-                  <p className="text-gray-500">No skills found matching your criteria</p>
-                </div>
-              )}
-            </div>
+            {/* Loading State */}
+            {loading && (
+              <div className="col-span-2 bg-gray-50 rounded-lg p-8 text-center">
+                <p className="text-gray-500">Loading...</p>
+              </div>
+            )}
+
+            {/* Error State */}
+            {error && (
+              <div className="col-span-2 bg-red-50 rounded-lg p-8 text-center">
+                <p className="text-red-600">Error: {error}</p>
+              </div>
+            )}
+
+            {/* Skills Grid */}
+            {!loading && !error && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {skills.length > 0 ? (
+                  skills.map((skill) => (
+                    <SkillCard key={skill._id} skill={skill} />
+                  ))
+                ) : (
+                  <div className="col-span-2 bg-gray-50 rounded-lg p-8 text-center">
+                    <p className="text-gray-500">No skills found matching your criteria</p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Pagination Controls */}
+            {pagination.pages > 1 && (
+              <div className="flex justify-center mt-8 space-x-4">
+                <button
+                  onClick={() =>
+                    setFilter((prev) => ({
+                      ...prev,
+                      page: Math.max(prev.page - 1, 1),
+                    }))
+                  }
+                  disabled={filter.page === 1}
+                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:bg-gray-300"
+                >
+                  Previous
+                </button>
+                <span className="text-gray-600">
+                  Page {filter.page} of {pagination.pages}
+                </span>
+                <button
+                  onClick={() =>
+                    setFilter((prev) => ({
+                      ...prev,
+                      page: Math.min(prev.page + 1, pagination.pages),
+                    }))
+                  }
+                  disabled={filter.page === pagination.pages}
+                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:bg-gray-300"
+                >
+                  Next
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -155,3 +179,4 @@ const SkillsPage = () => {
 };
 
 export default SkillsPage;
+

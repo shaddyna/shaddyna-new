@@ -8,12 +8,17 @@ const nextConfig = {
       },
       {
         protocol: "https",
+        hostname: "i.pinimg.com",
+      },
+      {
+        protocol: "https",
         hostname: "placehold.co",
       },
       {
         protocol: "https",
         hostname: "randomuser.me",
       },
+      
     ],
   },
 };

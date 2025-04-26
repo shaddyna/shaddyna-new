@@ -18,6 +18,7 @@
   password: string;
   role: 'admin' | 'seller' | 'customer';
   deleted: boolean;
+  member: boolean;
   resetToken?: string;
   resetTokenExpiry?: Date;
   createdAt: Date;

@@ -9,7 +9,7 @@ export interface User {
   }
   
   export interface Skill {
-    id: string;
+    _id: string;
     title: string;
     description: string;
     category: string;
@@ -27,7 +27,7 @@ export interface User {
   }
   
   export interface Comment {
-    id: string;
+    _id: string;
     content: string;
     createdAt: Date;
     user: User;

@@ -527,7 +527,7 @@ export const SkillForm: React.FC<SkillFormProps> = ({ onSubmit, initialData }) =
           className="px-6 py-3 bg-[#bf2c7e] text-white rounded-md hover:bg-[#a8256d] transition-colors disabled:opacity-50"
           disabled={isSubmitting}
         >
-          {isSubmitting ? 'Submitting...' : (initialData?.id ? 'Update Skill' : 'Create Skill')}
+          {isSubmitting ? 'Submitting...' : (initialData?._id ? 'Update Skill' : 'Create Skill')}
         </button>
       </div>
     </form>

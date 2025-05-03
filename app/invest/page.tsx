@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { FiArrowLeft, FiBriefcase, FiDollarSign, FiCheckCircle, FiTrendingUp, FiX } from 'react-icons/fi'
+import { FiArrowLeft, FiBriefcase, FiCheckCircle, FiTrendingUp, FiX } from 'react-icons/fi'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/context/AuthContext'
 
@@ -59,64 +59,74 @@ export default function InvestPage() {
   const [portfolio, setPortfolio] = useState<PortfolioItem[]>([])
   const router = useRouter()
   const { token, user } = useAuth()
-
-  // Fetch investment shelves
   useEffect(() => {
-    const fetchInvestmentShelves = async () => {
+    const fetchInvestmentPosts = async () => {
       try {
-        setLoading(true)
-        setError(null)
-        
-        const response = await fetch("http://localhost:5000/api/shelf/shelves", {
+        console.log("Fetching investment posts..."); // Start log
+        setLoading(true);
+        setError(null);
+  
+        const response = await fetch("http://localhost:5000/api/shellf/posts/all", {
           headers: {
             'Authorization': `Bearer ${token}`,
           },
-        })
-        
+        });
+  
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`)
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
-    
-        const responseData = await response.json()
-        
-        const shelvesData = Array.isArray(responseData) 
+  
+        const responseData = await response.json();
+  
+        const postsData = Array.isArray(responseData) 
           ? responseData 
-          : responseData.data || responseData.shelves || []
+          : responseData.data || responseData.posts || [];
   
-        if (!Array.isArray(shelvesData)) {
-          throw new Error("API response is not an array")
+        if (!Array.isArray(postsData)) {
+          throw new Error("API response is not an array");
         }
   
-        const investmentShelves = shelvesData
-          .filter((shelf: any) => shelf.type === 'investment')
-          .map((shelf: any): InvestmentShelf => ({
-            _id: shelf._id || '',
-            name: shelf.name || 'Unnamed Investment',
-            description: shelf.description || '',
+        const investmentShelves = postsData
+          .filter((post: any) => {
+            if (Array.isArray(post.type)) {
+              return post.type.includes('investment');
+            }
+            return post.type === 'investment';
+          })
+          .map((post: any): InvestmentShelf => ({
+            _id: post._id || '',
+            name: post.name || 'Unnamed Investment',
+            description: post.description || '',
             type: 'investment',
-            investmentDetails: shelf.investmentDetails?.map((detail: any): InvestmentDetails => ({
-              amount: detail.amount || 0,
-              roi: detail.roi || 0,
-              duration: detail.duration || '',
-              riskLevel: ['low', 'medium', 'high'].includes(detail.riskLevel)
-                ? detail.riskLevel as InvestmentDetails['riskLevel']
-                : 'medium'
-            })) || [],
-            createdAt: shelf.createdAt || new Date().toISOString(),
-            updatedAt: shelf.updatedAt || new Date().toISOString()
-          }))
-        
-        setInvestmentShelves(investmentShelves)
+            investmentDetails: post.investment 
+              ? [{
+                  amount: post.investment.amount || 0,
+                  roi: post.investment.roi || 0,
+                  duration: post.investment.duration || '',
+                  riskLevel: ['low', 'medium', 'high'].includes(post.investment.riskLevel)
+                    ? post.investment.riskLevel as InvestmentDetails['riskLevel']
+                    : 'medium'
+                }]
+              : [],
+            createdAt: post.createdAt || new Date().toISOString(),
+            updatedAt: post.updatedAt || new Date().toISOString()
+          }));
+  
+        setInvestmentShelves(investmentShelves);
+  
+        console.log("Investment posts fetched successfully:", investmentShelves.length, "posts found."); // Success log
       } catch (error: any) {
-        console.error("Error fetching investment shelves:", error)
-        setError(error.message || "Failed to load investment options")
+        console.error("Error fetching investment posts:", error.message || error);
+        setError(error.message || "Failed to load investment options");
       } finally {
-        setLoading(false)
+        setLoading(false);
+        console.log("Finished fetching investment posts."); // Always runs
       }
-    }
-
-    fetchInvestmentShelves()
-  }, [token])
+    };
+  
+    fetchInvestmentPosts();
+  }, [token]);
+  
 
   // Fetch user balance
   useEffect(() => {

@@ -125,48 +125,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } catch (error) {
       console.error('Error refreshing user:', error);
     } finally {
-      setIsLoading(false); // ✅ Add this line to fix the issue
+      setIsLoading(false); 
     }
   };
   
 
-  // Function to refresh user data from server
-  /*const refreshUser = async () => {
-    try {
-      const storedToken = localStorage.getItem('token');
-      if (!storedToken) return;
-
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/me`, {
-        headers: {
-          'Authorization': `Bearer ${storedToken}`
-        }
-      });
-
-      if (response.ok) {
-        const userData = await response.json();
-        localStorage.setItem('user', JSON.stringify(userData));
-        setUser(userData);
-      }
-    } catch (error) {
-      console.error('Error refreshing user:', error);
-    }
-  };*/
-
-  /*useEffect(() => {
-    // Check for existing token/user in localStorage on initial load
-    const storedToken = localStorage.getItem('token');
-    const storedUser = localStorage.getItem('user');
-
-    if (storedToken && storedUser) {
-      setToken(storedToken);
-      setUser(JSON.parse(storedUser));
-      
-      // Set up periodic refresh (every 5 minutes)
-      const interval = setInterval(refreshUser, 5 * 60 * 1000);
-      return () => clearInterval(interval);
-    }
-    setIsLoading(false);
-  }, []);*/
   useEffect(() => {
     const initAuth = async () => {
       const storedToken = localStorage.getItem('token');

@@ -22,17 +22,17 @@ export interface BaseUser {
 
 export interface Post {
   id: string;
-  name: string; // changed from 'title' to 'name' to match schema
+  name: string; 
   description?: string;
-  images: { url: string; publicId: string }[]; // updated to match images as array of objects
+  images: { url: string; publicId: string }[]; 
   tags: string[];
-  type: 'product' | 'service' | 'investment'; // should be single string in interface, not array (even though mongoose has [])
-  product?: any; // or better typed if needed
+  type: 'product' | 'service' | 'investment'; 
+  product?: any; 
   service?: any;
   investment?: any;
-  shelf: string | Shelf; // reference to Shelf
-  createdBy: string | BaseUser; // reference to User
-  status: 'active' | 'archived' | 'sold' | 'completed'; // match schema enum
+  shelf: string | Shelf; 
+  createdBy: string | BaseUser; 
+  status: 'active' | 'archived' | 'sold' | 'completed'; 
   stats: {
     saves: number;
     views: number;
@@ -40,7 +40,7 @@ export interface Post {
     shares: number;
   };
   createdAt: Date;
-  updatedAt: Date; // timestamps add updatedAt too
+  updatedAt: Date; 
 }
 
 

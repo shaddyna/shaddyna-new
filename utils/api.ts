@@ -1,4 +1,4 @@
-export const registerUser = async (
+/*export const registerUser = async (
   name: string, 
   email: string, 
   password: string
@@ -8,6 +8,27 @@ export const registerUser = async (
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, email, password }),
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || 'Registration failed');
+
+    return { success: true, message: data.message };
+  } catch (error: any) {
+    return { success: false, message: error.message };
+  }
+};*/
+export const registerUser = async (
+  firstName: string,
+  lastName: string,
+  email: string,
+  password: string
+): Promise<{ success: boolean; message: string }> => {
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ firstName, lastName, email, password }),
     });
 
     const data = await res.json();

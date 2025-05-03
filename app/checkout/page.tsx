@@ -246,7 +246,7 @@ export default function CheckoutPage() {
       console.log('Order Data:', orderData);
   
       // Send the request to place the order
-      const response = await fetch('https://shaddyna-backend.onrender.com/api/orders', {
+      const response = await fetch('http://localhost:5000/api/orders', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

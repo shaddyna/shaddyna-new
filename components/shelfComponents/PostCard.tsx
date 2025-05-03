@@ -1,13 +1,25 @@
 import React from 'react';
 import { Post } from '@/types/shelf';
+import { useRouter } from 'next/navigation';
 
 interface PostCardProps {
   post: Post;
 }
 
 export const PostCard: React.FC<PostCardProps> = ({ post }) => {
+  const router = useRouter();
+
+  const handleClick = () => {
+    router.push(`/posts/${post.id}`);
+  };
+
+
   return (
-    <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+    <div 
+    className="bg-white rounded-lg shadow-sm overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
+    onClick={handleClick}
+  >
+    {/*<div className="bg-white rounded-lg shadow-sm overflow-hidden">*/}
       <div className="p-6">
         <div className="flex justify-between">
           <div className="flex items-center space-x-3">

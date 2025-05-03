@@ -1,15 +1,5 @@
-// types/profile.ts
-//export interface User {
-   // id: number;
-   // name: string;
-   // email: string;
-   // role: 'customer' | 'seller' | 'admin';
-   // location: string;
-   // phone: string;
-  //  avatar: string;
- // }
 
- export interface User {
+export interface User {
   _id: string;
   firstName: string;
   lastName: string;
@@ -25,23 +15,19 @@
   updatedAt: Date;
 }
 
-  
-  export interface Order {
-    id: string;
-    product: string;
-    status: string;
-    amount: number;
-    date: string;
-    customer: string;
-    total: number
-  }
-  
-  export interface Product {
-    id: number;
-    name: string;
-    price: number;
-    stock: number;
-  }
+
+export interface Seller {
+  _id: string; 
+  name: string;
+  email: string;
+  phoneNumber?: string; 
+  mpesaCode: string;
+  amount: number;
+  status: 'inactive' | 'pending' | 'active';
+  createdAt: string;
+  updatedAt: string; 
+}
+
   
   export interface PlatformUser {
     id: number;
@@ -50,14 +36,139 @@
     status: 'active' | 'pending' | 'banned';
   }
 
-  export type Shop = {
+  export interface Shop {
+    _id: string;
     name: string;
-    logo: string;
     description: string;
-    categories: string[];
-    contactEmail: string;
-    socialMedia: {
-      instagram: string;
-      facebook: string;
-    };
-  };
+    phoneNumber: string;
+    openingHours: string; // default: "09:00"
+    closingHours: string; // default: "18:00"
+    email: string;
+    location: string;
+    category: string;
+    attributes: Record<string, any>; // flexible key-value object
+    sellerId: string; // ObjectId reference to Seller
+    socialMedias: Array<{
+      platform: string;
+      url: string;
+    }>;
+    images: string[]; // array of image URLs
+    isFeatured: boolean;
+    rating: number;
+    createdAt: Date;
+    updatedAt: Date;
+  }
+
+  type TransactionType = 
+  | 'deposit' 
+  | 'withdrawal' 
+  | 'investment' 
+  | 'seminar' 
+  | 'purchase' 
+  | 'transfer_sent' 
+  | 'transfer_received';
+
+type TransactionStatus = 'pending' | 'successful' | 'failed';
+
+export interface Transaction {
+  _id: string;
+  userId: string; // ObjectId reference to User
+  type: TransactionType;
+  amount: number;
+  mpesaCode?: string; // Only present if type is 'deposit'
+  status: TransactionStatus;
+  balanceBefore: number;
+  balanceAfter: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+
+
+
+export type OrderStatus = 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+
+export interface PaymentItem {
+  _id: string;
+  name: string;
+  price: number;
+  quantity: number;
+  image: string;
+  color?: string;
+  sellerId: string;
+}
+
+export interface Payment {
+  sellerId: string;
+  phoneNumber: string;
+  mpesaCode: string;
+  mpesaName: string;
+  amount: number;
+  items: PaymentItem[];
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface Shipping {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  address: string;
+  city: string;
+  postalCode: string;
+  additionalInfo?: string;
+}
+
+export interface Order {
+  _id: string;
+  buyerId: string;
+  shipping: Shipping;
+  payments: Payment[];
+  status: OrderStatus;
+  totalAmount: number;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface Product {
+  _id?: string; 
+  name: string;
+  stock: number;
+  description?: string;
+  price: number;
+  category: string;
+  attributes: Record<string, any>; 
+  images: string[];
+  createdAt?: string; 
+  updatedAt?: string; 
+}
+
+/*export interface SellerRequest {
+  _id?: string; 
+  userId: string; 
+  status?: 'pending' | 'approved' | 'rejected'; 
+  paymentMethod?: 'mpesa' | 'card' | 'bank'; 
+  mpesaName?: string;
+  mpesaCode?: string; 
+  amount: number;
+  processedAt?: string | Date;
+  processedBy?: string; 
+  createdAt?: string | Date;
+  updatedAt?: string | Date;
+}
+*/
+export interface SellerRequest {
+  _id: string;
+  amount: number;
+  paymentMethod: string;
+  mpesaName?: string;
+  mpesaCode?: string;
+  status: 'pending' | 'approved' | 'rejected';
+  processedAt?: string;
+  userId: {
+    firstName: string;
+    lastName: string;
+    email: string;
+  }; // Explicitly define the type
+}

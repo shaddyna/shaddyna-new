@@ -21,6 +21,7 @@ import { EditShopModal } from '@/components/vendorComponents/EditShopModal';
 import { Shop } from '@/types/profile';
 import { useAuth } from '@/context/AuthContext';
 import { useEffect } from 'react';
+import { SellerOrders } from '@/components/vendorComponents/SellerOrders';
 
 interface Withdrawal {
   id: string;
@@ -69,7 +70,7 @@ const productCategories = {
 
 
 
-const API_URL = "https://shaddyna-backend.onrender.com/api/products"; // Adjust based on backend URL
+const API_URL = "http://localhost:5000/api/products"; // Adjust based on backend URL
 
 
 
@@ -90,7 +91,7 @@ export default function ProfilePage() {
   // Now you can use the authenticated user directly
   const [activeTab, setActiveTab] = useState('overview');
   const [showEditModal, setShowEditModal] = useState(false);
-
+  const [isProductModalOpen, setIsProductModalOpen] = useState(false);
   const [withdrawalAmount, setWithdrawalAmount] = useState<number>(0);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedValues, setSelectedValues] = useState<Record<string, string>>({});
@@ -100,6 +101,8 @@ export default function ProfilePage() {
   const [productPrice, setProductPrice] = useState("");
   const [images, setImages] = useState<File[]>([]);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [sellerId, setSellerId] = useState<string | null>(null);
 
 
 
@@ -142,37 +145,95 @@ export default function ProfilePage() {
     setImages(images.filter((_, i) => i !== index));
   };
 
-
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+  
+    if (!productName || !productStock || !productPrice || !selectedCategory) {
+      alert("Please fill all required fields");
+      setIsSubmitting(false);
+      return;
+    }
+  
+    if (user?.role === 'seller' && !sellerId) {
+      alert("Seller information not available. Please try again later.");
+      setIsSubmitting(false);
+      return;
+    }
   
     const formData = new FormData();
     formData.append("name", productName);
     formData.append("stock", productStock);
     formData.append("price", productPrice);
-    formData.append("category", selectedCategory!);
+    formData.append("category", selectedCategory);
     formData.append("attributes", JSON.stringify(selectedValues));
+  
+    if (sellerId) {
+      formData.append("sellerId", sellerId);
+    }
+  
     images.forEach((image) => formData.append("images", image));
   
+    // ✅ Log form data
+    console.log("Form data being sent:");
+    for (const [key, value] of formData.entries()) {
+      if (key === "images") {
+        console.log(`${key}:`, (value as File).name);
+      } else {
+        console.log(`${key}:`, value);
+      }
+    }
+  
     try {
-      const response = await axios.post(API_URL, formData, {
+      const { data } = await axios.post(API_URL, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
   
-      alert("Product Created Successfully!");
+      setProducts([...products, data]);
+  
+      // Reset form
       setProductName("");
       setProductStock("");
       setProductPrice("");
       setSelectedCategory(null);
       setSelectedValues({});
       setImages([]);
+      setIsProductModalOpen(false);
+  
+      alert(`Product ${data.name} created successfully!`);
     } catch (error) {
-      console.error("Error adding product:", error);
+      console.error("Error creating product:", error);
+      alert("Failed to create product. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
- // const [currentUser, setCurrentUser] = useState<User>(dummyUser);
-  //const [activeTab, setActiveTab] = useState('overview');
-  //const [showEditModal, setShowEditModal] = useState(false);
+  
+  // Add this useEffect to fetch seller ID when modal opens
+  useEffect(() => {
+    const fetchSellerId = async () => {
+      if (user?.role === 'seller' && user.email && isProductModalOpen) {
+        try {
+          const response = await fetch('http://localhost:5000/api/sellers');
+          if (!response.ok) {
+            throw new Error('Failed to fetch sellers');
+          }
+          const sellers = await response.json();
+          const matchedSeller = sellers.find((seller: any) => seller.email === user.email);
+          if (matchedSeller) {
+            setSellerId(matchedSeller._id);
+          } else {
+            console.error('No seller profile found for this user');
+          }
+        } catch (err) {
+          console.error('Error fetching sellers:', err);
+        }
+      }
+    };
+  
+    fetchSellerId();
+  }, [isProductModalOpen, user]);
+  
   const [twoFactorEnabled, setTwoFactorEnabled] = useState(true);
   const [shop, setShop] = useState({
     name: "Mizzo Collections",
@@ -188,22 +249,8 @@ export default function ProfilePage() {
 
 // In your profile page
 const [products, setProducts] = useState<Product[]>(dummyProducts); // Initialize here
-const [isProductModalOpen, setIsProductModalOpen] = useState(false);
 const [editedProduct, setEditedProduct] = useState<Product>({ id: 0, name: "", stock: 0, price: 0 });
-const [orders, setOrders] = useState<Order[]>([
-  {
-    id: "101", customer: "John Doe", total: 12000, status: "Pending",
-    product: '',
-    amount: 0,
-    date: ''
-  },
-  {
-    id: "102", customer: "Jane Smith", total: 8000, status: "Completed",
-    product: '',
-    amount: 0,
-    date: ''
-  },
-]);
+
 
   const [withdrawals, setWithdrawals] = useState<Withdrawal[]>([
     { id: "201", amount: 5000, status: "Pending" },
@@ -226,9 +273,9 @@ const [isShopEditModalOpen, setIsShopEditModalOpen] = useState(false);
   };
 
   // Calculate total revenue
-  const totalRevenue = orders
-    .filter(order => order.status === "Completed")
-    .reduce((sum, order) => sum + order.total, 0);
+ // const totalRevenue = orders
+   // .filter(order => order.status === "Completed")
+    //.reduce((sum, order) => sum + order.total, 0);
 
     if (authLoading || !user) {
       return <div>Loading...</div>;
@@ -279,19 +326,17 @@ const [isShopEditModalOpen, setIsShopEditModalOpen] = useState(false);
               setEditedProduct={setEditedProduct}
             />
             
-            <SalesDashboard 
-              totalRevenue={totalRevenue} 
-              orders={orders} 
-            />
+           {/*} <SalesDashboard 
+              //totalRevenue={totalRevenue} 
+              //orders={orders} 
+            />*/}
             
-            <CustomerOrders orders={orders} />
+            <SellerOrders />
             
             <WithdrawalRequests 
               withdrawals={withdrawals}
               setIsWithdrawalModalOpen={setIsWithdrawalModalOpen}
-            />
-      
-                 
+            />                 
       <EditShopModal
         isOpen={isShopEditModalOpen}
         onClose={() => setIsShopEditModalOpen(false)}
@@ -299,37 +344,37 @@ const [isShopEditModalOpen, setIsShopEditModalOpen] = useState(false);
         setEditedShop={setEditedShop}
         handleSaveShop={handleSaveShop}
       />
-       <ProductModal
+      <ProductModal
         isOpen={isProductModalOpen}
-        onClose={() => setIsProductModalOpen(false)}
+        onClose={() => {
+          setIsProductModalOpen(false);
+          setSellerId(null);
+        }}
+        sellerId={sellerId}
         productCategories={productCategories}
         selectedCategory={selectedCategory}
-        handleCategoryChange={handleCategoryChange}
-        productName={editedProduct.name}
-        setProductName={(name) => setEditedProduct(prev => ({...prev, name}))}
-        productStock={editedProduct.stock.toString()}
-        setProductStock={(stock) => setEditedProduct(prev => ({...prev, stock: Number(stock)}))}
-        productPrice={editedProduct.price.toString()}
-        setProductPrice={(price) => setEditedProduct(prev => ({...prev, price: Number(price)}))}
+        handleCategoryChange={(e) => setSelectedCategory(e.target.value)}
+        productName={productName}
+        setProductName={setProductName}
+        productStock={productStock}
+        setProductStock={setProductStock}
+        productPrice={productPrice}
+        setProductPrice={setProductPrice}
         attributeKeys={attributeKeys}
         selectedValues={selectedValues}
-        handleAttributeChange={handleAttributeChange}
-        handleImageUpload={handleImageUpload}
-        images={images}
-        removeImage={removeImage}
-        handleSubmit={(e) => {
-          e.preventDefault();
-          if (editedProduct.id === 0) {
-            // Add new product
-            const newProduct = { ...editedProduct, id: products.length + 1 };
-            setProducts([...products, newProduct]);
-          } else {
-            // Update existing product
-            setProducts(products.map(p => p.id === editedProduct.id ? editedProduct : p));
+        handleAttributeChange={(key, value) => 
+          setSelectedValues(prev => ({ ...prev, [key]: value }))
+        }
+        handleImageUpload={(e) => {
+          if (e.target.files) {
+            const newImages = Array.from(e.target.files).slice(0, 5 - images.length);
+            setImages([...images, ...newImages]);
           }
-          setIsProductModalOpen(false);
-          setEditedProduct({ id: 0, name: "", stock: 0, price: 0 });
         }}
+        images={images}
+        removeImage={(index) => setImages(images.filter((_, i) => i !== index))}
+        handleSubmit={handleSubmit}
+        isSubmitting={isSubmitting}
       />
 
             
@@ -344,7 +389,7 @@ const [isShopEditModalOpen, setIsShopEditModalOpen] = useState(false);
         );
         case 'admin':
           return (
-            <AdminDashboard dummyUsers={dummyUsers} />
+            <AdminDashboard/>
           );
       }
     };

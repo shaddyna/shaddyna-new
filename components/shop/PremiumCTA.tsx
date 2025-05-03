@@ -1,9 +1,9 @@
-"use client";
+/*"use client";
 
 import { FC, useState } from 'react';
 import { FiPlusCircle, FiUsers, FiStar, FiTrash, FiX } from 'react-icons/fi';
 
-// Define types for our shop categories
+
 type ShopCategory = {
   label: string;
   attributes: Record<string, string[]>;
@@ -248,7 +248,7 @@ const resetForm = () => {
         </div>
       </section>
 
-      {/* Shop Creation Modal */}
+      {/* Shop Creation Modal *
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-xl shadow-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -270,7 +270,7 @@ const resetForm = () => {
               )}
 
               <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Shop Basics Section */}
+                {/* Shop Basics Section *
                 <div className="space-y-4">
                   <h3 className="text-lg font-semibold text-[#0f1c47] border-b pb-2">Shop Information</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -360,7 +360,7 @@ const resetForm = () => {
                   </div>
                 </div>
 
-                {/* Shop Attributes Section */}
+                {/* Shop Attributes Section *
                 {selectedCategory && (
                 <div className="space-y-4">
                 <h3 className="text-lg font-semibold text-[#0f1c47] border-b pb-2">Shop Specifications</h3>
@@ -390,7 +390,7 @@ const resetForm = () => {
                 </div>
                 </div>
             )}
-                {/* Social Media Section */}
+                {/* Social Media Section *
                 <div className="space-y-4">
                   <h3 className="text-lg font-semibold text-[#0f1c47] border-b pb-2">Social Media Links</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -445,7 +445,7 @@ const resetForm = () => {
                   )}
                 </div>
 
-                {/* Image Upload Section */}
+                {/* Image Upload Section *
                 <div className="space-y-4">
                   <h3 className="text-lg font-semibold text-[#0f1c47] border-b pb-2">Shop Images*</h3>
                   <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-[#0f1c47] transition-colors">
@@ -489,7 +489,7 @@ const resetForm = () => {
                   )}
                 </div>
 
-                {/* Form Actions */}
+                {/* Form Actions *
                 <div className="flex justify-end gap-4 pt-6">
                   <button
                     type="button"
@@ -512,6 +512,89 @@ const resetForm = () => {
           </div>
         </div>
       )}
+    </>
+  );
+};
+
+export default PremiumCTA;*/
+
+"use client";
+
+import { FC, useState } from 'react';
+import { HeroCTA } from '@/components/premiumCTA/HeroCTA';
+import { ShopFormModal } from '@/components/premiumCTA/ShopFormModal';
+
+export const PremiumCTA: FC = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+
+  const handleSubmit = async (formData: FormData) => {
+    try {
+      // Log form data
+      console.log('FormData being sent to backend:');
+      for (const [key, value] of formData.entries()) {
+        console.log(`${key}:`, value);
+      }
+  
+      const token = localStorage.getItem('token');
+  
+      const response = await fetch('http://localhost:5000/api/shops/create', {
+        method: 'POST',
+        body: formData,
+        headers: token
+          ? {
+              'Authorization': `Bearer ${token}`,
+            }
+          : {},
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to create shop');
+      }
+  
+      const result = await response.json();
+      console.log('Shop created successfully:', result);
+    } catch (err) {
+      console.error('Error creating shop:', err);
+      throw err;
+    }
+  };
+  
+  /*const handleSubmit = async (formData: FormData) => {
+    try {
+      const token = localStorage.getItem('token');
+      
+      const response = await fetch('http://localhost:5000/api/shops/create', {
+        method: 'POST',
+        body: formData,
+        headers: token ? {
+          'Authorization': `Bearer ${token}`
+        } : {}
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to create shop');
+      }
+
+      const result = await response.json();
+      console.log('Shop created successfully:', result);
+    } catch (err) {
+      console.error('Error creating shop:', err);
+      throw err;
+    }
+  };*/
+
+  return (
+    <>
+      <HeroCTA onOpenModal={() => setIsModalOpen(true)} />
+      
+      <ShopFormModal 
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={handleSubmit}
+      />
     </>
   );
 };

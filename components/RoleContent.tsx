@@ -57,9 +57,9 @@ const UserOrders = ({ orders }: { orders: Order[] }) => (
           className="flex justify-between items-center p-4 hover:bg-gray-50 rounded-lg"
         >
           <div>
-            <p className="text-[#0f1c47] font-medium">{order.product}</p>
+            <p className="text-[#0f1c47] font-medium">order</p>
             <p className="text-sm text-gray-500">
-              {order.date || (order.createdAt && new Date(order.createdAt).toLocaleDateString())}
+              order date 
             </p>
           </div>
           <span className={`px-3 py-1 rounded-full text-sm ${

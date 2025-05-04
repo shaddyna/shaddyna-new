@@ -40,7 +40,7 @@ const UserProfilePage = () => {
   const handleSkillSubmit = (newSkill: Omit<Skill, 'id' | 'createdAt' | 'createdBy' | 'likes' | 'stats'>) => {
     const fullSkill: Skill = {
       ...newSkill,
-      id: `skill-${Date.now()}`,
+      _id: `skill-${Date.now()}`,
       createdAt: new Date(),
       createdBy: user,
       likes: [],
@@ -153,7 +153,7 @@ const UserProfilePage = () => {
 
                 <div className="grid grid-cols-1 gap-6">
                   {skills.map((skill) => (
-                    <SkillCard key={skill.id} skill={skill} />
+                    <SkillCard key={skill._id} skill={skill} />
                   ))}
                 </div>
               </div>

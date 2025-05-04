@@ -260,14 +260,14 @@ const [editedProduct, setEditedProduct] = useState<Product>({ id: 0, name: "", s
 
 
   
-const [editedShop, setEditedShop] = useState<Shop>({ ...shop });
+//const [editedShop, setEditedShop] = useState<Shop>({ ...shop });
 const [isShopEditModalOpen, setIsShopEditModalOpen] = useState(false);
 
   // Shop Management
-  const handleSaveShop = () => {
+/*  const handleSaveShop = () => {
     setShop(editedShop);
     setIsShopEditModalOpen(false);
-  };
+  };*/
 
   // Calculate total revenue
  // const totalRevenue = orders
@@ -334,13 +334,13 @@ const [isShopEditModalOpen, setIsShopEditModalOpen] = useState(false);
               withdrawals={withdrawals}
               setIsWithdrawalModalOpen={setIsWithdrawalModalOpen}
             />                 
-      <EditShopModal
+     {/*} <EditShopModal
         isOpen={isShopEditModalOpen}
         onClose={() => setIsShopEditModalOpen(false)}
         editedShop={editedShop}
         setEditedShop={setEditedShop}
         handleSaveShop={handleSaveShop}
-      />
+      />*/}
       <ProductModal
         isOpen={isProductModalOpen}
         onClose={() => {

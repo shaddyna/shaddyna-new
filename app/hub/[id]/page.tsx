@@ -32,7 +32,7 @@ export default function SkillDetailPage() {
         console.log('Fetching skill with ID:', id);
   
         // Fetch skill by ID
-        const response = await axios.get(`http://localhost:5000/api/skill/${id}`);
+        const response = await axios.get(`https://shaddyna-backend.onrender.com/api/skill/${id}`);
         console.log('API Response:', response.data); // Log the API response
   
         const skillData = response.data;

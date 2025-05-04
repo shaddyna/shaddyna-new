@@ -6,7 +6,7 @@ import { SkillCard } from '@/components/skillComponent/skillCard';
 import { User } from '@/types/skills';
 
 interface Skill {
-    id: string;
+    _id: string;
     title: string;
     description: string;
     category: string;

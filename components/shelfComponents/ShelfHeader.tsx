@@ -30,7 +30,7 @@ export const ShelfHeader: React.FC<ShelfHeaderProps> = ({ members, currentUser, 
           </div>
         </div>
         <div className="mt-4 md:mt-0 flex space-x-3">
-          {currentUser && (currentUser.role === 'owner' || currentUser.role === 'admin') ? (
+          {/*{currentUser && (currentUser.role === 'owner' || currentUser.role === 'admin') ? (
             <>
               <button 
                 onClick={onInviteClick}
@@ -42,7 +42,7 @@ export const ShelfHeader: React.FC<ShelfHeaderProps> = ({ members, currentUser, 
                 Manage Shelf
               </button>
             </>
-          ) : null}
+          ) : null}*/}
           <button className="px-4 py-2 border border-[#0f1c47] text-[#0f1c47] rounded-md hover:bg-gray-100 transition-colors">
             Share Shelf
           </button>

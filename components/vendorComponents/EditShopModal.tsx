@@ -34,8 +34,8 @@ export const EditShopModal: React.FC<EditShopModalProps> = ({
             type="text"
             placeholder="Logo URL"
             className="w-full p-2 border rounded"
-            value={editedShop.logo}
-            onChange={(e) => setEditedShop({ ...editedShop, logo: e.target.value })}
+            //value={editedShop.logo}
+            //onChange={(e) => setEditedShop({ ...editedShop, logo: e.target.value })}
           />
           <textarea
             placeholder="Description"

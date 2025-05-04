@@ -15,7 +15,7 @@ export const SkillsComponent = () => {
   useEffect(() => {
     const fetchSkills = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/skill');
+        const response = await axios.get('https://shaddyna-backend.onrender.com/api/skill');
         console.log("Fetched skills:", response.data.skills); // Now logging the right data
         setSkills(response.data.skills); // ✅ Fix here
       } catch (error) {
@@ -33,7 +33,7 @@ export const SkillsComponent = () => {
   const handleDelete = async (skillId: string) => {
     if (window.confirm('Are you sure you want to delete this skill?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/skill/${skillId}`);
+        await axios.delete(`https://shaddyna-backend.onrender.com/api/skill/${skillId}`);
         setSkills(prev => prev.filter(s => s._id !== skillId));
       } catch {
         alert('Failed to delete skill');
@@ -46,7 +46,7 @@ export const SkillsComponent = () => {
   const handleSaveEdit = async () => {
     if (!editingSkill) return;
     try {
-      const response = await axios.put(`http://localhost:5000/api/skill/${editingSkill._id}`, editingSkill);
+      const response = await axios.put(`https://shaddyna-backend.onrender.com/api/skill/${editingSkill._id}`, editingSkill);
       setSkills(skills.map(s => (s._id === editingSkill._id ? response.data : s)));
       setEditingSkill(null);
     } catch {

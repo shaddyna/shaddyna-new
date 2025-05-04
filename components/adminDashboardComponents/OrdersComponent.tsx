@@ -189,7 +189,7 @@ export const OrderManagement = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/orders');
+        const response = await axios.get('https://shaddyna-backend.onrender.com/api/orders');
         setOrders(response.data.orders || []);
       } catch {
         setError('Failed to fetch orders');
@@ -205,7 +205,7 @@ export const OrderManagement = () => {
   const handleDelete = async (orderId: string) => {
     if (window.confirm('Are you sure you want to delete this order?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/orders/${orderId}`);
+        await axios.delete(`https://shaddyna-backend.onrender.com/api/orders/${orderId}`);
         setOrders(prev => prev.filter(order => order._id !== orderId));
       } catch {
         alert('Failed to delete order');
@@ -219,7 +219,7 @@ export const OrderManagement = () => {
   const handleSaveEdit = async () => {
     if (!editingOrder || !editingOrder._id) return;
     try {
-      const response = await axios.put(`http://localhost:5000/api/orders/${editingOrder._id}`, editingOrder);
+      const response = await axios.put(`https://shaddyna-backend.onrender.com/api/orders/${editingOrder._id}`, editingOrder);
       setOrders(orders.map(order => (order._id === editingOrder._id ? response.data : order)));
       setEditingOrder(null);
     } catch {

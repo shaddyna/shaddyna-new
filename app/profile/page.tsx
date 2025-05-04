@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useRouter } from "next/navigation";
 import { ProfileHeader } from '@/components/ProfileHeader';
 import { MainContent } from '@/components/MainContent';
-import { dummyUsers, dummyProducts } from '@/data/dummyData';
+import { dummyProducts } from '@/data/dummyData';
 import { EditProfileModal } from '@/components/EditProfileModal';
 import axios from 'axios';
 import { ProfileNavbar } from '@/components/ProfileNavBar';
@@ -14,9 +14,6 @@ import { WithdrawalModal } from '@/components/vendorComponents/WithdrawalModal';
 import { WithdrawalRequests } from '@/components/vendorComponents/WithdrawalRequest';
 import { ProductManagement } from '@/components/vendorComponents/ProductManagement';
 import { ShopSection } from '@/components/vendorComponents/ShopSection';
-import { SalesDashboard } from '@/components/vendorComponents/SalesDashboard';
-import { Order } from '@/types/profile'; 
-import { CustomerOrders } from '@/components/vendorComponents/CustomerOrder';
 import { EditShopModal } from '@/components/vendorComponents/EditShopModal';
 import { Shop } from '@/types/profile';
 import { useAuth } from '@/context/AuthContext';
@@ -70,7 +67,7 @@ const productCategories = {
 
 
 
-const API_URL = "http://localhost:5000/api/products"; // Adjust based on backend URL
+const API_URL = "https://shaddyna-backend.onrender.com/api/products"; // Adjust based on backend URL
 
 
 
@@ -189,7 +186,7 @@ export default function ProfilePage() {
         headers: { "Content-Type": "multipart/form-data" },
       });
   
-      setProducts([...products, data]);
+      //setProducts([...products, data]);
   
       // Reset form
       setProductName("");
@@ -214,7 +211,7 @@ export default function ProfilePage() {
     const fetchSellerId = async () => {
       if (user?.role === 'seller' && user.email && isProductModalOpen) {
         try {
-          const response = await fetch('http://localhost:5000/api/sellers');
+          const response = await fetch('https://shaddyna-backend.onrender.com/api/sellers');
           if (!response.ok) {
             throw new Error('Failed to fetch sellers');
           }
@@ -248,7 +245,7 @@ export default function ProfilePage() {
   });
 
 // In your profile page
-const [products, setProducts] = useState<Product[]>(dummyProducts); // Initialize here
+//const [products, setProducts] = useState<Product[]>(dummyProducts); // Initialize here
 const [editedProduct, setEditedProduct] = useState<Product>({ id: 0, name: "", stock: 0, price: 0 });
 
 
@@ -319,12 +316,12 @@ const [isShopEditModalOpen, setIsShopEditModalOpen] = useState(false);
               setIsShopEditModalOpen={setIsShopEditModalOpen}
             />
             
-            <ProductManagement
+            {/*<ProductManagement
               products={products}
               setProducts={setProducts}
               setIsProductModalOpen={setIsProductModalOpen}
               setEditedProduct={setEditedProduct}
-            />
+            />*/}
             
            {/*} <SalesDashboard 
               //totalRevenue={totalRevenue} 

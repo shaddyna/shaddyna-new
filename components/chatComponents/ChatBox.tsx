@@ -5,7 +5,7 @@ import { io } from 'socket.io-client';
 import { FaPaperPlane } from 'react-icons/fa';
 import { useAuth } from '@/context/AuthContext';
 
-const socket = io('http://localhost:5000');
+const socket = io('https://shaddyna-backend.onrender.com');
 
 export const ChatBox = ({ targetUser }: { targetUser: any }) => {
   const { user: currentUser } = useAuth();
@@ -95,7 +95,7 @@ import { io } from 'socket.io-client';
 import { FaPaperPlane } from 'react-icons/fa';
 import { useAuth } from '@/context/AuthContext';
 
-const socket = io('http://localhost:5000');
+const socket = io('https://shaddyna-backend.onrender.com');
 
 //export const ChatBox = ({ targetUser }: { targetUser: User }) => { 
 export const ChatBox = ({ targetUser }: { targetUser: any }) => {

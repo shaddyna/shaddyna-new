@@ -17,7 +17,7 @@ export const PostsComponent = () => {
   const fetchPosts = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('http://localhost:5000/api/shellf/posts');
+      const response = await axios.get('https://shaddyna-backend.onrender.com/api/shellf/posts');
       setPosts(response.data);
     } catch {
       setError('Failed to fetch posts');
@@ -28,7 +28,7 @@ export const PostsComponent = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      await axios.delete(`http://localhost:5000/api/shellf/posts/${id}`);
+      await axios.delete(`https://shaddyna-backend.onrender.com/api/shellf/posts/${id}`);
       setPosts((prev) => prev.filter((post) => post.id !== id));
     } catch (err) {
       alert('Failed to delete post');
@@ -40,7 +40,7 @@ export const PostsComponent = () => {
     if (!newName) return;
 
     try {
-      const updated = await axios.put(`http://localhost:5000/api/shellf/posts/${id}`, {
+      const updated = await axios.put(`https://shaddyna-backend.onrender.com/api/shellf/posts/${id}`, {
         name: newName,
       });
       setPosts((prev) =>

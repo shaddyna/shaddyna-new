@@ -295,7 +295,7 @@ const ShelfDetailPage = () => {
 
   const handleCreatePost = async (newPost: Omit<Post, 'id' | 'createdAt' | 'createdBy' | 'status' | 'stats'>) => {
     try {
-      const response = await axios.post(`http://localhost:5000/api/shellf/posts`, newPost);
+      const response = await axios.post(`https://shaddyna-backend.onrender.com/api/shellf/posts`, newPost);
       const createdPost = response.data;
       
       setPosts([createdPost, ...posts]);
@@ -314,11 +314,11 @@ const ShelfDetailPage = () => {
         setLoading(true);
         
         // Fetch shelf data
-        const shelfResponse = await axios.get(`http://localhost:5000/api/shelf/${id}`);
+        const shelfResponse = await axios.get(`https://shaddyna-backend.onrender.com/api/shelf/${id}`);
         setShelf(shelfResponse.data);
         
         // Fetch posts for this shelf
-        const postsResponse = await axios.get(`http://localhost:5000/api/shellf/posts/shelf/${id}`);
+        const postsResponse = await axios.get(`https://shaddyna-backend.onrender.com/api/shellf/posts/shelf/${id}`);
         
         // Transform posts to match our interface
         const transformedPosts = postsResponse.data.map((post: any) => ({

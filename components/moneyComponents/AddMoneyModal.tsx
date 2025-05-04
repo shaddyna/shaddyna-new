@@ -57,7 +57,7 @@ export const AddMoneyModal = ({ isOpen, onClose }: AddMoneyModalProps) => {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/api/saving/create", {
+      const response = await fetch("https://shaddyna-backend.onrender.com/api/saving/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

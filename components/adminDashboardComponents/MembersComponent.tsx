@@ -14,7 +14,7 @@ export const MembersComponent = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/users/all');
+        const response = await axios.get('https://shaddyna-backend.onrender.com/api/users/all');
         const membersOnly = response.data.filter((user: User) => user.member === true);
         setMembers(membersOnly);
       } catch {
@@ -29,7 +29,7 @@ export const MembersComponent = () => {
   const handleDelete = async (userId: string) => {
     if (window.confirm('Are you sure you want to delete this member?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/users/${userId}`);
+        await axios.delete(`https://shaddyna-backend.onrender.com/api/users/${userId}`);
         setMembers(prev => prev.filter(m => m._id !== userId));
       } catch {
         alert('Failed to delete member');
@@ -47,7 +47,7 @@ export const MembersComponent = () => {
   const handleSaveEdit = async () => {
     if (!editingMember) return;
     try {
-      const response = await axios.put(`http://localhost:5000/api/users/${editingMember._id}`, editingMember);
+      const response = await axios.put(`https://shaddyna-backend.onrender.com/api/users/${editingMember._id}`, editingMember);
       setMembers(members.map(m => (m._id === editingMember._id ? response.data : m)));
       setEditingMember(null);
     } catch {

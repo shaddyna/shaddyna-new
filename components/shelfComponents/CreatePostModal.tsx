@@ -140,7 +140,7 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
     try {
       const token = localStorage.getItem('token'); // 👈 grab token directly
   
-      const response = await fetch('http://localhost:5000/api/upload', {
+      const response = await fetch('https://shaddyna-backend.onrender.com/api/upload', {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`, // 👈 attach token
@@ -219,7 +219,7 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
         throw new Error('No authentication token found');
       }
   
-      const response = await fetch('http://localhost:5000/api/shellf/posts', {
+      const response = await fetch('https://shaddyna-backend.onrender.com/api/shellf/posts', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

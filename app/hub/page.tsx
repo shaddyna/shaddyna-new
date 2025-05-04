@@ -45,7 +45,7 @@ const SkillsPage = () => {
       params.append("limit", filter.limit.toString());
       params.append("sortBy", filter.sortBy);
 
-      const response = await axios.get(`http://localhost:5000/api/skill/`, {
+      const response = await axios.get(`https://shaddyna-backend.onrender.com/api/skill/`, {
         params,
       });
 

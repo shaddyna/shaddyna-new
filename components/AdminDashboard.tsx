@@ -11,7 +11,7 @@ export const AdminDashboard = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/users/all');
+        const response = await axios.get('https://shaddyna-backend.onrender.com/api/users/all');
         setUsers(response.data);
         setLoading(false);
       } catch (err) {
@@ -27,7 +27,7 @@ export const AdminDashboard = () => {
   const handleDelete = async (userId: string) => {
     if (window.confirm('Are you sure you want to delete this user?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/users/${userId}`);
+        await axios.delete(`https://shaddyna-backend.onrender.com/api/users/${userId}`);
         setUsers(users.filter(user => user._id !== userId));
       } catch (err) {
         console.error('Error deleting user:', err);
@@ -45,7 +45,7 @@ export const AdminDashboard = () => {
 
     try {
       const response = await axios.put(
-        `http://localhost:5000/api/users/${editingUser._id}`,
+        `https://shaddyna-backend.onrender.com/api/users/${editingUser._id}`,
         editingUser
       );
       

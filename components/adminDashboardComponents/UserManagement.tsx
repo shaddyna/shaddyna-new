@@ -14,7 +14,7 @@ export const UserManagement = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/users/all');
+        const response = await axios.get('https://shaddyna-backend.onrender.com/api/users/all');
         setUsers(response.data);
       } catch {
         setError('Failed to fetch users');
@@ -28,7 +28,7 @@ export const UserManagement = () => {
   const handleDelete = async (userId: string) => {
     if (window.confirm('Are you sure you want to delete this user?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/users/${userId}`);
+        await axios.delete(`https://shaddyna-backend.onrender.com/api/users/${userId}`);
         setUsers(prev => prev.filter(u => u._id !== userId));
       } catch {
         alert('Failed to delete user');
@@ -41,7 +41,7 @@ export const UserManagement = () => {
   const handleSaveEdit = async () => {
     if (!editingUser) return;
     try {
-      const response = await axios.put(`http://localhost:5000/api/users/${editingUser._id}`, editingUser);
+      const response = await axios.put(`https://shaddyna-backend.onrender.com/api/users/${editingUser._id}`, editingUser);
       setUsers(users.map(u => (u._id === editingUser._id ? response.data : u)));
       setEditingUser(null);
     } catch {

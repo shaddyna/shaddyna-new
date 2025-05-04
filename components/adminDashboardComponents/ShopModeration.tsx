@@ -10,7 +10,7 @@ export const ShopModeration = () => {
   useEffect(() => {
     const fetchShops = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/shops/shops');
+        const response = await fetch('https://shaddyna-backend.onrender.com/api/shops/shops');
         if (!response.ok) {
           throw new Error('Failed to fetch shops');
         }
@@ -33,7 +33,7 @@ export const ShopModeration = () => {
     if (!confirm('Are you sure you want to delete this shop?')) return;
     
     try {
-      const response = await fetch(`http://localhost:5000/api/shops/${shopId}`, {
+      const response = await fetch(`https://shaddyna-backend.onrender.com/api/shops/${shopId}`, {
         method: 'DELETE',
       });
 

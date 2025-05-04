@@ -114,7 +114,7 @@ export default function MoneyTransferPage() {
     setLoading(true);
   
     try {
-      const response = await fetch('http://localhost:5000/api/transfer', {
+      const response = await fetch('https://shaddyna-backend.onrender.com/api/transfer', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

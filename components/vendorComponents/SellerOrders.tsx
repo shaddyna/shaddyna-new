@@ -15,7 +15,7 @@ export const SellerOrders = () => {
     const fetchSellerId = async () => {
       if (user?.role === 'seller') {
         try {
-          const res = await fetch('http://localhost:5000/api/sellers');
+          const res = await fetch('https://shaddyna-backend.onrender.com/api/sellers');
           const sellers = await res.json();
           const matched = sellers.find((s: any) => s.email === user.email);
           if (matched) {
@@ -35,7 +35,7 @@ export const SellerOrders = () => {
     const fetchOrders = async () => {
       if (!sellerId) return;
       try {
-        const res = await fetch(`http://localhost:5000/api/orders/seller/${sellerId}`);
+        const res = await fetch(`https://shaddyna-backend.onrender.com/api/orders/seller/${sellerId}`);
         const data = await res.json();
   
         console.log('Fetched seller orders:', data); // <-- Log received data here
@@ -74,7 +74,7 @@ export const SellerOrders = () => {
       const fetchSellerId = async () => {
         if (user?.role === 'seller') {
           try {
-            const res = await fetch('http://localhost:5000/api/sellers');
+            const res = await fetch('https://shaddyna-backend.onrender.com/api/sellers');
             const sellers = await res.json();
             const matched = sellers.find((s: any) => s.email === user.email);
             if (matched) {
@@ -93,7 +93,7 @@ export const SellerOrders = () => {
         const fetchOrders = async () => {
           if (!sellerId) return;
           try {
-            const res = await fetch(`http://localhost:5000/api/orders/seller/${sellerId}`);
+            const res = await fetch(`https://shaddyna-backend.onrender.com/api/orders/seller/${sellerId}`);
             
             if (!res.ok) {
               throw new Error('Failed to fetch orders');

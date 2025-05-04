@@ -9,7 +9,7 @@ export const SellerRequests = () => {
   useEffect(() => {
     const fetchRequests = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/membership');
+        const res = await axios.get('https://shaddyna-backend.onrender.com/api/membership');
         setRequests(res.data);
         console.log('✅ Successfully fetched seller requests:', res.data);
       } catch (err) {
@@ -25,7 +25,7 @@ export const SellerRequests = () => {
   
   const handleStatusChange = async (id: string, status: 'approved' | 'rejected') => {
     try {
-      await axios.put(`http://localhost:5000/api/membership/${id}`, { status });
+      await axios.put(`https://shaddyna-backend.onrender.com/api/membership/${id}`, { status });
       setRequests(prev =>
         prev.map(req =>
           req._id === id ? { ...req, status, processedAt: new Date().toISOString() } : req

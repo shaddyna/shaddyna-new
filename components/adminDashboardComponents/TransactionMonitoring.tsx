@@ -11,7 +11,7 @@ export const TransactionMonitoring = () => {
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/transactions');
+        const response = await fetch('https://shaddyna-backend.onrender.com/api/transactions');
         if (!response.ok) {
           throw new Error('Failed to fetch transactions');
         }
@@ -32,7 +32,7 @@ export const TransactionMonitoring = () => {
     if (!confirm('Are you sure you want to delete this transaction?')) return;
     
     try {
-      const response = await fetch(`http://localhost:5000/api/transactions/${transactionId}`, {
+      const response = await fetch(`https://shaddyna-backend.onrender.com/api/transactions/${transactionId}`, {
         method: 'DELETE',
       });
 
@@ -55,7 +55,7 @@ export const TransactionMonitoring = () => {
     if (!editingTransaction) return;
 
     try {
-      const response = await fetch(`http://localhost:5000/api/transactions/${editingTransaction._id}`, {
+      const response = await fetch(`https://shaddyna-backend.onrender.com/api/transactions/${editingTransaction._id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -294,7 +294,7 @@ export const TransactionMonitoring = () => {
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/transactions');
+        const response = await fetch('https://shaddyna-backend.onrender.com/api/transactions');
         if (!response.ok) throw new Error('Failed to fetch transactions');
         const data = await response.json();
         setTransactions(data.data);
@@ -317,7 +317,7 @@ export const TransactionMonitoring = () => {
   const handleDelete = async (transactionId: string) => {
     if (!confirm('Are you sure you want to delete this transaction?')) return;
     try {
-      const response = await fetch(`http://localhost:5000/api/transactions/${transactionId}`, { method: 'DELETE' });
+      const response = await fetch(`https://shaddyna-backend.onrender.com/api/transactions/${transactionId}`, { method: 'DELETE' });
       if (!response.ok) throw new Error('Failed to delete transaction');
       const updatedList = transactions.filter(t => t._id !== transactionId);
       setTransactions(updatedList);
@@ -338,7 +338,7 @@ export const TransactionMonitoring = () => {
     if (!editingTransaction) return;
 
     try {
-      const response = await fetch(`http://localhost:5000/api/transactions/${editingTransaction._id}`, {
+      const response = await fetch(`https://shaddyna-backend.onrender.com/api/transactions/${editingTransaction._id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(editingTransaction),

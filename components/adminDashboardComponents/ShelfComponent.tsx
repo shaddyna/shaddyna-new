@@ -12,7 +12,7 @@ export const ShelfComponent = () => {
   useEffect(() => {
     const fetchShelves = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/shelf');
+        const response = await axios.get('https://shaddyna-backend.onrender.com/api/shelf');
         setShelves(response.data);
       } catch {
         setError('Failed to fetch shelves');
@@ -27,7 +27,7 @@ export const ShelfComponent = () => {
   const handleDelete = async (id: string) => {
     if (window.confirm('Are you sure you want to delete this shelf?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/shelf/${id}`);
+        await axios.delete(`https://shaddyna-backend.onrender.com/api/shelf/${id}`);
         setShelves(prev => prev.filter(shelf => shelf.id !== id));
       } catch {
         alert('Failed to delete shelf');
@@ -41,7 +41,7 @@ export const ShelfComponent = () => {
     if (!editingShelf) return;
 
     try {
-      const response = await axios.put(`http://localhost:5000/api/shelf/${editingShelf.id}`, editingShelf);
+      const response = await axios.put(`https://shaddyna-backend.onrender.com/api/shelf/${editingShelf.id}`, editingShelf);
       setShelves(prev => prev.map(s => (s.id === editingShelf.id ? response.data : s)));
       setEditingShelf(null);
     } catch {
@@ -51,7 +51,7 @@ export const ShelfComponent = () => {
 
   const handleCreateShelf = async () => {
     try {
-      const response = await axios.post('http://localhost:5000/api/shelf', newShelf);
+      const response = await axios.post('https://shaddyna-backend.onrender.com/api/shelf', newShelf);
       setShelves(prev => [response.data, ...prev]);
       setNewShelf({ name: '', description: '', type: 'product', visibility: 'public' });
     } catch {

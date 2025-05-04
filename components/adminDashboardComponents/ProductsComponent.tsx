@@ -16,7 +16,7 @@ export const ProductsComponent = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/products/all');
+        const response = await axios.get('https://shaddyna-backend.onrender.com/api/products/all');
         setProducts(response.data.products || []);
       } catch {
         setError('Failed to fetch products');
@@ -31,7 +31,7 @@ export const ProductsComponent = () => {
   const handleDelete = async (productId: string) => {
     if (window.confirm('Are you sure you want to delete this product?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/products/${productId}`);
+        await axios.delete(`https://shaddyna-backend.onrender.com/api/products/${productId}`);
         setProducts(prev => prev.filter(p => p._id !== productId));
       } catch {
         alert('Failed to delete product');
@@ -62,10 +62,10 @@ export const ProductsComponent = () => {
     if (!editingProduct) return;
     try {
       if (isCreating) {
-        const response = await axios.post('http://localhost:5000/api/products', editingProduct);
+        const response = await axios.post('https://shaddyna-backend.onrender.com/api/products', editingProduct);
         setProducts(prev => [response.data, ...prev]);
       } else {
-        const response = await axios.put(`http://localhost:5000/api/products/${editingProduct._id}`, editingProduct);
+        const response = await axios.put(`https://shaddyna-backend.onrender.com/api/products/${editingProduct._id}`, editingProduct);
         setProducts(prev => prev.map(p => (p._id === editingProduct._id ? response.data : p)));
       }
       setEditingProduct(null);

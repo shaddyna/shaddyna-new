@@ -15,10 +15,10 @@ export const UserDashboard = ({ orders }: { orders: Order[] }) => (
       <h3 className="text-lg font-semibold text-[#0f1c47] mb-4">My Orders</h3>
       <div className="space-y-4">
         {orders.map(order => (
-          <div key={order.id} className="flex items-center justify-between p-4 hover:bg-[#bf2c7e]/5 rounded-lg">
+          <div key={order._id} className="flex items-center justify-between p-4 hover:bg-[#bf2c7e]/5 rounded-lg">
             <div>
-              <p className="font-medium text-[#0f1c47]">{order.product}</p>
-              <p className="text-sm text-[#0f1c47]/60">{order.date}</p>
+              <p className="font-medium text-[#0f1c47]">order.product</p>
+              <p className="text-sm text-[#0f1c47]/60">order.date</p>
             </div>
             <span className={`px-3 py-1 rounded-full text-sm ${
               order.status === 'delivered' ? 'bg-green-100 text-green-800' : 'bg-[#bf2c7e]/10 text-[#bf2c7e]'
@@ -46,7 +46,7 @@ export const VendorDashboard = ({ products }: { products: Product[] }) => (
       <h3 className="text-lg font-semibold text-[#0f1c47] mb-4">Product Management</h3>
       <div className="space-y-4">
         {products.map(product => (
-          <div key={product.id} className="flex items-center justify-between p-4 hover:bg-[#bf2c7e]/5 rounded-lg">
+          <div key={product._id} className="flex items-center justify-between p-4 hover:bg-[#bf2c7e]/5 rounded-lg">
             <div>
               <p className="font-medium text-[#0f1c47]">{product.name}</p>
               <p className="text-sm text-[#0f1c47]/60">Stock: {product.stock}</p>

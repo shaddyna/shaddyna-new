@@ -1,9 +1,9 @@
 import React from 'react';
-import { User } from '@/types/shelf'; // Define your types in a separate file
+import { ShelfMember, User } from '@/types/shelf'; // Define your types in a separate file
 
 interface ShelfHeaderProps {
-  members: User[];
-  currentUser: User | null;
+  members: ShelfMember[];
+  currentUser: User | null; // Keep currentUser as User type if needed
   onInviteClick: () => void;
 }
 

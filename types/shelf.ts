@@ -66,10 +66,18 @@ export interface Shelf {
   updatedAt: Date;
 }
 
-export interface ShelfMember {
+/*export interface ShelfMember {
   userId: string | BaseUser;
   joinedAt: Date;
   role: 'admin' | 'contributor' | 'viewer';
+}*/
+
+export interface ShelfMember {
+  userId: string;
+  name: string;
+  avatar?: string;
+  role: 'owner' | 'admin' | 'member';
+  // Add any other ShelfMember specific properties
 }
 
 export interface Product {

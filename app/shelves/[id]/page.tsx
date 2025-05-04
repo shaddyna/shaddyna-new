@@ -483,13 +483,13 @@ const ShelfDetailPage = () => {
         </div>
       </div>
 
-      <CreatePostModal 
+      {/*<CreatePostModal 
         isOpen={showCreatePostModal} 
         onClose={() => setShowCreatePostModal(false)} 
         onSubmit={handleCreatePost}
         currentUser={currentUser!}
         shelfId={id}
-      />
+      />*/}
 
       <InviteModal 
         isOpen={showInviteModal} 

@@ -53,7 +53,7 @@ const UserOrders = ({ orders }: { orders: Order[] }) => (
       <h3 className="text-xl font-semibold text-[#0f1c47] mb-4">My Orders</h3>
       {orders.map(order => (
         <div 
-          key={order._id || order.id} // Handle both cases
+          key={order._id } // Handle both cases
           className="flex justify-between items-center p-4 hover:bg-gray-50 rounded-lg"
         >
           <div>

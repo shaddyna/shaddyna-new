@@ -210,7 +210,7 @@ const PostDetailsPage = ({ params }: PostDetailsProps) => {
         const { id } = await params;
 
         const response = await axios.get(
-          `http://localhost:5000/api/shellf/posts/single/${id}`
+          `https://shaddyna-backend.onrender.com/api/shellf/posts/single/${id}`
         );
         const postData = response.data;
 
@@ -220,7 +220,9 @@ const PostDetailsPage = ({ params }: PostDetailsProps) => {
           name: postData.name,
           description: postData.description,
           type: Array.isArray(postData.type) ? postData.type[0] : postData.type,
-          images: postData.images.map((img: any) => img.url),
+          //images: postData.images.map((img: any) => img.url),
+          images: postData.images.map((img: { url: string; publicId: string }) => img.url),
+
           tags: postData.tags,
           createdAt: new Date(postData.createdAt),
           createdBy: {
@@ -269,13 +271,14 @@ const PostDetailsPage = ({ params }: PostDetailsProps) => {
       <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md overflow-hidden">
         {/* Post Images Gallery */}
         <div className="relative h-96 bg-gray-100">
-          {post.images.length > 0 && (
+         {/*} {post.images.length > 0 && (
             <img
               src={post.images[0]}
               alt={post.name}
               className="w-full h-full object-cover"
             />
-          )}
+          )}*/}
+
         </div>
 
         {/* Post Content */}
@@ -283,8 +286,12 @@ const PostDetailsPage = ({ params }: PostDetailsProps) => {
           <div className="flex justify-between items-start">
             <div>
               <h1 className="text-3xl font-bold text-[#0f1c47]">{post.name}</h1>
-              <p className="text-gray-500 mt-2">
+              {/*<p className="text-gray-500 mt-2">
                 Posted by {post.createdBy.name} on{" "}
+                {post.createdAt.toLocaleDateString()}
+              </p>*/}
+              <p className="text-gray-500 mt-2">
+                Posted by: on{" "}
                 {post.createdAt.toLocaleDateString()}
               </p>
             </div>

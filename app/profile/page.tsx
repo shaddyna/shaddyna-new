@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { useRouter } from "next/navigation";
 import { ProfileHeader } from '@/components/ProfileHeader';
 import { MainContent } from '@/components/MainContent';
-import { dummyProducts } from '@/data/dummyData';
 import { EditProfileModal } from '@/components/EditProfileModal';
 import axios from 'axios';
 import { ProfileNavbar } from '@/components/ProfileNavBar';

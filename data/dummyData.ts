@@ -1,7 +1,7 @@
 // data/dummyData.ts
 import { User, Order, Product, PlatformUser } from '@/types/profile';
 
-export const dummyOrders: Order[] = [
+/*export const dummyOrders: Order[] = [
   {
     id: "1",
     product: "Wireless Headphones Pro",
@@ -65,7 +65,7 @@ export const dummyProducts: Product[] = [
     price: 89.99,
     stock: 35
   }
-];
+];*/
   
   export const dummyUsers: PlatformUser[] = [
     {

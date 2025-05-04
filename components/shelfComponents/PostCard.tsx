@@ -133,7 +133,13 @@ const dummyPost: Post = {
   updatedAt: new Date(),
 };
 
-export const PostCard: React.FC = () => {
+
+interface PostCardProps {
+  post: Post;
+}
+
+
+export const PostCard: React.FC<PostCardProps> = ({ post }) => {
   const router = useRouter();
 
   const handleClick = () => {

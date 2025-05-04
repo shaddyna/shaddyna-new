@@ -1,8 +1,8 @@
 import React from 'react';
-import { User } from '@/types/shelf';
+import { ShelfMember, User } from '@/types/shelf';
 
 interface MembersTableProps {
-  members: User[];
+   members: ShelfMember[];
   currentUser: User | null;
 }
 

@@ -80,7 +80,7 @@ const VendorProducts = ({ products }: { products: Product[] }) => (
       <h3 className="text-xl font-semibold text-[#0f1c47] mb-4">Product Management</h3>
       <div className="space-y-4">
         {products.map(product => (
-          <div key={product.id} className="flex justify-between items-center p-4 hover:bg-gray-50 rounded-lg">
+          <div key={product._id} className="flex justify-between items-center p-4 hover:bg-gray-50 rounded-lg">
             <div>
               <p className="text-[#0f1c47] font-medium">{product.name}</p>
               <p className="text-sm text-gray-500">Stock: {product.stock}</p>

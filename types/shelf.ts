@@ -47,8 +47,9 @@ export interface Post {
 export interface Shelf {
   id: string;
   name: string;
-  description?: string;
-  bannerImage?: string;
+  description: string;
+  //bannerImage?: string;
+  bannerImage: string;
   createdBy: string | BaseUser;
   admins?: (string | BaseUser)[];
   members: ShelfMember[];

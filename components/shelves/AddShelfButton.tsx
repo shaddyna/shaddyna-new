@@ -5,7 +5,7 @@ import { useAuth } from '@/context/AuthContext';
 import { SkillForm } from '@/components/skillComponent/skillForm';
 import { Skill } from '@/types/skills';
 
-const AddSkillButton = () => {
+const AddShelfButton = () => {
   const { user, isLoading: authLoading, refreshUser } = useAuth();
   const [checking, setChecking] = useState(false);
   const [showAddSkillForm, setShowAddSkillForm] = useState(false);
@@ -57,7 +57,7 @@ const AddSkillButton = () => {
           ) : (
             <FontAwesomeIcon icon={faPlus} className="mr-3 text-lg group-hover:rotate-90 transition-transform duration-300" />
           )}
-          <span className="font-medium tracking-wide">Add Skill</span>
+          <span className="font-medium tracking-wide"> Create New Shelf</span>
         </span>
       </button>
 
@@ -83,7 +83,7 @@ const AddSkillButton = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
           <div className="bg-white p-6 rounded-lg w-full max-w-md text-center">
             <h2 className="text-xl font-bold text-[#bf2c7e] mb-4">Become a Member</h2>
-            <p className="text-gray-700 mb-6">You need to become a member to post your skills and get hired.</p>
+            <p className="text-gray-700 mb-6">You need to become a member to create your shelf.</p>
             {/*<button
               className="px-6 py-3 bg-[#bf2c7e] text-white rounded-md hover:bg-[#a8256d]"
               onClick={() => {
@@ -94,7 +94,7 @@ const AddSkillButton = () => {
               Upgrade Now
             </button>*/}
               <button
-                  onClick={() => window.location.href = '/skill-membership'}
+                  onClick={() => window.location.href = '/shelf-membership'}
                   className="w-full px-6 py-3.5 bg-gradient-to-r from-[#bf2c7e] to-[#d64285] text-white font-medium rounded-lg hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5"
                 >
                   Upgrade Now
@@ -112,4 +112,4 @@ const AddSkillButton = () => {
   );
 };
 
-export default AddSkillButton;
+export default AddShelfButton;

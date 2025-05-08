@@ -538,7 +538,7 @@ export const PremiumCTA: FC = () => {
   
       const token = localStorage.getItem('token');
   
-      const response = await fetch('http://localhost:5000/api/shops/create', {
+      const response = await fetch('https://shaddyna-backend.onrender.com/api/shops/create', {
         method: 'POST',
         body: formData,
         headers: token
@@ -565,7 +565,7 @@ export const PremiumCTA: FC = () => {
     try {
       const token = localStorage.getItem('token');
       
-      const response = await fetch('http://localhost:5000/api/shops/create', {
+      const response = await fetch('https://shaddyna-backend.onrender.com/api/shops/create', {
         method: 'POST',
         body: formData,
         headers: token ? {

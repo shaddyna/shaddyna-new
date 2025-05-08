@@ -121,7 +121,7 @@ export const SkillCard: React.FC<SkillCardProps> = ({ skill }) => {
 
     try {
       const response = await axios.post(
-        `http://localhost:5000/api/skill/${skill._id}/like`,
+        `https://shaddyna-backend.onrender.com/api/skill/${skill._id}/like`,
         {},
         {
           headers: {

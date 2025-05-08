@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import axios from 'axios';
+import AddShelfButton from '@/components/shelves/AddShelfButton';
 
 interface User {
     id: string;
@@ -98,12 +99,13 @@ const ShelvesListPage = () => {
               {shelves.length} collaborative spaces to share products, services, and opportunities
             </p>
           </div>
-          <Link
+         {/*} <Link
             href="/shelves/new"
             className="px-6 py-3 bg-[#bf2c7e] text-white rounded-md hover:bg-[#a8256d] transition-colors whitespace-nowrap"
           >
             Create New Shelf
-          </Link>
+          </Link>*/}
+           <AddShelfButton />
         </div>
 
         {/* Filters */}

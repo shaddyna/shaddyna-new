@@ -277,7 +277,7 @@ export const SkillForm: React.FC<SkillFormProps> = ({ onSubmit, initialData }) =
         formData.append('images', image);
       });
 
-      const response = await axios.post('http://localhost:5000/api/skill', formData, {
+      const response = await axios.post('https://shaddyna-backend.onrender.com/api/skill', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           'Authorization': `Bearer ${localStorage.getItem('token')}`

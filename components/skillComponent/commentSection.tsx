@@ -175,7 +175,7 @@ export const CommentSection: React.FC<CommentSectionProps> = ({ skillId }) => {
   useEffect(() => {
     const fetchComments = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/skill/${skillId}`);
+        const response = await axios.get(`https://shaddyna-backend.onrender.com/api/skill/${skillId}`);
         setComments(response.data.comments || []);
       } catch (err) {
         setError('Failed to fetch comments');
@@ -196,7 +196,7 @@ export const CommentSection: React.FC<CommentSectionProps> = ({ skillId }) => {
 
     try {
       const response = await axios.post(
-        `http://localhost:5000/api/skill/${skillId}/comments`,
+        `https://shaddyna-backend.onrender.com/api/skill/${skillId}/comments`,
         { content },
         {
           headers: {
@@ -221,7 +221,7 @@ export const CommentSection: React.FC<CommentSectionProps> = ({ skillId }) => {
 
     try {
       const response = await axios.post(
-        `http://localhost:5000/api/skill/${skillId}/comments/${parentId}/replies`,
+        `https://shaddyna-backend.onrender.com/api/skill/${skillId}/comments/${parentId}/replies`,
         { content },
         {
           headers: {
@@ -246,7 +246,7 @@ export const CommentSection: React.FC<CommentSectionProps> = ({ skillId }) => {
     }
 
     try {
-      let url = `http://localhost:5000/api/skill/${skillId}/comments/${commentId}`;
+      let url = `https://shaddyna-backend.onrender.com/api/skill/${skillId}/comments/${commentId}`;
       if (isReply && parentId) {
         url += `/replies/${parentId}`;
       }

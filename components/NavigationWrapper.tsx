@@ -33,9 +33,9 @@ import BottomNav from "@/components/BottomNav";
 import DesktopNav from "@/components/DesktopNav";
 import TopHomeNav from "@/components/TopHomeNav";
 
-const pagesWithMobileNav = ["/", "/hub", "/shops", "/shelves", "/money",];
-const pagesWithTopMobileNav = ["/money",];
-const pagesWithTopHomeNav = ["/",];
+const pagesWithMobileNav = ["/", "/hub","/shops","/shelves", "/money",];
+const pagesWithTopMobileNav = [""];
+const pagesWithTopHomeNav = ["/","/hub", "/shelves", "/money",];
 const pagesWithDesktopNav = ["/", "/hub", "/shops", "/shelves", "/money", "/profile", "/events"];
 
 export default function NavigationWrapper() {

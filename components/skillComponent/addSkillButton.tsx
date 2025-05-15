@@ -45,21 +45,22 @@ const AddSkillButton = () => {
   return (
     <>
       <button
-        onClick={handleClick}
-        disabled={checking || authLoading}
-        className="relative flex items-center px-6 py-3 bg-gradient-to-r from-[#bf2c7e] to-[#d64285] text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 group overflow-hidden disabled:opacity-50"
-      >
-        <span className="absolute inset-0 bg-gradient-to-r from-[#d64285] to-[#e84a8b] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+      onClick={handleClick}
+      disabled={checking || authLoading}
+      className="relative flex justify-center items-center px-6 py-3 bg-gradient-to-r from-[#bf2c7e] to-[#d64285] text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 group overflow-hidden disabled:opacity-50"
+    >
+      <span className="absolute inset-0 bg-gradient-to-r from-[#d64285] to-[#e84a8b] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
 
-        <span className="relative flex items-center">
-          {checking ? (
-            <FontAwesomeIcon icon={faSpinner} spin className="mr-3 text-lg" />
-          ) : (
-            <FontAwesomeIcon icon={faPlus} className="mr-3 text-lg group-hover:rotate-90 transition-transform duration-300" />
-          )}
-          <span className="font-medium tracking-wide">Add Skill</span>
-        </span>
-      </button>
+      <span className="relative flex items-center justify-center">
+        {checking ? (
+          <FontAwesomeIcon icon={faSpinner} spin className="mr-3 text-lg" />
+        ) : (
+          <FontAwesomeIcon icon={faPlus} className="mr-3 text-lg group-hover:rotate-90 transition-transform duration-300" />
+        )}
+        <span className="font-medium tracking-wide">Add Skill</span>
+      </span>
+    </button>
+
 
       {/* Modals or Dialogs below */}
       {showAddSkillForm && (

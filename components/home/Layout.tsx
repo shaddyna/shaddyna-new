@@ -10,7 +10,7 @@ interface LayoutProps {
 
 export default function Layout({ children, title = 'MarketHub' }: LayoutProps) {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="bg-white min-h-screen flex flex-col">
       <Head>
         <title>{title}</title>
         <meta name="description" content="Modern marketplace for shops, skills, and more" />
